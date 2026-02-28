@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+TODO_FILE="$HOME/todo.md"
+
+# Create the file if it doesn't exist
+[[ -f "$TODO_FILE" ]] || printf "# Todo\n\n" > "$TODO_FILE"
+
+usage() {
+    echo "Usage:"
+    echo "  todo add {todo}            Add a new todo"
+    echo "  todo x                     Toggle items done/undone"
+    echo "  todo ls                    List all todos"
+    echo "  todo rm                    Remove items"
+    echo "  todo rm {number}           Remove item by number"
+    echo "  todo clear                 Remove all completed items"
+    exit 0
+}
+
+# Add a todo
+add() {
+    echo "- [ ] $1  ($(date +%Y-%m-%d))" >> "$TODO_FILE"
+    echo "Added: $1"
+}
+
+# List todos
+ls_todos() {
+    if ! grep -q '^\- \[' "$TODO_FILE" 2>/dev/null; then
+        echo "No todos."
+        return
+    fi
+    grep '^\- \[' "$TODO_FILE" | nl -ba -w3 -s'. '
+}
+
+# Toggle done/undone via fzf
+toggle() {
+    if ! grep -q '^\- \[' "$TODO_FILE" 2>/dev/null; then
+        echo "No todos."
+        return
+    fi
+
+    local selected
+    selected=$(grep '^\- \[' "$TODO_FILE" | fzf --multi --prompt="Toggle: " --preview-window=hidden)
+    [[ -z "$selected" ]] && return
+
+    while IFS= read -r line; do
+        escaped=$(printf '%s' "$line" | sed 's/[][\\.*^$/]/\\&/g')
+        if [[ "$line" == *"[ ]"* ]]; then
+            sed -i '' "s|^${escaped}$|$(echo "$line" | sed 's/\[ \]/[x]/')|" "$TODO_FILE"
+        else
+            sed -i '' "s|^${escaped}$|$(echo "$line" | sed 's/\[x\]/[ ]/')|" "$TODO_FILE"
+        fi
+    done <<< "$selected"
+
+    ls_todos
+}
+
+# Remove items via fzf or by number
+remove() {
+    if ! grep -q '^\- \[' "$TODO_FILE" 2>/dev/null; then
+        echo "No todos."
+        return
+    fi
+
+    # Remove by number
+    if [[ -n "${1:-}" ]]; then
+        local line
+        line=$(grep '^\- \[' "$TODO_FILE" | sed -n "${1}p")
+        if [[ -z "$line" ]]; then
+            echo "No item #$1."
+            return 1
+        fi
+        local escaped
+        escaped=$(printf '%s' "$line" | sed 's/[][\\.*^$/]/\\&/g')
+        sed -i '' "/^${escaped}$/d" "$TODO_FILE"
+        echo "Removed: $line"
+        return
+    fi
+
+    local selected
+    selected=$(grep '^\- \[' "$TODO_FILE" | nl -ba -w3 -s'. ' | fzf --multi --prompt="Remove: " --preview-window=hidden | sed 's/^[[:space:]]*[0-9]*\. //')
+    [[ -z "$selected" ]] && return
+
+    while IFS= read -r line; do
+        escaped=$(printf '%s' "$line" | sed 's/[][\\.*^$/]/\\&/g')
+        sed -i '' "/^${escaped}$/d" "$TODO_FILE"
+    done <<< "$selected"
+
+    echo "Removed."
+}
+
+# Clear completed items
+clear_done() {
+    local count
+    count=$(grep -c '^\- \[x\]' "$TODO_FILE" 2>/dev/null || true)
+    count=${count:-0}
+    if [[ "$count" -eq 0 ]]; then
+        echo "No completed items."
+        return
+    fi
+    sed -i '' '/^\- \[x\]/d' "$TODO_FILE"
+    echo "Cleared $count completed item(s)."
+}
+
+case "${1:-}" in
+    "")       usage ;;
+    x)        toggle ;;
+    ls)       ls_todos ;;
+    rm)       remove "$2" ;;
+    clear)    clear_done ;;
+    help|-h)  usage ;;
+    add)      shift; add "$*" ;;
+    *)        add "$*" ;;
+esac

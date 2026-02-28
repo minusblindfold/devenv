@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+CHEATSHEET_DIR="$HOME/.local/share/cheat"
+MAIN_CHEATSHEET="$CHEATSHEET_DIR/cheatsheet.md"
+
+# Render a cheatsheet file
+show() {
+    if command -v glow &>/dev/null; then
+        glow "$1"
+    else
+        cat "$1"
+    fi
+}
+
+# List available cheatsheets
+list() {
+    echo "Available cheatsheets:"
+    for f in "$CHEATSHEET_DIR"/*-cheatsheet.md; do
+        [[ -f "$f" ]] || continue
+        name=$(basename "$f" -cheatsheet.md)
+        echo "  $name"
+    done
+    echo ""
+    echo "Usage: cheat <tool>  |  cheat ls  |  cheat help"
+}
+
+case "${1:-}" in
+    ""|help)  show "$MAIN_CHEATSHEET" ;;
+    ls)       list ;;
+    *)
+        file="$CHEATSHEET_DIR/$1-cheatsheet.md"
+        if [[ ! -f "$file" ]]; then
+            echo "No cheatsheet found for '$1'"
+            echo "Run 'cheat ls' to see available cheatsheets."
+            exit 1
+        fi
+        show "$file"
+        ;;
+esac
