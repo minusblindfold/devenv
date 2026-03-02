@@ -3,10 +3,10 @@
 ## Install
 
 ```bash
-brew install git fzf glow starship
+brew install git fzf glow starship jq
 brew install --cask ghostty claude-code font-jetbrains-mono-nerd-font
-git clone <repo-url> ~/Documents/personal/devenv
-cd ~/Documents/personal/devenv && ./install.sh
+git clone <repo-url> ~/path/of/your/choice
+cd ~/path/of/your/choice && ./install.sh
 ./verify.sh
 ```
 
@@ -44,7 +44,7 @@ Prompt: **Starship** — git status, languages, icons.
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
 
-Git commits are logged to `~/.claude/activity.log`.
+Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 ## CLI
 

@@ -37,8 +37,9 @@ check_link "$HOME/.zshrc"               "~/.zshrc"
 check_link "$HOME/.hushlogin"           "~/.hushlogin"
 check_link "$HOME/.config/ghostty/config" "~/.config/ghostty/config"
 check_link "$HOME/.config/starship.toml"  "~/.config/starship.toml"
-check_link "$HOME/.claude/settings.json"  "~/.claude/settings.json"
-check_link "$HOME/.claude/CLAUDE.md"      "~/.claude/CLAUDE.md"
+check_link "$HOME/.claude/settings.json"          "~/.claude/settings.json"
+check_link "$HOME/.claude/CLAUDE.md"              "~/.claude/CLAUDE.md"
+check_link "$HOME/.claude/hooks/log-activity.sh"  "~/.claude/hooks/log-activity.sh"
 check_link "$HOME/.local/share/cheat"     "~/.local/share/cheat"
 check_link "$HOME/.git-hooks/post-commit" "~/.git-hooks/post-commit"
 
@@ -73,6 +74,7 @@ check_cmd glow
 check_cmd starship
 check_cmd ghostty
 check_cmd claude
+check_cmd jq
 
 # ── Smoke tests ───────────────────────────────────────────────────────────────
 echo ""

@@ -18,11 +18,12 @@
 | `glow` | Markdown renderer |
 | `starship` | Shell prompt |
 | `ghostty` | Terminal emulator |
+| `jq` | JSON processor |
 | `claude-code` | AI assistant |
 | `font-jetbrains-mono-nerd-font` | Nerd font |
 
 ```bash
-brew install git fzf glow starship
+brew install git fzf glow starship jq
 brew install --cask ghostty claude-code font-jetbrains-mono-nerd-font
 ```
 

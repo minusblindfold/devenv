@@ -8,6 +8,8 @@ My personal dev environment configuration. Managed with a hand-rolled install sc
 devenv/
 ├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
+│   ├── hooks/
+│   │   └── log-activity.sh
 │   └── settings.json
 ├── docs/                   # Cheatsheets → symlinked to ~/.local/share/cheat/
 ├── ghostty/                # Ghostty terminal config → symlinked to ~/.config/ghostty/
@@ -31,15 +33,20 @@ Scripts in `bin/` are symlinked to `~/.local/bin/` and made executable.
 
 ## Install
 
+Clone the repo anywhere you like, then run the install script:
+
 ```bash
-./install.sh
+git clone <repo-url> ~/path/of/your/choice
+cd ~/path/of/your/choice && ./install.sh
 ```
+
+The repo path doesn't matter — the install script detects its own location at runtime and builds all symlinks relative to it.
 
 The install script is **idempotent** — safe to run multiple times. It will:
 - Symlink all `.symlink` files into `$HOME`
 - Symlink `ghostty/config` into `~/.config/ghostty/`
 - Symlink `starship/starship.toml` into `~/.config/`
-- Symlink `claude/` config into `~/.claude/`
+- Symlink `claude/` config and hooks into `~/.claude/`
 - Symlink `docs/` into `~/.local/share/cheat/`
 - Symlink all `bin/` scripts into `~/.local/bin/`
 - Symlink `git-hooks/` into `~/.git-hooks/` and set `core.hooksPath`
@@ -59,5 +66,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/zshrc.symlink` |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json` |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh` |
 | Git hooks | `git-hooks/post-commit` |

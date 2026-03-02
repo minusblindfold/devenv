@@ -80,6 +80,7 @@ install_ghostty() {
 install_claude() {
     info "Installing Claude Code config..."
     mkdir -p "$HOME/.claude/commands"
+    mkdir -p "$HOME/.claude/hooks"
 
     for src in "$DOTFILES_DIR/claude/"*; do
         [ -f "$src" ] || continue
@@ -91,6 +92,13 @@ install_claude() {
         [ -f "$src" ] || continue
         dst="$HOME/.claude/commands/$(basename "$src")"
         link_file "$src" "$dst"
+    done
+
+    for src in "$DOTFILES_DIR/claude/hooks/"*; do
+        [ -f "$src" ] || continue
+        dst="$HOME/.claude/hooks/$(basename "$src")"
+        link_file "$src" "$dst"
+        chmod +x "$src"
     done
 }
 
