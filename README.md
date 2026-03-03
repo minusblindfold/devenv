@@ -7,12 +7,18 @@ My personal dev environment configuration. Managed with a hand-rolled install sc
 ```
 devenv/
 ├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
+│   ├── cheat               # Markdown cheatsheet viewer
+│   ├── todo                # Todo list manager (fzf-based)
+│   ├── view-plan           # Browse .work/plans/ with fzf + glow
+│   └── view-design         # Browse .work/designs/ with fzf + glow
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
 │   ├── commands/
 │   │   ├── design.md       # /design — HLD + specs from a plan
+│   │   ├── document.md     # /document — sync docs after changes
 │   │   └── plan.md         # /plan — task planning
 │   ├── hooks/
 │   │   └── log-activity.sh
+│   ├── CLAUDE.md
 │   └── settings.json
 ├── docs/                   # Cheatsheets → symlinked to ~/.local/share/cheat/
 ├── ghostty/                # Ghostty terminal config → symlinked to ~/.config/ghostty/
