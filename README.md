@@ -8,6 +8,9 @@ My personal dev environment configuration. Managed with a hand-rolled install sc
 devenv/
 ├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
+│   ├── commands/
+│   │   ├── design.md       # /design — HLD + specs from a plan
+│   │   └── plan.md         # /plan — task planning
 │   ├── hooks/
 │   │   └── log-activity.sh
 │   └── settings.json
@@ -66,5 +69,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/zshrc.symlink` |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh` |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/commands/{plan,design}.md` |
 | Git hooks | `git-hooks/post-commit` |

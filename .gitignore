@@ -16,6 +16,9 @@
 # Node
 node_modules/
 
+# Claude Code working files
+.work/
+
 # Misc
 *.log
 sample.txt

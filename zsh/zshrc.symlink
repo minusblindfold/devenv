@@ -6,7 +6,7 @@ unset zle_bracketed_paste
 
 # Aliases
 alias zshconfig="open ~/.zshrc"
-alias ls="ls -1F"
+alias ls="ls -1F --color=auto"
 
 # Git — clone bare repo and add main worktree in one step
 gclb() {

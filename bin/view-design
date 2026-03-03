@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR=".work/designs"
+
+show() {
+    if command -v glow &>/dev/null; then
+        glow "$1"
+    else
+        cat "$1"
+    fi
+}
+
+pick() {
+    local chosen
+    chosen=$(ls -1 "$DIR"/*.md | fzf \
+        --prompt="Design: " \
+        --header="Select a design to view" \
+        --preview='glow --width $FZF_PREVIEW_COLUMNS {} 2>/dev/null || cat {}' \
+        --preview-window='right:60%:wrap') || true
+    [[ -n "$chosen" ]] && show "$chosen"
+}
+
+if [[ "${1:-}" == "help" || "${1:-}" == "-h" ]]; then
+    echo "Usage: view-design [file]"
+    exit 0
+fi
+
+if [[ ! -d "$DIR" ]]; then
+    echo "No .work/designs/ directory. Run /design to create one."
+    exit 1
+fi
+
+# Direct file argument
+if [[ -n "${1:-}" ]]; then
+    file="$DIR/$1"
+    [[ "$1" != *.md ]] && file="$DIR/$1.md"
+    if [[ ! -f "$file" ]]; then
+        echo "Design not found: $1"
+        exit 1
+    fi
+    show "$file"
+    exit 0
+fi
+
+# Count markdown files
+files=("$DIR"/*.md)
+if [[ ! -f "${files[0]}" ]]; then
+    echo "No designs found in .work/designs/."
+    exit 1
+fi
+
+if [[ ${#files[@]} -eq 1 ]]; then
+    show "${files[0]}"
+else
+    pick
+fi

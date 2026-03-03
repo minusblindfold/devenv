@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR=".work/plans"
+
+show() {
+    if command -v glow &>/dev/null; then
+        glow "$1"
+    else
+        cat "$1"
+    fi
+}
+
+pick() {
+    local chosen
+    chosen=$(ls -1 "$DIR"/*.md | fzf \
+        --prompt="Plan: " \
+        --header="Select a plan to view" \
+        --preview='glow --width $FZF_PREVIEW_COLUMNS {} 2>/dev/null || cat {}' \
+        --preview-window='right:60%:wrap') || true
+    [[ -n "$chosen" ]] && show "$chosen"
+}
+
+if [[ "${1:-}" == "help" || "${1:-}" == "-h" ]]; then
+    echo "Usage: view-plan [file]"
+    exit 0
+fi
+
+if [[ ! -d "$DIR" ]]; then
+    echo "No .work/plans/ directory. Run /plan to create one."
+    exit 1
+fi
+
+# Direct file argument
+if [[ -n "${1:-}" ]]; then
+    file="$DIR/$1"
+    [[ "$1" != *.md ]] && file="$DIR/$1.md"
+    if [[ ! -f "$file" ]]; then
+        echo "Plan not found: $1"
+        exit 1
+    fi
+    show "$file"
+    exit 0
+fi
+
+# Count markdown files
+files=("$DIR"/*.md)
+if [[ ! -f "${files[0]}" ]]; then
+    echo "No plans found in .work/plans/."
+    exit 1
+fi
+
+if [[ ${#files[@]} -eq 1 ]]; then
+    show "${files[0]}"
+else
+    pick
+fi
