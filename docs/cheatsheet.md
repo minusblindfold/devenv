@@ -33,8 +33,9 @@ Prompt: **Starship** — git status, languages, icons.
 
 ## Git
 
-| Command | Action |
-|---------|--------|
+| Hook | Action |
+|------|--------|
+| `pre-commit` | Runs shellcheck + shfmt on staged shell scripts (skips zsh) |
 
 ## Claude
 

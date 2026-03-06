@@ -19,6 +19,8 @@
 | `fzf` | Fuzzy finder (project picker, plan/design viewers) |
 | `starship` | Shell prompt |
 | `gh` | GitHub CLI |
+| `shellcheck` | Shell script linter (pre-commit hook) |
+| `shfmt` | Shell script formatter (pre-commit hook) |
 | `bun` | JS runtime (`bunx ccusage` for cost tracking) |
 | `ghostty` | Terminal emulator |
 | `claude-code` | Claude Code CLI |

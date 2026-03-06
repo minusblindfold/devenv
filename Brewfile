@@ -7,6 +7,8 @@ brew "jq"         # JSON processing (used by bin/ scripts)
 brew "fzf"        # Fuzzy finder (project picker, plan/design viewers)
 brew "starship"   # Shell prompt
 brew "gh"         # GitHub CLI
+brew "shellcheck"  # Shell script linter
+brew "shfmt"       # Shell script formatter
 brew "oven-sh/bun/bun"  # JS runtime — used for: bunx ccusage@latest (Claude Code cost tracking)
 
 cask "ghostty"                    # Terminal emulator

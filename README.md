@@ -35,7 +35,7 @@ devenv/
 ├── docs/                   # Cheatsheets → symlinked to ~/.local/share/cheat/
 ├── ghostty/                # Ghostty terminal config → symlinked to ~/.config/ghostty/
 │   └── config
-├── git-hooks/              # Global git hooks → symlinked to ~/.git-hooks/
+├── git-hooks/              # Global git hooks → symlinked to ~/.git-hooks/ (shellcheck + shfmt pre-commit)
 ├── home/                   # Dotfiles (*.symlink) → symlinked to ~/
 ├── starship/               # Starship prompt config → symlinked to ~/.config/
 │   └── starship.toml

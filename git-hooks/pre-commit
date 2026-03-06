@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Pre-commit hook - shellcheck + shfmt on staged shell scripts
+
+set -uo pipefail
+
+# Only run if tools are installed
+has_shellcheck=$(command -v shellcheck &>/dev/null && echo 1 || echo 0)
+has_shfmt=$(command -v shfmt &>/dev/null && echo 1 || echo 0)
+
+if [[ "$has_shellcheck" == "0" && "$has_shfmt" == "0" ]]; then
+  exit 0
+fi
+
+# Collect staged .sh/.zsh files and files with bash/zsh shebangs
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+[[ -z "$staged_files" ]] && exit 0
+
+shell_files=()
+while IFS= read -r f; do
+  [[ ! -f "$f" ]] && continue
+  case "$f" in
+  *.sh | *.zsh) shell_files+=("$f") ;;
+  *)
+    # Check shebang for extensionless scripts (e.g. bin/*)
+    head -1 "$f" 2>/dev/null | grep -qE '^#!.*\b(bash|zsh|sh)\b' && shell_files+=("$f")
+    ;;
+  esac
+done <<<"$staged_files"
+
+[[ ${#shell_files[@]} -eq 0 ]] && exit 0
+
+errors=0
+
+# lint
+if [[ "$has_shellcheck" == "1" ]]; then
+  for f in "${shell_files[@]}"; do
+    # Skip zsh files — shellcheck doesn't support zsh
+    case "$f" in *.zsh) continue ;; esac
+    head -1 "$f" 2>/dev/null | grep -q 'zsh' && continue
+
+    if ! shellcheck -S warning "$f"; then
+      errors=1
+    fi
+  done
+fi
+
+# shfmt - check formatting (indent=2, no tabs)
+if [[ "$has_shfmt" == "1" ]]; then
+  for f in "${shell_files[@]}"; do
+    # Skip zsh — shfmt doesn't support zsh syntax
+    case "$f" in *.zsh) continue ;; esac
+    head -1 "$f" 2>/dev/null | grep -q 'zsh' && continue
+
+    if ! shfmt -d -i 2 "$f" >/dev/null 2>&1; then
+      echo "shfmt: $f needs formatting (run: shfmt -w -i 2 $f)"
+      errors=1
+    fi
+  done
+fi
+
+if [[ "$errors" -ne 0 ]]; then
+  echo ""
+  echo "Pre-commit: fix the above issues before committing."
+  exit 1
+fi

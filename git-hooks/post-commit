@@ -4,4 +4,4 @@ mkdir -p ~/.claude
 agent="${CLAUDE_AGENT:-}"
 [[ -z "$agent" && -f ~/.claude/agent ]] && agent=$(cat ~/.claude/agent)
 msg=$(git log -1 --pretty=%s)
-printf "[%s] %s | %s | %s\n" "$(date +%H:%M)" "${agent:-git}" "$(basename "$PWD")" "$msg" >> ~/.claude/activity.log
+printf "[%s] %s | %s | %s\n" "$(date +%H:%M)" "${agent:-git}" "$(basename "$PWD")" "$msg" >>~/.claude/activity.log

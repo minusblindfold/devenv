@@ -44,7 +44,7 @@ if [[ -n "$cwd" ]] && command -v git &>/dev/null; then
   branch=$(git -C "$cwd" branch --show-current 2>/dev/null)
   if [[ -z "$branch" ]]; then
     branch=$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null)
-    [[ "$branch" == "HEAD" ]] && branch=""  # detached HEAD
+    [[ "$branch" == "HEAD" ]] && branch="" # detached HEAD
   fi
 fi
 
@@ -74,18 +74,21 @@ fi
 
 if [[ -n "$total" && "$total" != "0" ]]; then
   max=200000
-  pct=$(( total * 100 / max ))
-  filled=$(( pct / 10 ))
-  empty=$(( 10 - filled ))
+  pct=$((total * 100 / max))
+  filled=$((pct / 10))
+  empty=$((10 - filled))
 
   bar="["
-  for (( i=0; i<filled; i++ )); do bar+="="; done
-  for (( i=0; i<empty;  i++ )); do bar+="-"; done
+  for ((i = 0; i < filled; i++)); do bar+="="; done
+  for ((i = 0; i < empty; i++)); do bar+="-"; done
   bar+="]"
 
-  if   (( pct >= 80 )); then color=$red
-  elif (( pct >= 50 )); then color=$yellow
-  else                       color=$green
+  if ((pct >= 80)); then
+    color=$red
+  elif ((pct >= 50)); then
+    color=$yellow
+  else
+    color=$green
   fi
 
   out+="  ${dim}ctx${reset} ${color}${pct}%${reset} ${dim}${bar}${reset}"
