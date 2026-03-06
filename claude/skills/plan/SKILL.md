@@ -19,8 +19,10 @@ If $ARGUMENTS is empty → list `<work.dir>/plans/`. None: ask what to plan. One
 
 ## Create mode
 
-1. Explore: read `CLAUDE.md`, scan directory, check `.claude/skills/` for available skills.
-2. Ask 3–5 clarifying questions (what, stack if unclear, scope, constraints). Wait for confirmation.
+1. Explore: read `CLAUDE.md`, scan directory, check `.claude/skills/` for available skills. Check for `<work.dir>/bootstrap.md` — if found, read it and note the tech stack, roles, and scaffolded entities as established context.
+2. Ask 3–5 clarifying questions. Wait for confirmation.
+   - If bootstrap context was found: skip questions about tech stack, database, and auth approach (these are already decided). Focus on domain entities, business logic, scope boundaries, and constraints.
+   - If no bootstrap context: ask as normal, including stack questions if the project's tech isn't clear from CLAUDE.md.
 3. Create tasks with `TaskCreate`. Make them small, meaningful, and ordered by dependency.
 4. Save plan to `<work.dir>/plans/YYYY-MM-DD-<slug>.md`.
 5. Ask the user to review. Once confirmed, suggest running `/design` to architect the feature.

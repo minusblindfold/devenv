@@ -28,6 +28,21 @@ If no argument: list plans and designs, match by slug. No pairs → "Run /plan t
 
 If $ARGUMENTS includes a task number, use it. Otherwise ask. Warn if dependencies are incomplete. Mark `in_progress` with `TaskUpdate`.
 
+## Apply conventions
+
+Before implementing, check `~/.claude/skills/conventions/` for available convention docs. If the design's task spec includes a `**Conventions:**` line, read those docs. Otherwise, scan the task description for keywords and read matching docs:
+
+- entity, model, JPA → `entity.md`
+- repository, data access, query → `repository.md`
+- service, business logic → `service.md`
+- controller, endpoint, route → `controller.md`
+- migration, schema, table, column → `migration.md`
+- template, page, view, UI → `templates.md`
+- security, auth, role, login → `security.md`
+- docker, database, postgres → `docker-db.md`
+
+Print: "Applying conventions: <list of docs read>". If no convention docs match, print: "No convention docs apply to this task." Follow the loaded convention docs when creating or modifying files that fall under their scope.
+
 ## Implement
 
 1. Read all relevant files before editing.
