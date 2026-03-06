@@ -17,7 +17,7 @@ input=$(cat)
 [[ -z "$input" ]] && exit 0
 
 # ── Extract fields ───────────────────────────────────────────────────────────
-event=$(echo "$input" | jq -r '.event // empty')
+event=$(echo "$input" | jq -r '.hook_event_name // empty')
 tool=$(echo "$input" | jq -r '.tool_name // empty')
 project=$(basename "${CLAUDE_PROJECT_DIR:-$PWD}")
 

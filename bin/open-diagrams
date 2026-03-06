@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: open-diagrams <design-file>
+# Opens each .mmd diagram referenced in the design doc in a browser tab.
+
+if [[ -z "${1:-}" ]]; then
+    echo "Usage: open-diagrams <design-file>" >&2
+    exit 1
+fi
+
+design_file=$(realpath "$1")
+design_dir=$(dirname "$design_file")
+
+# Find diagrams referenced in the design doc under ## Diagrams
+# Matches lines like: - [title](diagrams/some-file.mmd)
+diagram_refs=()
+while IFS= read -r ref; do
+    diagram_refs+=("$ref")
+done < <(grep -oE 'diagrams/[^)]+\.mmd' "$design_file" || true)
+
+if [[ ${#diagram_refs[@]} -eq 0 ]]; then
+    echo "No diagram references found in $design_file" >&2
+    exit 1
+fi
+
+diagrams=()
+for ref in "${diagram_refs[@]}"; do
+    path="$design_dir/$ref"
+    if [[ -f "$path" ]]; then
+        diagrams+=("$path")
+    else
+        echo "Warning: referenced diagram not found: $path" >&2
+    fi
+done
+
+if [[ ${#diagrams[@]} -eq 0 ]]; then
+    echo "No diagram files found" >&2
+    exit 1
+fi
+
+for mmd in "${diagrams[@]}"; do
+    name=$(basename "$mmd" .mmd)
+    tmpfile="$(mktemp).html"
+    cat > "$tmpfile" << EOF
+<!DOCTYPE html>
+<html>
+<head><title>$name</title></head>
+<body style="background:#fff;padding:2rem;font-family:sans-serif">
+<h2>$name</h2>
+<pre class="mermaid">
+$(cat "$mmd")
+</pre>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'default'})</script>
+</body>
+</html>
+EOF
+    open "$tmpfile"
+done

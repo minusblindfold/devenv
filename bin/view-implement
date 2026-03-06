@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DIR=".work/designs"
+DIR=".work/implementations"
 
 show() {
     if command -v glow &>/dev/null; then
@@ -14,21 +14,20 @@ show() {
 pick() {
     local chosen
     chosen=$(ls -1 "$DIR"/*.md | fzf \
-        --prompt="Design: " \
-        --header="Select a design to view  [ctrl-d: open diagrams in browser]" \
+        --prompt="Implementation: " \
+        --header="Select an implementation to view" \
         --preview='glow --width $FZF_PREVIEW_COLUMNS {} 2>/dev/null || cat {}' \
-        --preview-window='right:60%:wrap' \
-        --bind="ctrl-d:execute-silent($HOME/.local/bin/open-diagrams {})") || true
+        --preview-window='right:60%:wrap') || true
     [[ -n "$chosen" ]] && show "$chosen"
 }
 
 if [[ "${1:-}" == "help" || "${1:-}" == "-h" ]]; then
-    echo "Usage: view-design [file]"
+    echo "Usage: view-implement [file]"
     exit 0
 fi
 
 if [[ ! -d "$DIR" ]]; then
-    echo "No .work/designs/ directory. Run /design to create one."
+    echo "No .work/implementations/ directory. Run /implement to create one."
     exit 1
 fi
 
@@ -37,7 +36,7 @@ if [[ -n "${1:-}" ]]; then
     file="$DIR/$1"
     [[ "$1" != *.md ]] && file="$DIR/$1.md"
     if [[ ! -f "$file" ]]; then
-        echo "Design not found: $1"
+        echo "Implementation not found: $1"
         exit 1
     fi
     show "$file"
@@ -47,8 +46,12 @@ fi
 # Count markdown files
 files=("$DIR"/*.md)
 if [[ ! -f "${files[0]}" ]]; then
-    echo "No designs found in .work/designs/."
+    echo "No implementations found in .work/implementations/."
     exit 1
 fi
 
-pick
+if [[ ${#files[@]} -eq 1 ]]; then
+    show "${files[0]}"
+else
+    pick
+fi

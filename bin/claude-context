@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# claude-context — statusline for Claude Code
+# Reads Claude Code statusLine JSON from stdin
+# Dependencies: jq, git
+
+input=$(cat)
+
+if ! command -v jq &>/dev/null; then
+  echo "claude-context: jq not found" >&2
+  exit 0
+fi
+
+transcript=$(printf '%s' "$input" | jq -r '.transcript_path // empty')
+cwd=$(printf '%s' "$input" | jq -r '.cwd // empty')
+
+# Colors
+bold=$'\033[1m'
+dim=$'\033[2m'
+green=$'\033[32m'
+yellow=$'\033[33m'
+red=$'\033[31m'
+cyan=$'\033[36m'
+reset=$'\033[0m'
+
+# Agent name — env var is per-session; shared file is fallback for compatibility
+agent=""
+agent_dim=false
+if [[ -n "$CLAUDE_AGENT" ]]; then
+  agent="$CLAUDE_AGENT"
+elif [[ -n "$transcript" ]]; then
+  # Derive a short session ID from the transcript filename
+  session=$(basename "$transcript")
+  session="${session%%.*}"
+  agent="${session: -8}"
+  agent_dim=true
+fi
+
+# Directory with ~ abbreviation
+dir="${cwd/#$HOME/~}"
+
+# Git branch (--show-current requires git 2.22+, fallback for older versions)
+branch=""
+if [[ -n "$cwd" ]] && command -v git &>/dev/null; then
+  branch=$(git -C "$cwd" branch --show-current 2>/dev/null)
+  if [[ -z "$branch" ]]; then
+    branch=$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null)
+    [[ "$branch" == "HEAD" ]] && branch=""  # detached HEAD
+  fi
+fi
+
+# Context usage — tail the last 500 lines to avoid slowdowns on large sessions
+total=""
+if [[ -n "$transcript" && -f "$transcript" ]]; then
+  total=$(tail -500 "$transcript" | jq -r '
+    select(.type == "assistant" and ((.message.usage.output_tokens // 0) > 0)) |
+    ((.message.usage.input_tokens // 0) +
+     (.message.usage.cache_read_input_tokens // 0) +
+     (.message.usage.cache_creation_input_tokens // 0)) | tostring
+  ' 2>/dev/null | tail -1)
+fi
+
+# Build output
+out=""
+
+if [[ -n "$agent" ]]; then
+  if $agent_dim; then
+    out+="${dim}[${agent}]${reset}  "
+  else
+    out+="${bold}${cyan}[${agent}]${reset}  "
+  fi
+fi
+[[ -n "$dir" ]] && out+="${bold}${dir}${reset}"
+[[ -n "$branch" ]] && out+=" ${dim}(${cyan}${branch}${reset}${dim})${reset}"
+
+if [[ -n "$total" && "$total" != "0" ]]; then
+  max=200000
+  pct=$(( total * 100 / max ))
+  filled=$(( pct / 10 ))
+  empty=$(( 10 - filled ))
+
+  bar="["
+  for (( i=0; i<filled; i++ )); do bar+="="; done
+  for (( i=0; i<empty;  i++ )); do bar+="-"; done
+  bar+="]"
+
+  if   (( pct >= 80 )); then color=$red
+  elif (( pct >= 50 )); then color=$yellow
+  else                       color=$green
+  fi
+
+  out+="  ${dim}ctx${reset} ${color}${pct}%${reset} ${dim}${bar}${reset}"
+fi
+
+# Session cost via ccusage statusline (cached, ~0s after first call)
+# ccusage needs session_id, model, workspace — build from what we have
+if command -v bunx &>/dev/null && [[ -n "$transcript" ]]; then
+  session_id=$(basename "$transcript" .jsonl)
+  ccusage_input=$(printf '%s' "$input" | jq -c --arg sid "$session_id" '
+    . + {session_id: $sid} +
+    (if .model == null then {model: {id: "unknown", display_name: "unknown"}} else {} end) +
+    (if .workspace == null then {workspace: {name: "unknown", rootPaths: [], current_dir: (.cwd // ""), project_dir: (.cwd // "")}} else {} end)
+  ' 2>/dev/null)
+  if [[ -n "$ccusage_input" ]]; then
+    cost_line=$(printf '%s' "$ccusage_input" | bunx ccusage@latest statusline --cache 2>/dev/null)
+    if [[ -n "$cost_line" ]]; then
+      # Extract just the session cost from ccusage output
+      session_cost=$(printf '%s' "$cost_line" | sed -n 's/.*💰 *\(\$[^ ]*\) session.*/\1/p')
+      [[ -n "$session_cost" ]] && out+="  ${dim}💰${reset} ${session_cost}"
+    fi
+  fi
+fi
+
+printf '%s\n' "$out"

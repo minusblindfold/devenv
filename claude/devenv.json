@@ -1,0 +1,11 @@
+{
+  "backups": {
+    "maxPerArtifact": 5
+  },
+  "work": {
+    "dir": ".work"
+  },
+  "rebase": {
+    "defaultBase": "origin/master"
+  }
+}

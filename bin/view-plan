@@ -50,8 +50,4 @@ if [[ ! -f "${files[0]}" ]]; then
     exit 1
 fi
 
-if [[ ${#files[@]} -eq 1 ]]; then
-    show "${files[0]}"
-else
-    pick
-fi
+pick

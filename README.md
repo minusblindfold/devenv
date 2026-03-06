@@ -1,6 +1,11 @@
 # devenv
 
+> [!CAUTION]
+> This is highly opinionated and intentionally simple. It's meant as an introduction to a development environment integrated with Claude Code — not a one-size-fits-all setup. Adapt it to your own workflow.
+
 My personal dev environment configuration. Managed with a hand-rolled install script using symlinks.
+
+→ **[Quick-start guide](docs/guide.md)** — terminal setup, cheatsheet, and a full `/plan → /design → /implement` walkthrough.
 
 ## Structure
 
@@ -8,17 +13,25 @@ My personal dev environment configuration. Managed with a hand-rolled install sc
 devenv/
 ├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
 │   ├── cheat               # Markdown cheatsheet viewer
+│   ├── claude-context      # Claude Code statusline (directory, git branch, context %, session cost)
 │   ├── todo                # Todo list manager (fzf-based)
 │   ├── view-plan           # Browse .work/plans/ with fzf + glow
-│   └── view-design         # Browse .work/designs/ with fzf + glow
+│   ├── view-design         # Browse .work/designs/ with fzf + glow (ctrl-d opens diagrams)
+│   ├── view-implement      # Browse .work/implementations/ with fzf + glow
+│   ├── open-diagrams       # Open .mmd diagrams for a design in the browser
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
-│   ├── commands/
-│   │   ├── design.md       # /design — HLD + specs from a plan
+│   ├── skills/             # Skills → each subdir symlinked to ~/.claude/skills/<name>/
+│   │   ├── plan/           # /plan — task planning
+│   │   ├── design/         # /design — HLD + specs from a plan
+│   │   ├── implement/      # /implement — drive task implementation from plan+design
+│   ├── commands/           # Commands (flat .md files)
 │   │   ├── document.md     # /document — sync docs after changes
-│   │   └── plan.md         # /plan — task planning
+│   │   ├── rebase.md       # /rebase — rebase branch with auto-conflict resolution
+│   │   └── strip-fmt.md    # /strip-fmt — strip accidental formatting noise from diff
 │   ├── hooks/
 │   │   └── log-activity.sh
 │   ├── CLAUDE.md
+│   ├── devenv.json         # Skill config → symlinked to ~/.claude/devenv.json
 │   └── settings.json
 ├── docs/                   # Cheatsheets → symlinked to ~/.local/share/cheat/
 ├── ghostty/                # Ghostty terminal config → symlinked to ~/.config/ghostty/
@@ -28,13 +41,22 @@ devenv/
 ├── starship/               # Starship prompt config → symlinked to ~/.config/
 │   └── starship.toml
 ├── zsh/
-│   └── zshrc.symlink       # → ~/.zshrc
+│   ├── devenv.zsh          # Loader → symlinked to ~/.zsh/devenv.zsh
+│   └── conf.d/             # Modular zsh config (sourced in order by devenv.zsh)
+│       ├── 10-path.zsh
+│       ├── 20-prompt.zsh
+│       ├── 30-aliases.zsh
+│       ├── 40-widgets.zsh
+│       ├── 50-agents.zsh
+│       └── 60-local.zsh
 ├── install.sh              # Sets up all symlinks
 ├── verify.sh               # Post-install verification
 └── .gitignore
 ```
 
-Work-specific config and secrets live in `~/.zshrc.local` (not tracked). The tracked `.zshrc` sources it automatically if present.
+Work-specific config and secrets live in `~/.zshrc.local` (not tracked). `60-local.zsh` sources it automatically if present.
+
+Claude skill config (backup limits, work dir) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
 
 **Convention:** Any file ending in `.symlink` gets linked into `$HOME` with a dot prefix.
 
@@ -49,18 +71,18 @@ git clone <repo-url> ~/path/of/your/choice
 cd ~/path/of/your/choice && ./install.sh
 ```
 
-The repo path doesn't matter — the install script detects its own location at runtime and builds all symlinks relative to it.
+The repo path doesn't matter — the install script detects its own location at runtime and builds all symlinks relative to it. Dependencies (see `Brewfile`) are installed automatically. You'll be prompted once for your email for telemetry attribution.
 
 The install script is **idempotent** — safe to run multiple times. It will:
 - Symlink all `.symlink` files into `$HOME`
 - Symlink `ghostty/config` into `~/.config/ghostty/`
 - Symlink `starship/starship.toml` into `~/.config/`
-- Symlink `claude/` config and hooks into `~/.claude/`
+- Symlink `claude/` config and hooks into `~/.claude/`; each `claude/skills/<name>/` directory into `~/.claude/skills/<name>/`
 - Symlink `docs/` into `~/.local/share/cheat/`
 - Symlink all `bin/` scripts into `~/.local/bin/`
 - Symlink `git-hooks/` into `~/.git-hooks/` and set `core.hooksPath`
+- Symlink `zsh/devenv.zsh` into `~/.zsh/devenv.zsh` and inject a `source` line into `~/.zshrc` (never replaces it)
 - Back up any existing files to `~/.dotfiles_backup/<timestamp>/` before replacing them
-- Ensure `~/.local/bin` is in your `$PATH`
 
 ## Adding new config
 
@@ -73,7 +95,7 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Tool | Config |
 |---|---|
 | Ghostty | `ghostty/config` |
-| zsh | `zsh/zshrc.symlink` |
+| zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/commands/{plan,design}.md` |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement}/SKILL.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
 | Git hooks | `git-hooks/post-commit` |

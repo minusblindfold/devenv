@@ -81,6 +81,7 @@ install_claude() {
     info "Installing Claude Code config..."
     mkdir -p "$HOME/.claude/commands"
     mkdir -p "$HOME/.claude/hooks"
+    mkdir -p "$HOME/.claude/skills"
 
     for src in "$DOTFILES_DIR/claude/"*; do
         [ -f "$src" ] || continue
@@ -91,6 +92,13 @@ install_claude() {
     for src in "$DOTFILES_DIR/claude/commands/"*; do
         [ -f "$src" ] || continue
         dst="$HOME/.claude/commands/$(basename "$src")"
+        link_file "$src" "$dst"
+    done
+
+    for src in "$DOTFILES_DIR/claude/skills/"*/; do
+        [ -d "$src" ] || continue
+        name="$(basename "$src")"
+        dst="$HOME/.claude/skills/$name"
         link_file "$src" "$dst"
     done
 
@@ -138,22 +146,40 @@ install_git_hooks() {
     ok "Set global core.hooksPath to ~/.git-hooks"
 }
 
-# ── Ensure ~/.local/bin is in PATH ────────────────────────────────────────────
-ensure_path() {
-    local shell_rc=""
-    case "$OS" in
-        macos) shell_rc="$HOME/.zshrc" ;;
-        linux) shell_rc="$HOME/.bashrc" ;;
-    esac
+# ── Install zsh config → ~/.zsh/devenv.zsh + inject source line ───────────────
+install_zsh() {
+    info "Installing zsh config..."
+    mkdir -p "$HOME/.zsh"
+    link_file "$DOTFILES_DIR/zsh/devenv.zsh" "$HOME/.zsh/devenv.zsh"
 
-    if [ -n "$shell_rc" ] && [ -f "$shell_rc" ]; then
-        if ! grep -q '.local/bin' "$shell_rc"; then
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$shell_rc"
-            ok "Added ~/.local/bin to PATH in $shell_rc"
-        else
-            ok "~/.local/bin already in PATH"
-        fi
+    local guard='[ -f "$HOME/.zsh/devenv.zsh" ] && source "$HOME/.zsh/devenv.zsh"'
+    local rc="$HOME/.zshrc"
+
+    # Migrate: remove stale symlink from the old zshrc.symlink approach
+    if [ -L "$rc" ]; then
+        rm "$rc"
+        warn "Removed stale ~/.zshrc symlink (migrating to injected source line)"
     fi
+
+    if [ ! -f "$rc" ]; then
+        echo "$guard" > "$rc"
+        ok "Created ~/.zshrc with devenv source line"
+    elif ! grep -qF 'devenv.zsh' "$rc"; then
+        echo "$guard" >> "$rc"
+        ok "Added devenv source line to ~/.zshrc"
+    else
+        ok "devenv source line already present in ~/.zshrc"
+    fi
+}
+
+# ── Install Homebrew packages from Brewfile ────────────────────────────────────
+install_brew_deps() {
+    if ! command -v brew &>/dev/null; then
+        warn "Homebrew not found — skipping Brewfile install"
+        return
+    fi
+    info "Installing Homebrew packages..."
+    HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade -q
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -165,6 +191,7 @@ main() {
     detect_os
     info "Detected OS: $OS"
 
+    install_brew_deps
     install_symlinks
     install_starship
     install_ghostty
@@ -172,7 +199,7 @@ main() {
     install_cheat
     install_bin
     install_git_hooks
-    ensure_path
+    install_zsh
 
     echo "────────────────────────────────────────"
     echo "  Done! Restart your terminal to apply changes."

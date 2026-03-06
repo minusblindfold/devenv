@@ -9,23 +9,20 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-### 2. Brew dependencies
+### 2. Clone and install
+
+`install.sh` handles all dependencies automatically via the Brewfile:
 
 | Tool | Purpose |
 |---|---|
-| `git` | Version control |
-| `fzf` | Fuzzy finder |
-| `glow` | Markdown renderer |
+| `jq` | JSON processing (used by bin scripts and claude-context) |
+| `fzf` | Fuzzy finder (project picker, todo, plan/design viewers) |
 | `starship` | Shell prompt |
+| `gh` | GitHub CLI |
+| `bun` | JS runtime (`bunx ccusage` for cost tracking) |
 | `ghostty` | Terminal emulator |
-| `jq` | JSON processor |
-| `claude-code` | AI assistant |
-| `font-jetbrains-mono-nerd-font` | Nerd font |
-
-```bash
-brew install git fzf glow starship jq
-brew install --cask ghostty claude-code font-jetbrains-mono-nerd-font
-```
+| `claude-code` | Claude Code CLI |
+| `font-jetbrains-mono-nerd-font` | Nerd font (icons in terminal) |
 
 ## Install devenv
 
@@ -42,3 +39,14 @@ cd ~/Documents/personal/devenv
 ```
 
 Restart your terminal. Everything should be wired up — Ghostty config, zsh with Starship prompt, and the `ctrl+p` project picker.
+
+## Troubleshooting
+
+**`font-jetbrains-mono-nerd-font` not found**
+
+On Homebrew older than 4.x, cask fonts live in a separate tap. Add it manually:
+
+```bash
+brew tap homebrew/cask-fonts
+brew install --cask font-jetbrains-mono-nerd-font
+```

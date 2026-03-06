@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 CHEATSHEET_DIR="$HOME/.local/share/cheat"
 MAIN_CHEATSHEET="$CHEATSHEET_DIR/cheatsheet.md"
