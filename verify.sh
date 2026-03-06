@@ -92,11 +92,6 @@ else
     fail "cheat exits non-zero"
 fi
 
-if todo ls &>/dev/null; then
-    pass "todo exits 0"
-else
-    fail "todo exits non-zero"
-fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 echo ""

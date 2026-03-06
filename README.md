@@ -14,7 +14,6 @@ devenv/
 ├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
 │   ├── cheat               # Markdown cheatsheet viewer
 │   ├── claude-context      # Claude Code statusline (directory, git branch, context %, session cost)
-│   ├── todo                # Todo list manager (fzf-based)
 │   ├── view-plan           # Browse .work/plans/ with fzf + glow
 │   ├── view-design         # Browse .work/designs/ with fzf + glow (ctrl-d opens diagrams)
 │   ├── view-implement      # Browse .work/implementations/ with fzf + glow

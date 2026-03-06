@@ -16,7 +16,7 @@
 | Tool | Purpose |
 |---|---|
 | `jq` | JSON processing (used by bin scripts and claude-context) |
-| `fzf` | Fuzzy finder (project picker, todo, plan/design viewers) |
+| `fzf` | Fuzzy finder (project picker, plan/design viewers) |
 | `starship` | Shell prompt |
 | `gh` | GitHub CLI |
 | `bun` | JS runtime (`bunx ccusage` for cost tracking) |

@@ -7,7 +7,6 @@ Review the changes made in this session and update all documentation to match.
 - `claude/` → Claude section in `docs/cheatsheet.md`
 - `git-hooks/` → Git section in `docs/cheatsheet.md`
 - `bin/cheat` → CLI > cheat section in `docs/cheatsheet.md`
-- `bin/todo` → CLI > todo section in `docs/cheatsheet.md` + `docs/todo-cheatsheet.md`
 - `bin/view-plan` → CLI > view-plan section in `docs/cheatsheet.md`
 - `bin/view-design` → CLI > view-design section in `docs/cheatsheet.md`
 - `bin/view-implement` → CLI > view-implement section in `docs/cheatsheet.md`

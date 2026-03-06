@@ -67,19 +67,6 @@ Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.jso
 | `cheat ls` | List tool cheatsheets |
 | `cheat <tool>` | View tool cheatsheet |
 
-### `todo`
-
-| Command | Action |
-|---------|--------|
-| `todo add <text>` | Add a todo |
-| `todo ls` | List todos |
-| `todo x` | Toggle done |
-| `todo rm` | Remove |
-| `todo rm <n>` | Remove by number |
-| `todo clear` | Clear completed |
-
-Stored in `~/todo.md`.
-
 ### `view-plan`
 
 | Command | Action |
