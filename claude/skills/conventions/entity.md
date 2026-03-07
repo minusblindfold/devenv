@@ -4,7 +4,7 @@
 
 ## Rules
 
-- Use `@Getter @Setter` on the class. Never use `@Data` on entities.
+- Use `@Getter @Setter` on the class. Never use `@Data` on entities (DTOs are exempt — `@Data` is fine there).
 - Always add `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor`.
 - Add `@ToString(exclude = {...})` listing all bidirectional relationship fields to prevent infinite recursion.
 - Use `@Builder.Default` on collection fields and initialize them to `new HashSet<>()`.

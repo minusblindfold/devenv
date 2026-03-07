@@ -117,7 +117,7 @@ databaseChangeLog:
               - column:
                   name: password
                   # password: password
-                  value: $2a$10$YtVD5E/I48nYpnwyyWWezuVQPOqdKmDa8lux3ZuXehwhCrxlfvo.q
+                  value: $2a$10$ctc/SjNVx0U49ghFm0oS.ecpYSFcjxWAqCd6RWqRg1RY.ieF8aXty
               - column:
                   name: email
                   value: admin@starter.com

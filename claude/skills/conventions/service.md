@@ -20,130 +20,60 @@
 ## Example
 
 ```java
-// --- Interface ---
-package com.example.app.service;
+// --- Interface (pattern: JavaDoc with @param/@return on every method) ---
 
-import com.example.app.dto.UserRegistrationDto;
-import com.example.app.model.User;
+public interface ThingService {
 
-import java.util.Optional;
+    /** @return the created entity */
+    Thing create(ThingDto dto);
 
-/**
- * Service interface for user-related operations.
- */
-public interface UserService {
+    /** @return the entity, or empty if not found */
+    Optional<Thing> findById(Long id);
 
-    /**
-     * Create a new user from registration data.
-     *
-     * @param registrationDto the registration data
-     * @return the created user
-     */
-    User createUser(UserRegistrationDto registrationDto);
-
-    /**
-     * Find a user by username.
-     *
-     * @param username the username
-     * @return the user if found, null otherwise
-     */
-    User findByUsername(String username);
-
-    /**
-     * Check if a username is already taken (case-insensitive).
-     *
-     * @param username the username to check
-     * @return true if taken
-     */
-    boolean isUsernameTaken(String username);
+    /** @return true if the name is already taken */
+    boolean isNameTaken(String name);
 }
 
-// --- Implementation ---
-package com.example.app.service;
-
-import com.example.app.dto.UserRegistrationDto;
-import com.example.app.model.Role;
-import com.example.app.model.User;
-import com.example.app.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+// --- Implementation (pattern: @Service + @RequiredArgsConstructor, validation in private methods) ---
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class ThingServiceImpl implements ThingService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final ThingRepository thingRepository;
 
     @Override
     @Transactional
-    public User createUser(UserRegistrationDto dto) {
-        validateRegistrationInput(dto);
+    public Thing create(ThingDto dto) {
+        validateInput(dto);
 
-        User user = User.builder()
-                .username(dto.getUsername().trim().toLowerCase())
-                .email(dto.getEmail().trim().toLowerCase())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .role(Role.USER)
-                .enabled(true)
+        Thing thing = Thing.builder()
+                .name(dto.getName().trim().toLowerCase())
                 .build();
 
-        log.atInfo().log("Creating user: {}", user.getUsername());
-        return userRepository.save(user);
+        log.atInfo().log("Creating thing: {}", thing.getName());
+        return thingRepository.save(thing);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username.toLowerCase()).orElse(null);
+    public Optional<Thing> findById(Long id) {
+        return thingRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isUsernameTaken(String username) {
-        return userRepository.existsByUsernameIgnoreCase(username);
+    public boolean isNameTaken(String name) {
+        return thingRepository.existsByNameIgnoreCase(name);
     }
 
-    private void validateRegistrationInput(UserRegistrationDto dto) {
-        if (dto == null) {
-            throw new IllegalArgumentException("Registration data cannot be null");
+    private void validateInput(ThingDto dto) {
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
         }
-        if (dto.getUsername() == null || dto.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username is required");
-        }
-        if (dto.getUsername().trim().length() < 3 || dto.getUsername().trim().length() > 20) {
-            throw new IllegalArgumentException("Username must be between 3 and 20 characters");
-        }
-        if (!dto.getUsername().trim().matches("^[a-zA-Z0-9_-]+$")) {
-            throw new IllegalArgumentException("Username can only contain letters, numbers, underscores, and hyphens");
-        }
-        if (isUsernameTaken(dto.getUsername().trim())) {
-            throw new IllegalArgumentException("Username is already taken");
-        }
-
-        // Validate email
-        if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (!dto.getEmail().trim().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new IllegalArgumentException("Please provide a valid email address");
-        }
-
-        // Validate password
-        if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        if (dto.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long");
-        }
-
-        // Validate password confirmation
-        if (dto.getConfirmPassword() == null || !dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+        if (isNameTaken(dto.getName().trim())) {
+            throw new IllegalArgumentException("Name is already taken");
         }
     }
 }

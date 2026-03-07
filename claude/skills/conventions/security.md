@@ -122,86 +122,31 @@ public class SecurityConfig {
 }
 ```
 
-### AuthController
+### Auth flow pattern
 
 ```java
-@Controller
-@RequiredArgsConstructor
-@Slf4j
-public class AuthController {
-
-    private final UserService userService;
-
-    @GetMapping({"/", "/home"})
-    public String home() {
-        return "home";
-    }
-
-    @GetMapping("/login")
-    public String showLoginForm() {
-        return "common/auth/login";
-    }
-
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        if (!model.containsAttribute("user")) {
-            model.addAttribute("user", new UserRegistrationDto());
-        }
-        return "common/auth/register";
-    }
-
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") UserRegistrationDto registrationDto,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            if (userService.isUsernameTaken(registrationDto.getUsername())) {
-                redirectAttributes.addAttribute("error", "Username is already taken");
-                redirectAttributes.addFlashAttribute("user", registrationDto);
-                return "redirect:/register";
-            }
-
-            if (userService.isEmailRegistered(registrationDto.getEmail())) {
-                redirectAttributes.addAttribute("error", "Email is already registered");
-                redirectAttributes.addFlashAttribute("user", registrationDto);
-                return "redirect:/register";
-            }
-
-            userService.createUser(registrationDto);
-            return "redirect:/login?registered";
-        } catch (IllegalArgumentException e) {
-            log.atError().log("Registration failed for user: {}. Reason: {}",
-                    registrationDto.getUsername(), e.getMessage());
-            redirectAttributes.addAttribute("error", e.getMessage());
-            redirectAttributes.addFlashAttribute("user", registrationDto);
-            return "redirect:/register";
-        } catch (Exception e) {
-            log.atError().log("Registration failed for user: {}. Error: {}",
-                    registrationDto.getUsername(), e.getMessage());
-            redirectAttributes.addAttribute("error", "An unexpected error occurred. Please try again.");
-            redirectAttributes.addFlashAttribute("user", registrationDto);
-            return "redirect:/register";
-        }
+// Registration: controller catches service exceptions, redirects with flash attributes.
+// Validation lives in the service layer, never in the controller.
+@PostMapping("/register")
+public String registerUser(@ModelAttribute("user") UserRegistrationDto dto,
+                           RedirectAttributes redirectAttributes) {
+    try {
+        userService.createUser(dto);
+        return "redirect:/login?registered";
+    } catch (IllegalArgumentException e) {
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        redirectAttributes.addFlashAttribute("user", dto);
+        return "redirect:/register";
     }
 }
-```
 
-### DashboardController (role-based redirect)
-
-```java
-@Controller("commonDashboardController")
-@RequestMapping("/dashboard")
-@RequiredArgsConstructor
-public class DashboardController {
-
-    @GetMapping
-    public String dashboard(Authentication authentication) {
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return "redirect:/admin/dashboard";
-        }
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
-            return "redirect:/user/dashboard";
-        }
-        return "redirect:/";
+// Dashboard redirect: check role, redirect to role-specific dashboard.
+@GetMapping
+public String dashboard(Authentication authentication) {
+    if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        return "redirect:/admin/dashboard";
     }
+    // ... check other roles ...
+    return "redirect:/";
 }
 ```

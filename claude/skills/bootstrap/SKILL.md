@@ -42,6 +42,7 @@ Create all files in the **current working directory**. The directory should be e
   - `developmentOnly 'org.springframework.boot:spring-boot-docker-compose'`
   - `testImplementation`: spring-boot-starter-test, spring-security-test
   - `testRuntimeOnly 'org.junit.platform:junit-platform-launcher'`
+  - `testRuntimeOnly 'com.h2database:h2'`
   - Lombok `compileOnly { extendsFrom annotationProcessor }` config. JUnit Platform for tests.
 - `settings.gradle` — `rootProject.name = '<project-name>'`
 - `compose.yaml` — per `docker-db.md`. Database name: `<project-name>_db` (hyphens replaced with underscores).
@@ -51,7 +52,7 @@ Create all files in the **current working directory**. The directory should be e
 
 ### Gradle wrapper
 
-Run `gradle wrapper` to generate the wrapper files. If `gradle` is not installed, stop and tell the user: "Install Gradle via `brew install gradle` or SDKMAN (`sdk install gradle`), then re-run `/bootstrap`." The wrapper is required — `./gradlew bootRun` won't work without it.
+Run `gradle wrapper` to generate the wrapper files.
 
 ### Main application class
 
@@ -72,28 +73,29 @@ Run `gradle wrapper` to generate the wrapper files. If `gradle` is not installed
 
 ### Service layer (per `service.md`, `security.md`)
 
-- `service/UserService.java` — Interface with JavaDoc. Methods: createUser, findByUsername, findById, save, isUsernameTaken, isEmailRegistered.
-- `service/UserServiceImpl.java` — Per `service.md`. Validation in private `validateRegistrationInput()`. BCrypt encoding. Lowercase normalization.
+- `service/UserService.java` — Interface per `service.md`. Methods: createUser, findByUsername (returns `Optional<User>`), findById (returns `Optional<User>`), save, isUsernameTaken, isEmailRegistered, findAll, toggleEnabled, updateRole.
+- `service/UserServiceImpl.java` — Per `service.md`. Validation in private `validateRegistrationInput()`. BCrypt encoding. Lowercase normalization. `findAll()` returns all users. `toggleEnabled(Long id)` flips enabled flag. `updateRole(Long id, Role role)` changes a user's role.
 - `service/CustomUserDetailsService.java` — Per `security.md`. Maps Role to ROLE_ authority.
 
 ### Config layer (per `security.md`)
 
-- `config/SecurityConfig.java` — Per `security.md`. Routes: `/admin/**` → ADMIN, `/<lowercase-domain-role>/**` → domain role. Public routes for home, register, static assets.
+- `config/SecurityConfig.java` — Per `security.md`. Routes: `/admin/**` → ADMIN, `/<lowercase-domain-role>/**` → domain role. Public routes for home, register, static assets. Must include `BCryptPasswordEncoder` bean and `DaoAuthenticationProvider` bean wiring the custom user details service + encoder.
 
 ### Controller layer (per `controller.md`, `security.md`)
 
 - `controller/common/DashboardController.java` — Per `security.md`. Role-based redirect. Use `@Controller("commonDashboardController")`.
 - `controller/common/auth/AuthController.java` — Home, login, register (GET + POST). Per `security.md` registration pattern.
 - `controller/common/error/CustomErrorController.java` — HTML + JSON error handling. Status-specific templates (403, 404, 500).
-- `controller/common/GlobalControllerAdvice.java` — `@ControllerAdvice` stub with `@RequiredArgsConstructor`. Add a placeholder `@ModelAttribute` method (can be expanded later).
+- `controller/common/GlobalControllerAdvice.java` — `@ControllerAdvice @RequiredArgsConstructor`. Handles `EntityNotFoundException` (redirect to 404) and `IllegalArgumentException` (flash error message, redirect back). Add a placeholder `@ModelAttribute` method for shared model attributes (can be expanded later).
 - `controller/admin/DashboardController.java` — Stub: `@Controller("adminDashboardController")`, `@RequestMapping("/admin/dashboard")`, single `@GetMapping` returning `"admin/dashboard"`.
+- `controller/admin/UserController.java` — `@RequestMapping("/admin/users")`. GET `/` lists all users with role dropdown. POST `/{id}/toggle-enabled` toggles user enabled status. POST `/{id}/update-role` changes a user's role. Uses flash messages for feedback.
 - `controller/<lowercase-domain-role>/DashboardController.java` — Stub: same pattern for the domain role.
 
 ### Database migrations (per `migration.md`)
 
 - `src/main/resources/db/changelog/db.changelog-master.yaml` — Master changelog with `${now}` property, includes 001 and 002.
 - `src/main/resources/db/changelog/changes/001-initial-schema.yaml` — Users table matching the User entity.
-- `src/main/resources/db/changelog/changes/002-add-seed-users.yaml` — Admin user + domain role user. Both with BCrypt hash of "password": `$2a$10$YtVD5E/I48nYpnwyyWWezuVQPOqdKmDa8lux3ZuXehwhCrxlfvo.q`. Include a YAML comment documenting the plaintext password per `migration.md` convention.
+- `src/main/resources/db/changelog/changes/002-add-seed-users.yaml` — Admin user + domain role user. Use the same BCrypt hash and seed data format shown in `migration.md`'s seed data example. Include a YAML comment documenting the plaintext password per `migration.md` convention.
 
 ### Templates (per `templates.md`)
 
@@ -101,6 +103,7 @@ Run `gradle wrapper` to generate the wrapper files. If `gradle` is not installed
 - `src/main/resources/templates/common/auth/login.html` — Login form page.
 - `src/main/resources/templates/common/auth/register.html` — Registration form with username, email, password, confirm password.
 - `src/main/resources/templates/admin/dashboard.html` — Simple admin dashboard stub.
+- `src/main/resources/templates/admin/users/list.html` — User management table with columns: ID, username, email, role (dropdown to change), status (enabled/disabled badge), created date, actions (toggle enable/disable button). Uses inline forms for role change and toggle.
 - `src/main/resources/templates/<role>/dashboard.html` — Simple domain role dashboard stub.
 - `src/main/resources/templates/error/403.html` — Forbidden error page.
 - `src/main/resources/templates/error/404.html` — Not found error page.
@@ -124,6 +127,19 @@ Run `gradle wrapper` to generate the wrapper files. If `gradle` is not installed
   - Common commands (build, run, test, docker).
   - Architecture overview (layer structure, security config, database schema, frontend tech).
   - Key implementation notes (entity best practices, testing).
+
+### Test config
+
+- `src/test/resources/application.properties` — Overrides for test environment. Uses an in-memory H2 database so tests pass without Docker/PostgreSQL:
+  ```properties
+  spring.docker.compose.enabled=false
+  spring.datasource.url=jdbc:h2:mem:testdb
+  spring.datasource.driver-class-name=org.h2.Driver
+  spring.datasource.username=sa
+  spring.datasource.password=
+  spring.jpa.hibernate.ddl-auto=create-drop
+  spring.liquibase.enabled=false
+  ```
 
 ### Test placeholder
 

@@ -9,6 +9,7 @@ brew "starship"   # Shell prompt
 brew "gh"         # GitHub CLI
 brew "shellcheck"  # Shell script linter
 brew "shfmt"       # Shell script formatter
+brew "gradle"      # Build tool (used by /bootstrap to generate Gradle wrapper)
 brew "oven-sh/bun/bun"  # JS runtime — used for: bunx ccusage@latest (Claude Code cost tracking)
 
 cask "ghostty"                    # Terminal emulator

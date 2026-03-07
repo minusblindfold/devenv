@@ -23,6 +23,8 @@ devenv/
 │   │   ├── plan/           # /plan — task planning
 │   │   ├── design/         # /design — HLD + specs from a plan
 │   │   ├── implement/      # /implement — drive task implementation from plan+design
+│   │   ├── bootstrap/      # /bootstrap — scaffold a Spring Boot project from conventions
+│   │   └── conventions/    # Shared reference docs read by skills at runtime
 │   ├── commands/           # Commands (flat .md files)
 │   │   ├── document.md     # /document — sync docs after changes
 │   │   ├── rebase.md       # /rebase — rebase branch with auto-conflict resolution
@@ -96,5 +98,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement}/SKILL.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap}/SKILL.md`, `claude/skills/conventions/*.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
 | Git hooks | `git-hooks/post-commit` |

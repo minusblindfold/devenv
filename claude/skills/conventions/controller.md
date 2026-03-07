@@ -21,77 +21,52 @@
 ## Example
 
 ```java
-package com.example.app.controller.user;
+// Pattern: guard-first handler — lookup, access check, then action.
 
-import com.example.app.model.*;
-import com.example.app.service.ItemService;
-import com.example.app.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Optional;
-
-@Controller
-@RequestMapping("/user/items")
-@RequiredArgsConstructor
-public class ItemController {
-
-    private final ItemService itemService;
-    private final UserService userService;
-
-    @GetMapping("/{itemId}")
-    public String viewItem(@PathVariable Long itemId,
-                           @AuthenticationPrincipal UserDetails userDetails,
-                           RedirectAttributes redirectAttributes,
-                           Model model) {
-        // 1. Look up entity
-        Optional<Item> itemOpt = itemService.getItemById(itemId);
-        if (itemOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Item not found.");
-            return "redirect:/user/dashboard";
-        }
-
-        // 2. Check access
-        Item item = itemOpt.get();
-        User user = userService.findByUsername(userDetails.getUsername());
-        if (!item.getOwner().equals(user)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "You don't have access to this item.");
-            return "redirect:/user/dashboard";
-        }
-
-        // 3. Render
-        model.addAttribute("item", item);
-        return "user/items/view";
+@GetMapping("/{id}")
+public String view(@PathVariable Long id,
+                   @AuthenticationPrincipal UserDetails userDetails,
+                   RedirectAttributes redirectAttributes, Model model) {
+    // 1. Look up entity
+    var entity = service.findById(id).orElse(null);
+    if (entity == null) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Not found.");
+        return "redirect:/dashboard";
     }
 
-    @PostMapping("/{itemId}/delete")
-    public String deleteItem(@PathVariable Long itemId,
-                             @AuthenticationPrincipal UserDetails userDetails,
-                             RedirectAttributes redirectAttributes) {
-        // 1. Look up entity
-        Optional<Item> itemOpt = itemService.getItemById(itemId);
-        if (itemOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Item not found.");
-            return "redirect:/user/dashboard";
-        }
-
-        // 2. Check access BEFORE any mutation
-        Item item = itemOpt.get();
-        User user = userService.findByUsername(userDetails.getUsername());
-        if (!item.getOwner().equals(user)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "You don't have access to this item.");
-            return "redirect:/user/dashboard";
-        }
-
-        // 3. Now safe to mutate
-        itemService.deleteItem(item);
-        redirectAttributes.addFlashAttribute("successMessage", "Item deleted.");
-        return "redirect:/user/items";
+    // 2. Check access
+    User user = userService.findByUsername(userDetails.getUsername()).orElseThrow();
+    if (!entity.getOwner().equals(user)) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Access denied.");
+        return "redirect:/dashboard";
     }
+
+    // 3. Render
+    model.addAttribute("entity", entity);
+    return "role/entities/view";
+}
+
+@PostMapping("/{id}/delete")
+public String delete(@PathVariable Long id,
+                     @AuthenticationPrincipal UserDetails userDetails,
+                     RedirectAttributes redirectAttributes) {
+    // 1. Look up
+    var entity = service.findById(id).orElse(null);
+    if (entity == null) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Not found.");
+        return "redirect:/dashboard";
+    }
+
+    // 2. Check access BEFORE any mutation
+    User user = userService.findByUsername(userDetails.getUsername()).orElseThrow();
+    if (!entity.getOwner().equals(user)) {
+        redirectAttributes.addFlashAttribute("errorMessage", "Access denied.");
+        return "redirect:/dashboard";
+    }
+
+    // 3. Now safe to mutate
+    service.delete(entity);
+    redirectAttributes.addFlashAttribute("successMessage", "Deleted.");
+    return "redirect:/role/entities";
 }
 ```
