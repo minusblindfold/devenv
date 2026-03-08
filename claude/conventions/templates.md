@@ -1,5 +1,6 @@
 ---
 keywords: [template, page, view, UI, thymeleaf]
+scope: all
 ---
 # Thymeleaf Template Conventions
 
@@ -30,6 +31,10 @@ keywords: [template, page, view, UI, thymeleaf]
 - Flash messages displayed via `th:if="${successMessage}"` / `th:if="${errorMessage}"` with Bootstrap alert classes.
 - Forms use `th:action="@{/path}"` with `method="post"`.
 - Error pages include the navbar and footer fragments for consistent layout.
+
+## Bootstrap
+
+Create the fragment structure (head, navbar with role-based dispatch, footer) and initial pages: home/landing page with login form, login page, registration page, admin dashboard stub, admin user management page (list with role change and enable/disable), domain role dashboard stub, and error pages (403, 404, 500, generic). Include a minimal `main.css`. Follow the template rules above.
 
 ## Example
 

@@ -1,5 +1,6 @@
 ---
 keywords: [migration, schema, table, column, liquibase]
+scope: all
 ---
 # Liquibase Migration Conventions
 
@@ -22,6 +23,10 @@ keywords: [migration, schema, table, column, liquibase]
 - Seed data uses `insert` changesets with a descriptive `id` (e.g., `002-add-initial-users`).
 - Seed migrations must include a YAML comment documenting the plaintext password for any BCrypt-hashed values (e.g., `# password: password`). Without this, anyone inheriting the project has to reverse-engineer the hash.
 - Hibernate is set to `ddl-auto=validate` — Liquibase is the sole source of truth for the schema.
+
+## Bootstrap
+
+Create the master changelog and two initial migrations: one for the users table (matching the User entity schema) and one for seed data (an admin user and a domain-role user, both with documented BCrypt-hashed passwords). Follow the migration rules above.
 
 ## Example
 

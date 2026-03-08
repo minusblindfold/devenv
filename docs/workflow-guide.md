@@ -162,13 +162,20 @@ They live in `claude/conventions/` and are discovered automatically via YAML fro
 ```yaml
 ---
 keywords: [entity, model, JPA, persistence]
+scope: all          # bootstrap | feature | all
 ---
 # JPA Entity Conventions
 
 > How we structure JPA entities with Lombok...
+
+## Bootstrap
+
+Create a Role enum and a User entity as the auth foundation...
 ```
 
-Skills call `/resolve-conventions` to discover and read conventions at runtime. `/bootstrap` resolves all of them. `/implement` resolves the ones that match the task. `/research` scans them for context. The resolution is layered — personal conventions can override team conventions can override org defaults — configured in `devenv.json` under `conventions.layers`.
+The `scope` field controls when a convention applies: `bootstrap` (scaffolding only), `feature` (feature implementation only), or `all` (both — the default). Conventions with a `## Bootstrap` section describe what they contribute to a new project scaffold.
+
+Skills call `/resolve-conventions` to discover and read conventions at runtime. `/bootstrap` resolves conventions scoped to bootstrapping and reads their `## Bootstrap` sections. `/implement` resolves the ones that match the task by keyword. `/research` scans them for context. The resolution is layered — personal conventions can override team conventions can override org defaults — configured in `devenv.json` under `conventions.layers`.
 
 Edit conventions to evolve your patterns. The conventions are the harness.
 

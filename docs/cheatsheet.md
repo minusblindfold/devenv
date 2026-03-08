@@ -48,7 +48,7 @@ Prompt: **Starship** — git status, languages, icons.
 | `/design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
 | `/implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
 | `/research [slug\|topic]` | Scan conventions + codebase for context, save to `.work/research/` |
-| `/bootstrap <project-name>` | Scaffold a complete Spring Boot project from conventions |
+| `/bootstrap <project-name>` | Scaffold a project from conventions |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
