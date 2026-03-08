@@ -25,7 +25,7 @@ devenv/
 │   └── paths               # Root directories for ctrl+p / Cmd+P picker
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
 │   ├── skills/             # Skills → each subdir symlinked to ~/.claude/skills/<name>/
-│   │   ├── bootstrap/      # /bootstrap — scaffold a Spring Boot project from conventions
+│   │   ├── bootstrap/      # /bootstrap — scaffold a project from conventions
 │   │   ├── research/       # /research — scan conventions + codebase for context
 │   │   ├── plan/           # /plan — task planning
 │   │   ├── design/         # /design — HLD + specs from a plan

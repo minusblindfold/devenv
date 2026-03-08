@@ -14,6 +14,7 @@ The calling skill passes context via $ARGUMENTS:
 - `mode:all` — return every resolved convention doc.
 - `mode:keyword <terms>` — match terms against frontmatter `keywords` arrays.
 - `mode:explicit <title1>, <title2>` — match listed titles against H1 headings.
+- Optional modifier: `scope:<value>` — filter results by the `scope` frontmatter field. Can be appended to any mode (e.g., `mode:all scope:bootstrap`).
 
 If $ARGUMENTS is empty, default to `mode:all`.
 
@@ -42,6 +43,14 @@ Scan each term against resolved docs' `keywords` arrays. Return all matches.
 
 ### explicit
 Match each title against the H1 heading of resolved docs. Return all matches.
+
+### Scope filtering
+
+If a `scope:<value>` modifier is present in $ARGUMENTS, apply it as a post-filter after mode matching. Keep conventions where the frontmatter `scope` field matches the requested value OR equals `all`. Conventions with no `scope` field default to `all` and are always included.
+
+Example: `mode:all scope:bootstrap` returns conventions with `scope: bootstrap`, `scope: all`, or no `scope` field. Conventions with `scope: feature` are excluded.
+
+If no `scope` modifier is present, skip this filter — return all mode-matched conventions regardless of scope. This preserves backward compatibility.
 
 ## Output
 

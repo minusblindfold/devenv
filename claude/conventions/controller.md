@@ -1,5 +1,6 @@
 ---
 keywords: [controller, endpoint, route, handler]
+scope: all
 ---
 # Controller Conventions
 
@@ -20,6 +21,10 @@ keywords: [controller, endpoint, route, handler]
 - AJAX endpoints use `@ResponseBody` and return simple strings ("success", "error", "max-reached").
 - When a controller bean name would conflict across packages (e.g., multiple `DashboardController`), use `@Controller("specificName")`.
 - Use `@Slf4j` for logging. Log errors with context: `log.atError().log("Action failed for user: {}. Reason: {}", username, e.getMessage())`.
+
+## Bootstrap
+
+Create the controller package structure mirroring roles. Include: an `AuthController` (home, login, register flows), a `DashboardController` that redirects by role, a `CustomErrorController` for HTML + JSON error handling, a `GlobalControllerAdvice` for exception handling with flash messages, admin controllers for user management (list, toggle enabled, change role), and a stub dashboard controller for the domain role. Follow the controller rules above.
 
 ## Example
 

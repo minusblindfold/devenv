@@ -1,5 +1,6 @@
 ---
 keywords: [service, business logic, validation]
+scope: all
 ---
 # Service Layer Conventions
 
@@ -19,6 +20,10 @@ keywords: [service, business logic, validation]
 - Use `@Slf4j` (Lombok) for logging. Use `log.atInfo().log(...)` or `log.info(...)` style.
 - Entity creation uses the Builder pattern.
 - Usernames and emails are normalized to lowercase before storing.
+
+## Bootstrap
+
+Create a `UserService` interface and implementation covering: user registration (with validation, BCrypt encoding, lowercase normalization), lookups by username and ID, existence checks, and admin operations (find all, toggle enabled, update role). Also create a `CustomUserDetailsService` per the security conventions. Follow the service rules above.
 
 ## Example
 

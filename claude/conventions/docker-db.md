@@ -1,5 +1,6 @@
 ---
 keywords: [docker, database, postgres, compose]
+scope: all
 ---
 # Docker & Database Conventions
 
@@ -24,6 +25,10 @@ keywords: [docker, database, postgres, compose]
 - Error pages: whitelabel disabled, stacktrace hidden, message included.
 - File upload defaults: 10MB max file size, 10MB max request size.
 - `.gitignore` must include `.env` to prevent credentials from being committed.
+
+## Bootstrap
+
+Create the `compose.yaml` with PostgreSQL, `.env.template` with database credentials, and configure `application.properties` with database connection, JPA, Liquibase, Actuator, and error handling settings. The database name should be derived from the project name. Follow the docker-db rules above.
 
 ## Example
 

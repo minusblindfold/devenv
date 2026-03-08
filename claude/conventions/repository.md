@@ -1,5 +1,6 @@
 ---
 keywords: [repository, data access, query]
+scope: all
 ---
 # Repository Conventions
 
@@ -14,6 +15,10 @@ keywords: [repository, data access, query]
 - Return `boolean` for existence checks: `existsByFieldIgnoreCase(String)`.
 - Return `List<Entity>` for multi-result queries. Add ordering to the method name when relevant (e.g., `findByPartyOrderByCreatedAtDesc`).
 - Keep repositories thin — no business logic, no default methods with logic. That belongs in the service layer.
+
+## Bootstrap
+
+Create a `UserRepository` with methods for credential lookups: find by username (returning Optional), and existence checks for username and email (case-insensitive). Follow the repository rules above.
 
 ## Example
 

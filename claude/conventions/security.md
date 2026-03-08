@@ -1,5 +1,6 @@
 ---
 keywords: [security, auth, role, login, authentication]
+scope: all
 ---
 # Spring Security Conventions
 
@@ -31,6 +32,10 @@ keywords: [security, auth, role, login, authentication]
 - `UserRegistrationDto` uses `@Data` (DTOs are the exception to the `@Getter/@Setter` rule). Fields: username, email, password, confirmPassword.
 - Registration validation happens in the service layer, not the controller. Controller catches `IllegalArgumentException` and redirects with error flash attributes.
 - Seed users: one admin and one domain-role user, both with BCrypt-encoded password "password".
+
+## Bootstrap
+
+Create the `SecurityConfig` with form login, role-based route protection, and logout. Set up the `DaoAuthenticationProvider` with BCrypt encoding. Public routes for home, register, and static assets. Role-restricted routes for admin and the domain role. Create the `CustomUserDetailsService` that maps roles to Spring Security authorities. Follow the security rules above.
 
 ## Example
 

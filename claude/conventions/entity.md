@@ -1,5 +1,6 @@
 ---
 keywords: [entity, model, JPA, persistence]
+scope: all
 ---
 # JPA Entity Conventions
 
@@ -20,6 +21,10 @@ keywords: [entity, model, JPA, persistence]
 - Column constraints: always declare `nullable` and `unique` explicitly. Use `length` on `VARCHAR` columns.
 - Custom `equals()`: compare only by `id` with null guard — two entities are equal only if both have non-null IDs that match.
 - Custom `hashCode()`: return `getClass().hashCode()` (constant per entity type). This is safe with Hibernate proxies and prevents issues when entities are added to Sets before being persisted.
+
+## Bootstrap
+
+Create a `Role` enum and a `User` entity as the auth foundation. The User should have credentials (username, password), email, role assignment, an enabled flag, and audit timestamps. Follow the entity rules above — no relationship fields at bootstrap (those come with features). Include a `UserRegistrationDto` with `@Data` for the registration form.
 
 ## Example
 
