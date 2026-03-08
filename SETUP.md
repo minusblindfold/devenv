@@ -21,6 +21,7 @@
 | `gh` | GitHub CLI |
 | `shellcheck` | Shell script linter (pre-commit hook) |
 | `shfmt` | Shell script formatter (pre-commit hook) |
+| `gradle` | Build tool (`/bootstrap` generates Gradle wrapper) |
 | `bun` | JS runtime (`bunx ccusage` for cost tracking) |
 | `ghostty` | Terminal emulator |
 | `claude-code` | Claude Code CLI |

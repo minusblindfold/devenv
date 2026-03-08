@@ -14,14 +14,33 @@ Claude skill config lives in `claude/devenv.json` (symlinked to `~/.claude/deven
 
 ## Claude Skills
 
-Three skills live in `claude/skills/` (each symlinked to `~/.claude/skills/<name>/`):
+Four skills live in `claude/skills/` (each symlinked to `~/.claude/skills/<name>/`):
+- `/bootstrap` — scaffold a complete Spring Boot project from conventions, writes `.work/bootstrap.md` context marker in the project
 - `/plan` — create or refine a task list, saved to `.work/plans/`
 - `/design` — create or refine a design doc from a plan, saved to `.work/designs/`; pass a free-form description to bootstrap a plan inline
 - `/implement` — implement a task from a plan+design pair, saves notes to `.work/implementations/`
 
+The full loop is: `/bootstrap` (new project) → `/plan` → `/design` → `/implement` (repeat). `/bootstrap` is optional — `/plan` works fine in existing projects.
+
+After bootstrap, `.work/bootstrap.md` in the project provides context to `/plan` and `/design` so they skip redundant infrastructure questions.
+
 `/document` is a command in `claude/commands/` — sync all docs after changes.
 
 `/plan` and `/design` both support refine mode: when invoked with no args and existing artifacts are found, they offer a picker. Refine mode backs up the current file to `.backup/` before writing.
+
+## Convention Docs
+
+Shared reference docs live in `claude/skills/conventions/` (symlinked to `~/.claude/skills/conventions/`). Each describes a pattern that skills read at runtime:
+- `entity.md` — JPA entity annotations, Lombok, equals/hashCode, fetch strategy, @ManyToOne/@OneToMany
+- `repository.md` — Spring Data JPA interfaces, derived query methods, return types
+- `service.md` — interface + impl, transactions, validation, exceptions
+- `controller.md` — role-based packages, auth guards, flash attributes, mutation safety
+- `migration.md` — Liquibase YAML format, naming, master changelog, seed data with documented passwords
+- `templates.md` — Thymeleaf fragments, directory layout, Bootstrap 5, single source of truth for navigation
+- `security.md` — Role enum, UserDetailsService, SecurityConfig, AuthController, auth flow
+- `docker-db.md` — Docker Compose, PostgreSQL, zero-friction dev startup via spring-boot-docker-compose
+
+These are not invocable skills — they're knowledge files. `/bootstrap` reads all of them to generate a project. `/implement` reads the relevant ones per task. Edit them to evolve your conventions.
 
 ## Documentation
 

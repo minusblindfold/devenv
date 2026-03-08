@@ -31,11 +31,13 @@ For simple features where no plan exists yet. Treats $ARGUMENTS as the feature d
 ## Create mode
 
 1. Read plan: extract name, tasks, dependencies.
-2. Explore codebase: read `CLAUDE.md`, scan directory, check `.claude/skills/`.
-3. Ask 2–3 questions (architecture style if unclear, constraints, depth). Wait for confirmation.
+2. Explore codebase: read `CLAUDE.md`, scan directory, check `.claude/skills/`. Check for `<work.dir>/bootstrap.md` — if found, read it. The architecture section should reference the bootstrapped stack as established rather than proposing it.
+3. Ask 2–3 questions. Wait for confirmation.
+   - If bootstrap context was found: skip architecture-style questions (already decided). Focus on design-specific questions — data relationships, UI flow, edge cases.
+   - If no bootstrap context: ask as normal, including architecture style if unclear.
 4. Write design doc with: Overview, Architecture, Diagrams, Task Specs.
 5. Choose diagrams that best illuminate the plan — see [diagrams.md](diagrams.md). A feature may warrant more than one; omit diagrams for trivial tasks. Save each as a `.mmd` file in `<work.dir>/designs/diagrams/`. List them in the doc; do not embed code inline.
-6. For each plan task write a spec: Goal, Interfaces, Implementation notes, Acceptance criteria, Dependencies.
+6. For each plan task write a spec: Goal, Interfaces, Implementation notes, Acceptance criteria, Dependencies. Also note which convention docs from `~/.claude/skills/conventions/` apply (e.g., `**Conventions:** entity.md, migration.md`). This tells `/implement` which docs to read.
 7. Save design to `<work.dir>/designs/YYYY-MM-DD-<slug>-design.md`.
 8. Ask the user to review. Once confirmed, suggest running `/implement` to begin.
 
@@ -77,6 +79,7 @@ _(include only the diagrams that apply)_
 **Implementation notes:** Approach, constraints, anything non-obvious.
 **Acceptance criteria:** How to verify it's done.
 **Dependencies:** Other tasks or external systems this relies on.
+**Conventions:** Convention docs from `~/.claude/skills/conventions/` that apply (e.g., entity.md, migration.md). Omit if none apply.
 ```
 
 ## Rules

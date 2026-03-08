@@ -46,6 +46,7 @@ Prompt: **Starship** — git status, languages, icons.
 | `/plan [description\|slug]` | Create or refine a plan |
 | `/design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
 | `/implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
+| `/bootstrap <project-name>` | Scaffold a complete Spring Boot project from conventions |
 | `/rebase [base-branch]` | Rebase current branch onto base (default: `rebase.defaultBase` in `devenv.json`); auto-resolves whitespace/additive conflicts |
 | `/strip-fmt [--staged\|--unstaged]` | Strip accidental formatting noise from the diff, preserving intentional changes |
 
@@ -53,7 +54,7 @@ Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. 
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills (`/plan`, `/design`, `/implement`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Commands (`/document`, `/rebase`, `/strip-fmt`) live in `claude/commands/`.
+Skills (`/plan`, `/design`, `/implement`, `/bootstrap`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/skills/conventions/`. Commands (`/document`, `/rebase`, `/strip-fmt`) live in `claude/commands/`.
 
 Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`, `rebase.defaultBase` (default `origin/master`).
 
