@@ -14,7 +14,7 @@ Read `~/.claude/devenv.json`. Key: `work.dir` (default `.work`).
 ## Find the feature
 
 If $ARGUMENTS: treat as `<slug>` or `<slug> <task-N>`. Find plan in `<work.dir>/plans/`, then matching design in `<work.dir>/designs/`. Missing design → "No design found for '<slug>'. Run /design first." and stop.
-If no argument: list plans and designs, match by slug. No pairs → "Run /plan then /design first." and stop. One pair → auto-select. Many → ask.
+If no argument: list plans and designs, match by slug. No pairs → "Run /plan then /design first." and stop. One pair → show it and ask to confirm or describe a new feature. Many → numbered list, ask to pick.
 
 ## Load and sync
 
@@ -30,18 +30,11 @@ If $ARGUMENTS includes a task number, use it. Otherwise ask. Warn if dependencie
 
 ## Apply conventions
 
-Before implementing, check `~/.claude/skills/conventions/` for available convention docs. If the design's task spec includes a `**Conventions:**` line, read those docs. Otherwise, scan the task description for keywords and read matching docs:
+Before implementing, read `conventions.layers` from `~/.claude/devenv.json`. Follow [convention-resolution.md](../convention-resolution.md) to resolve available conventions.
 
-- entity, model, JPA → `entity.md`
-- repository, data access, query → `repository.md`
-- service, business logic → `service.md`
-- controller, endpoint, route → `controller.md`
-- migration, schema, table, column → `migration.md`
-- template, page, view, UI → `templates.md`
-- security, auth, role, login → `security.md`
-- docker, database, postgres → `docker-db.md`
+If the design's task spec includes a `**Conventions:**` line, use **explicit mode** — match listed titles against resolved convention titles. Otherwise, use **keyword mode** — match the task description against resolved frontmatter keywords.
 
-Print: "Applying conventions: <list of docs read>". If no convention docs match, print: "No convention docs apply to this task." Follow the loaded convention docs when creating or modifying files that fall under their scope.
+Follow the matched convention docs when creating or modifying files that fall under their scope.
 
 ## Implement
 

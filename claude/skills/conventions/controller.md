@@ -1,3 +1,6 @@
+---
+keywords: [controller, endpoint, route, handler]
+---
 # Controller Conventions
 
 > How to structure Spring MVC controllers: package layout, authorization guards, redirect patterns, and flash messages.

@@ -1,3 +1,6 @@
+---
+keywords: [template, page, view, UI, thymeleaf]
+---
 # Thymeleaf Template Conventions
 
 > How to structure templates: directory layout, fragment composition, Bootstrap 5, and role-based rendering.

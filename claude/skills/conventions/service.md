@@ -1,3 +1,6 @@
+---
+keywords: [service, business logic, validation]
+---
 # Service Layer Conventions
 
 > How to structure business logic: interface + implementation, transactions, validation, and exception handling.

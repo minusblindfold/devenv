@@ -23,8 +23,7 @@ Read `~/.claude/devenv.json`. Key: `work.dir` (default `.work`).
 
 ## Read conventions
 
-Read all convention docs from `~/.claude/skills/conventions/`:
-- `entity.md`, `repository.md`, `service.md`, `controller.md`, `migration.md`, `templates.md`, `security.md`, `docker-db.md`
+Read `conventions.layers` from `~/.claude/devenv.json`. Follow [convention-resolution.md](../convention-resolution.md) (mode: **all**) to resolve every available convention doc across layers. Read all resolved docs.
 
 These define every pattern used below. Follow them exactly.
 
@@ -45,9 +44,9 @@ Create all files in the **current working directory**. The directory should be e
   - `testRuntimeOnly 'com.h2database:h2'`
   - Lombok `compileOnly { extendsFrom annotationProcessor }` config. JUnit Platform for tests.
 - `settings.gradle` — `rootProject.name = '<project-name>'`
-- `compose.yaml` — per `docker-db.md`. Database name: `<project-name>_db` (hyphens replaced with underscores).
-- `.env.template` — per `docker-db.md`. Matching database name.
-- `src/main/resources/application.properties` — per `docker-db.md`. App name set. Matching database name in defaults.
+- `compose.yaml` — per the Docker & Database conventions. Database name: `<project-name>_db` (hyphens replaced with underscores).
+- `.env.template` — per the Docker & Database conventions. Matching database name.
+- `src/main/resources/application.properties` — per the Docker & Database conventions. App name set. Matching database name in defaults.
 - `.gitignore` — Gradle build dirs, IDE files (.idea, *.iml, .vscode, .classpath, .project, .settings), .env, bin/, out/, build/.
 
 ### Gradle wrapper
@@ -58,10 +57,10 @@ Run `gradle wrapper` to generate the wrapper files.
 
 - `src/main/java/<group-path>/<artifact>/<ArtifactName>Application.java` — Standard `@SpringBootApplication` with `main` method.
 
-### Model layer (per `entity.md`, `security.md`)
+### Model layer (per the JPA Entity and Spring Security conventions)
 
 - `model/Role.java` — Enum: `ADMIN`, `<DOMAIN_ROLE>`.
-- `model/User.java` — Per `entity.md` conventions. Fields: id, username, password, email, role, enabled, createdAt, updatedAt. No relationship fields at bootstrap (those come with features). Full custom equals/hashCode.
+- `model/User.java` — Per the JPA Entity conventions. Fields: id, username, password, email, role, enabled, createdAt, updatedAt. No relationship fields at bootstrap (those come with features). Full custom equals/hashCode.
 
 ### DTO layer
 
@@ -71,33 +70,33 @@ Run `gradle wrapper` to generate the wrapper files.
 
 - `repository/UserRepository.java` — `JpaRepository<User, Long>` with `@Repository`. Methods: `findByUsername(String)` returning `Optional<User>`, `existsByUsernameIgnoreCase(String)`, `existsByEmailIgnoreCase(String)`.
 
-### Service layer (per `service.md`, `security.md`)
+### Service layer (per the Service Layer and Spring Security conventions)
 
-- `service/UserService.java` — Interface per `service.md`. Methods: createUser, findByUsername (returns `Optional<User>`), findById (returns `Optional<User>`), save, isUsernameTaken, isEmailRegistered, findAll, toggleEnabled, updateRole.
-- `service/UserServiceImpl.java` — Per `service.md`. Validation in private `validateRegistrationInput()`. BCrypt encoding. Lowercase normalization. `findAll()` returns all users. `toggleEnabled(Long id)` flips enabled flag. `updateRole(Long id, Role role)` changes a user's role.
-- `service/CustomUserDetailsService.java` — Per `security.md`. Maps Role to ROLE_ authority.
+- `service/UserService.java` — Interface per the Service Layer conventions. Methods: createUser, findByUsername (returns `Optional<User>`), findById (returns `Optional<User>`), save, isUsernameTaken, isEmailRegistered, findAll, toggleEnabled, updateRole.
+- `service/UserServiceImpl.java` — Per the Service Layer conventions. Validation in private `validateRegistrationInput()`. BCrypt encoding. Lowercase normalization. `findAll()` returns all users. `toggleEnabled(Long id)` flips enabled flag. `updateRole(Long id, Role role)` changes a user's role.
+- `service/CustomUserDetailsService.java` — Per the Spring Security conventions. Maps Role to ROLE_ authority.
 
-### Config layer (per `security.md`)
+### Config layer (per the Spring Security conventions)
 
-- `config/SecurityConfig.java` — Per `security.md`. Routes: `/admin/**` → ADMIN, `/<lowercase-domain-role>/**` → domain role. Public routes for home, register, static assets. Must include `BCryptPasswordEncoder` bean and `DaoAuthenticationProvider` bean wiring the custom user details service + encoder.
+- `config/SecurityConfig.java` — Per the Spring Security conventions. Routes: `/admin/**` → ADMIN, `/<lowercase-domain-role>/**` → domain role. Public routes for home, register, static assets. Must include `BCryptPasswordEncoder` bean and `DaoAuthenticationProvider` bean wiring the custom user details service + encoder.
 
-### Controller layer (per `controller.md`, `security.md`)
+### Controller layer (per the Controller and Spring Security conventions)
 
-- `controller/common/DashboardController.java` — Per `security.md`. Role-based redirect. Use `@Controller("commonDashboardController")`.
-- `controller/common/auth/AuthController.java` — Home, login, register (GET + POST). Per `security.md` registration pattern.
+- `controller/common/DashboardController.java` — Per the Spring Security conventions. Role-based redirect. Use `@Controller("commonDashboardController")`.
+- `controller/common/auth/AuthController.java` — Home, login, register (GET + POST). Per the Spring Security conventions registration pattern.
 - `controller/common/error/CustomErrorController.java` — HTML + JSON error handling. Status-specific templates (403, 404, 500).
 - `controller/common/GlobalControllerAdvice.java` — `@ControllerAdvice @RequiredArgsConstructor`. Handles `EntityNotFoundException` (redirect to 404) and `IllegalArgumentException` (flash error message, redirect back). Add a placeholder `@ModelAttribute` method for shared model attributes (can be expanded later).
 - `controller/admin/DashboardController.java` — Stub: `@Controller("adminDashboardController")`, `@RequestMapping("/admin/dashboard")`, single `@GetMapping` returning `"admin/dashboard"`.
 - `controller/admin/UserController.java` — `@RequestMapping("/admin/users")`. GET `/` lists all users with role dropdown. POST `/{id}/toggle-enabled` toggles user enabled status. POST `/{id}/update-role` changes a user's role. Uses flash messages for feedback.
 - `controller/<lowercase-domain-role>/DashboardController.java` — Stub: same pattern for the domain role.
 
-### Database migrations (per `migration.md`)
+### Database migrations (per the Liquibase Migration conventions)
 
 - `src/main/resources/db/changelog/db.changelog-master.yaml` — Master changelog with `${now}` property, includes 001 and 002.
 - `src/main/resources/db/changelog/changes/001-initial-schema.yaml` — Users table matching the User entity.
-- `src/main/resources/db/changelog/changes/002-add-seed-users.yaml` — Admin user + domain role user. Use the same BCrypt hash and seed data format shown in `migration.md`'s seed data example. Include a YAML comment documenting the plaintext password per `migration.md` convention.
+- `src/main/resources/db/changelog/changes/002-add-seed-users.yaml` — Admin user + domain role user. Use the same BCrypt hash and seed data format shown in the Liquibase Migration conventions seed data example. Include a YAML comment documenting the plaintext password per that convention.
 
-### Templates (per `templates.md`)
+### Templates (per the Thymeleaf Template conventions)
 
 - `src/main/resources/templates/home.html` — Landing page with login form and hero section. Links to register. Shows dashboard link if authenticated.
 - `src/main/resources/templates/common/auth/login.html` — Login form page.
@@ -110,7 +109,7 @@ Run `gradle wrapper` to generate the wrapper files.
 - `src/main/resources/templates/error/500.html` — Server error page.
 - `src/main/resources/templates/error/error.html` — Generic error page.
 - `src/main/resources/templates/fragments/common/head.html` — Common head fragment with Bootstrap CSS/JS CDN, FontAwesome CDN, custom CSS link.
-- `src/main/resources/templates/fragments/navbar/navbar.html` — Main navbar dispatcher per `templates.md`.
+- `src/main/resources/templates/fragments/navbar/navbar.html` — Main navbar dispatcher per the Thymeleaf Template conventions.
 - `src/main/resources/templates/fragments/navbar/base.html` — Dashboard link for authenticated users.
 - `src/main/resources/templates/fragments/navbar/admin.html` — Admin nav items (Users, etc.).
 - `src/main/resources/templates/fragments/navbar/<role>.html` — Domain role nav items (placeholder).
@@ -175,7 +174,7 @@ Create `<work.dir>/bootstrap.md` in the project directory:
 - Docker Compose local dev environment
 
 ## Convention Docs Applied
-All conventions from ~/.claude/skills/conventions/ were used to generate this project.
+All conventions from the configured convention layers were used to generate this project.
 ```
 
 ## Wrap up

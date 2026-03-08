@@ -1,3 +1,6 @@
+---
+keywords: [migration, schema, table, column, liquibase]
+---
 # Liquibase Migration Conventions
 
 > How to write database migrations: YAML format, naming, master changelog, and column conventions.

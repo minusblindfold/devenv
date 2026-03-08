@@ -1,3 +1,6 @@
+---
+keywords: [entity, model, JPA, persistence]
+---
 # JPA Entity Conventions
 
 > How to structure JPA entities: Lombok annotations, relationships, equals/hashCode, and audit fields.

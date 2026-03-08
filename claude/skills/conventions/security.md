@@ -1,3 +1,6 @@
+---
+keywords: [security, auth, role, login, authentication]
+---
 # Spring Security Conventions
 
 > How to set up authentication and authorization: roles, user details service, security config, and auth flow.

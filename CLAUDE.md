@@ -14,13 +14,14 @@ Claude skill config lives in `claude/devenv.json` (symlinked to `~/.claude/deven
 
 ## Claude Skills
 
-Four skills live in `claude/skills/` (each symlinked to `~/.claude/skills/<name>/`):
+Five skills live in `claude/skills/` (each symlinked to `~/.claude/skills/<name>/`):
 - `/bootstrap` — scaffold a complete Spring Boot project from conventions, writes `.work/bootstrap.md` context marker in the project
+- `/research` — scan conventions and codebase to produce structured context, saved to `.work/research/`
 - `/plan` — create or refine a task list, saved to `.work/plans/`
 - `/design` — create or refine a design doc from a plan, saved to `.work/designs/`; pass a free-form description to bootstrap a plan inline
 - `/implement` — implement a task from a plan+design pair, saves notes to `.work/implementations/`
 
-The full loop is: `/bootstrap` (new project) → `/plan` → `/design` → `/implement` (repeat). `/bootstrap` is optional — `/plan` works fine in existing projects.
+The full loop is: `/bootstrap` (new project) → `/research` → `/plan` → `/design` → `/implement` (repeat). `/bootstrap` is optional — `/plan` works fine in existing projects. `/research` can re-enter at any stage — run it before planning, after design, or when discoveries surface during implementation.
 
 After bootstrap, `.work/bootstrap.md` in the project provides context to `/plan` and `/design` so they skip redundant infrastructure questions.
 
@@ -40,7 +41,9 @@ Shared reference docs live in `claude/skills/conventions/` (symlinked to `~/.cla
 - `security.md` — Role enum, UserDetailsService, SecurityConfig, AuthController, auth flow
 - `docker-db.md` — Docker Compose, PostgreSQL, zero-friction dev startup via spring-boot-docker-compose
 
-These are not invocable skills — they're knowledge files. `/bootstrap` reads all of them to generate a project. `/implement` reads the relevant ones per task. Edit them to evolve your conventions.
+These are not invocable skills — they're knowledge files. Each has YAML frontmatter with `keywords` for discovery and an optional `extends` field for layering. Convention discovery is handled by `claude/skills/convention-resolution.md` — a shared algorithm that resolves conventions across configurable layers (set in `devenv.json` under `conventions.layers`).
+
+`/bootstrap` reads all conventions to generate a project. `/implement` reads the relevant ones per task (matched by title or keywords). `/research` scans them to produce context for planning. Edit them to evolve your conventions.
 
 ## Documentation
 
