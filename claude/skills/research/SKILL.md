@@ -17,13 +17,13 @@ Parse `$ARGUMENTS`:
 
 - Matches an existing file in `<work.dir>/research/` by slug → **re-entry** (append dated section).
 - Set but no match → **create** new research file.
-- Empty → **cross-cutting** mode (writes to `<work.dir>/research/cross-cutting.md`).
+- Empty → **health-check** mode. Before starting, confirm with the user: "This will run a full project health check (all conventions + full codebase scan). This can take a while. Continue, or would you like to research a specific topic instead?" If they provide a topic, switch to create mode. If they confirm, proceed — writes to `<work.dir>/research/health-check.md`.
 
 ## Convention scan
 
 Run `/resolve-conventions` to discover conventions:
 - If topic provided → `mode:keyword <topic>` (match topic against frontmatter keywords).
-- If cross-cutting → `mode:all` (return every resolved convention).
+- If health-check → `mode:all` (return every resolved convention).
 
 If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
 
@@ -42,7 +42,7 @@ For each matched convention, extract:
 
 ## Output
 
-Write to `<work.dir>/research/YYYY-MM-DD-<slug>-research.md` (or `cross-cutting.md`).
+Write to `<work.dir>/research/YYYY-MM-DD-<slug>-research.md` (or `health-check.md` for health-check mode).
 
 ```markdown
 # <Topic> Research

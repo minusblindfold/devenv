@@ -19,7 +19,7 @@ If $ARGUMENTS is empty → list `<work.dir>/plans/`. None: ask what to plan. One
 
 ## Create mode
 
-1. Explore: read `CLAUDE.md`, scan directory, check `.claude/skills/` for available skills. Check for `<work.dir>/bootstrap.md` — if found, read it and note the tech stack, roles, and scaffolded entities as established context. Check `<work.dir>/research/` for a file matching the feature slug (`*<slug>*-research.md`) and for `cross-cutting.md`. If found, read them — use `### Gaps & Recommendations` to inform clarifying questions and task decomposition.
+1. Explore: read `CLAUDE.md`, scan directory, check `.claude/skills/` for available skills. Check for `<work.dir>/bootstrap.md` — if found, read it and note the tech stack, roles, and scaffolded entities as established context. Check `<work.dir>/research/` for a file matching the feature slug (`*<slug>*-research.md`) and for `health-check.md`. If found, read them — use `### Gaps & Recommendations` to inform clarifying questions and task decomposition.
 2. Ask 3–5 clarifying questions. Wait for confirmation.
    - If bootstrap context was found: skip questions about tech stack, database, and auth approach (these are already decided). Focus on domain entities, business logic, scope boundaries, and constraints.
    - If no bootstrap context: ask as normal, including stack questions if the project's tech isn't clear from CLAUDE.md.
