@@ -1,3 +1,6 @@
+---
+keywords: [docker, database, postgres, compose]
+---
 # Docker & Database Conventions
 
 > How to set up local development with Docker Compose, PostgreSQL, and Spring Boot configuration.

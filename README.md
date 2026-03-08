@@ -17,6 +17,7 @@ devenv/
 │   ├── view-plan           # Browse .work/plans/ with fzf + glow
 │   ├── view-design         # Browse .work/designs/ with fzf + glow (ctrl-d opens diagrams)
 │   ├── view-implement      # Browse .work/implementations/ with fzf + glow
+│   ├── view-research       # Browse .work/research/ with fzf + glow
 │   ├── open-diagrams       # Open .mmd diagrams for a design in the browser
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
 │   ├── skills/             # Skills → each subdir symlinked to ~/.claude/skills/<name>/
@@ -24,6 +25,8 @@ devenv/
 │   │   ├── design/         # /design — HLD + specs from a plan
 │   │   ├── implement/      # /implement — drive task implementation from plan+design
 │   │   ├── bootstrap/      # /bootstrap — scaffold a Spring Boot project from conventions
+│   │   ├── research/       # /research — scan conventions + codebase for context
+│   │   ├── convention-resolution.md  # Shared algorithm for discovering conventions
 │   │   └── conventions/    # Shared reference docs read by skills at runtime
 │   ├── commands/           # Commands (flat .md files)
 │   │   ├── document.md     # /document — sync docs after changes
@@ -57,7 +60,7 @@ devenv/
 
 Work-specific config and secrets live in `~/.zshrc.local` (not tracked). `60-local.zsh` sources it automatically if present.
 
-Claude skill config (backup limits, work dir) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+Claude skill config (backup limits, work dir, convention layers) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, `research/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
 
 **Convention:** Any file ending in `.symlink` gets linked into `$HOME` with a dot prefix.
 
@@ -98,5 +101,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap}/SKILL.md`, `claude/skills/conventions/*.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/skills/conventions/*.md`, `claude/skills/convention-resolution.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
 | Git hooks | `git-hooks/post-commit` |

@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR=".work/research"
+
+show() {
+  if command -v glow &>/dev/null; then
+    glow "$1"
+  else
+    cat "$1"
+  fi
+}
+
+pick() {
+  local chosen
+  chosen=$(ls -1 "$DIR"/*.md | fzf \
+    --prompt="Research: " \
+    --header="Select a research file to view" \
+    --preview='glow --width $FZF_PREVIEW_COLUMNS {} 2>/dev/null || cat {}' \
+    --preview-window='right:60%:wrap') || true
+  [[ -n "$chosen" ]] && show "$chosen"
+}
+
+if [[ "${1:-}" == "help" || "${1:-}" == "-h" ]]; then
+  echo "Usage: view-research [file]"
+  exit 0
+fi
+
+if [[ ! -d "$DIR" ]]; then
+  echo "No .work/research/ directory. Run /research to create one."
+  exit 1
+fi
+
+# Direct file argument
+if [[ -n "${1:-}" ]]; then
+  file="$DIR/$1"
+  [[ "$1" != *.md ]] && file="$DIR/$1.md"
+  if [[ ! -f "$file" ]]; then
+    echo "Research file not found: $1"
+    exit 1
+  fi
+  show "$file"
+  exit 0
+fi
+
+# Count markdown files
+files=("$DIR"/*.md)
+if [[ ! -f "${files[0]}" ]]; then
+  echo "No research files found in .work/research/."
+  exit 1
+fi
+
+pick

@@ -10,9 +10,12 @@ Review the changes made in this session and update all documentation to match.
 - `bin/view-plan` → CLI > view-plan section in `docs/cheatsheet.md`
 - `bin/view-design` → CLI > view-design section in `docs/cheatsheet.md`
 - `bin/view-implement` → CLI > view-implement section in `docs/cheatsheet.md`
+- `bin/view-research` → CLI > view-research section in `docs/cheatsheet.md`
+- `bin/open-diagrams` → CLI > open-diagrams section in `docs/cheatsheet.md`
 - `claude/skills/implement/SKILL.md` → Claude section in `docs/cheatsheet.md`
 - `claude/skills/plan/SKILL.md` → Claude section in `docs/cheatsheet.md` *(create + refine mode)*
 - `claude/skills/design/SKILL.md` → Claude section in `docs/cheatsheet.md` *(create, bootstrap + refine mode)*
+- `claude/skills/research/SKILL.md` → Claude section in `docs/cheatsheet.md`
 - `claude/devenv.json` → Claude section in `docs/cheatsheet.md` (skill config location)
 - `starship/` → Shell section in `docs/cheatsheet.md`
 

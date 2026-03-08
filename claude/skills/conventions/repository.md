@@ -1,3 +1,6 @@
+---
+keywords: [repository, data access, query]
+---
 # Repository Conventions
 
 > How to structure Spring Data JPA repositories: interface design, query methods, and return types.
