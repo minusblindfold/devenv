@@ -49,11 +49,16 @@ check_link "$HOME/.claude/skills/design" "~/.claude/skills/design"
 check_link "$HOME/.claude/skills/implement" "~/.claude/skills/implement"
 check_link "$HOME/.claude/skills/bootstrap" "~/.claude/skills/bootstrap"
 check_link "$HOME/.claude/skills/research" "~/.claude/skills/research"
-check_link "$HOME/.claude/skills/conventions" "~/.claude/skills/conventions"
+check_link "$HOME/.claude/conventions" "~/.claude/conventions"
+check_link "$HOME/.claude/skills/resolve-conventions" "~/.claude/skills/resolve-conventions"
 check_link "$HOME/.claude/commands/document.md" "~/.claude/commands/document.md"
-check_link "$HOME/.claude/commands/rebase.md" "~/.claude/commands/rebase.md"
-check_link "$HOME/.claude/commands/strip-fmt.md" "~/.claude/commands/strip-fmt.md"
 check_link "$HOME/.claude/hooks/log-activity.sh" "~/.claude/hooks/log-activity.sh"
+# Picker paths: symlink or user-customized real file are both valid
+if [ -L "$HOME/.config/devenv/paths" ] || [ -f "$HOME/.config/devenv/paths" ]; then
+  pass "~/.config/devenv/paths"
+else
+  fail "~/.config/devenv/paths"
+fi
 check_link "$HOME/.local/share/cheat" "~/.local/share/cheat"
 check_link "$HOME/.git-hooks/post-commit" "~/.git-hooks/post-commit"
 
@@ -90,6 +95,7 @@ check_cmd shellcheck
 check_cmd shfmt
 check_cmd bun
 check_cmd claude
+check_cmd glow
 check_cmd gradle
 
 # ── Smoke tests ───────────────────────────────────────────────────────────────

@@ -21,9 +21,11 @@ Parse `$ARGUMENTS`:
 
 ## Convention scan
 
-Follow [convention-resolution.md](../convention-resolution.md):
-- If topic provided → **keyword mode** (match topic against frontmatter keywords).
-- If cross-cutting → **all mode** (return every resolved convention).
+Run `/resolve-conventions` to discover conventions:
+- If topic provided → `mode:keyword <topic>` (match topic against frontmatter keywords).
+- If cross-cutting → `mode:all` (return every resolved convention).
+
+If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
 
 For each matched convention, extract:
 - Title (H1 heading)

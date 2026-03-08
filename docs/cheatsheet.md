@@ -28,6 +28,7 @@ Dark Pastel, JetBrainsMono Nerd Font 14pt, bell disabled.
 | `Ctrl+P` | Project picker (`fzf`) |
 | `ls` | `ls -1F` |
 | `zshconfig` | Open `~/.zshrc` |
+| `zshlocal` | Open `~/.zshrc.local` |
 
 Prompt: **Starship** — git status, languages, icons.
 
@@ -48,16 +49,14 @@ Prompt: **Starship** — git status, languages, icons.
 | `/implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
 | `/research [slug\|topic]` | Scan conventions + codebase for context, save to `.work/research/` |
 | `/bootstrap <project-name>` | Scaffold a complete Spring Boot project from conventions |
-| `/rebase [base-branch]` | Rebase current branch onto base (default: `rebase.defaultBase` in `devenv.json`); auto-resolves whitespace/additive conflicts |
-| `/strip-fmt [--staged\|--unstaged]` | Strip accidental formatting noise from the diff, preserving intentional changes |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills (`/plan`, `/design`, `/implement`, `/bootstrap`, `/research`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/skills/conventions/`, discovered via `claude/skills/convention-resolution.md` across configurable layers. Commands (`/document`, `/rebase`, `/strip-fmt`) live in `claude/commands/`.
+Skills (`/plan`, `/design`, `/implement`, `/bootstrap`, `/research`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/conventions/`, discovered via the `/resolve-conventions` skill across configurable layers. The `/document` command lives in `claude/commands/`.
 
-Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`, `rebase.defaultBase` (default `origin/master`), `conventions.layers` (ordered paths for convention discovery).
+Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`, `conventions.layers` (ordered paths for convention discovery).
 
 ## CLI
 
@@ -106,6 +105,16 @@ Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.jso
 | `open-diagrams <design-file>` | Open `.mmd` diagrams referenced in a design doc in the browser |
 
 Reads from `.work/plans/`, `.work/designs/`, `.work/implementations/`, and `.work/research/` in the current project.
+
+### `picker-paths`
+
+| Command | Action |
+|---------|--------|
+| `picker-paths list` | Show configured picker paths |
+| `picker-paths add <path>` | Add a root directory |
+| `picker-paths remove <path>` | Remove a root directory |
+
+Manages `~/.config/devenv/paths` — the list of root directories searched by the `Ctrl+P` project picker and `Cmd+P` Ghostty picker.
 
 ### `ccusage`
 

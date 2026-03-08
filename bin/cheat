@@ -30,7 +30,12 @@ case "${1:-}" in
 ls) list ;;
 *)
   file="$CHEATSHEET_DIR/$1-cheatsheet.md"
-  if [[ ! -f "$file" ]]; then
+  resolved=$(realpath "$file" 2>/dev/null) || resolved=""
+  if [[ -z "$resolved" || "$resolved" != "$CHEATSHEET_DIR"/* ]]; then
+    echo "Invalid cheatsheet name: $1"
+    exit 1
+  fi
+  if [[ ! -f "$resolved" ]]; then
     echo "No cheatsheet found for '$1'"
     echo "Run 'cheat ls' to see available cheatsheets."
     exit 1

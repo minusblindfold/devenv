@@ -35,11 +35,17 @@ fi
 if [[ -n "${1:-}" ]]; then
   file="$DIR/$1"
   [[ "$1" != *.md ]] && file="$DIR/$1.md"
-  if [[ ! -f "$file" ]]; then
+  resolved=$(realpath "$file" 2>/dev/null) || resolved=""
+  basedir=$(realpath "$DIR")
+  if [[ -z "$resolved" || "$resolved" != "$basedir"/* ]]; then
+    echo "Invalid path: $1"
+    exit 1
+  fi
+  if [[ ! -f "$resolved" ]]; then
     echo "Research file not found: $1"
     exit 1
   fi
-  show "$file"
+  show "$resolved"
   exit 0
 fi
 

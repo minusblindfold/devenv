@@ -8,7 +8,7 @@ Get comfortable with the tools before diving into the workflow. This guide cover
 
 ## Your Terminal: Ghostty
 
-Everything runs in **Ghostty** — a fast, GPU-accelerated terminal with native split panes. No tmux needed.
+Everything runs in **Ghostty** — a fast, GPU-accelerated terminal with native split panes.
 
 ### Panes
 
@@ -24,15 +24,17 @@ A typical layout: Claude on the left, a shell on the right for running commands 
 
 ### Project Picker
 
-Press `Cmd+P` to open a new terminal tab at a project directory. This uses Ghostty's built-in quick terminal with fzf.
+Press `Cmd+P` (Ghostty tab) or `Ctrl+P` (in-pane) to fuzzy-find and jump to a project directory. Both read from `~/.config/devenv/paths`.
 
-To configure which directories are searched, edit the keybind in `ghostty/config`. The default searches `~/Documents/personal` and `~/Documents/work`:
+Manage search paths with the `picker-paths` command:
 
+```bash
+picker-paths list              # show configured paths
+picker-paths add ~/Documents/work   # add a root directory
+picker-paths remove ~/Documents/work # remove one
 ```
-keybind = super+p=new_tab:zsh -c "cd $(find ~/Documents/personal ~/Documents/work -maxdepth 1 -type d | fzf) && exec zsh"
-```
 
-Add or remove paths to match where you keep your projects.
+The default paths are `~/Documents/dev` and `~/Documents/personal`.
 
 ---
 
@@ -40,20 +42,13 @@ Add or remove paths to match where you keep your projects.
 
 The prompt is powered by **Starship** — it shows git branch, language versions, and status icons at a glance. Config lives in `starship/starship.toml`.
 
-### Key Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `Ctrl+P` | Fuzzy project picker (cd to project) |
-
-The `Ctrl+P` widget searches the same directories as the Ghostty picker but stays in the current pane. Configure the search paths in `zsh/conf.d/40-widgets.zsh`.
-
 ### Aliases
 
 | Alias | Expands to |
 |-------|-----------|
 | `ls` | `ls -1F` |
 | `zshconfig` | Opens `~/.zshrc` in your editor |
+| `zshlocal` | Opens `~/.zshrc.local` in your editor |
 
 ### Local Config
 
@@ -104,9 +99,8 @@ Skill config lives in `claude/devenv.json` (symlinked to `~/.claude/devenv.json`
 {
   "work": { "dir": ".work" },
   "backups": { "maxPerArtifact": 5 },
-  "rebase": { "defaultBase": "origin/master" },
   "conventions": {
-    "layers": ["~/.claude/skills/conventions"]
+    "layers": ["~/.claude/conventions"]
   }
 }
 ```

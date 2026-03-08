@@ -63,3 +63,9 @@ if [[ "$errors" -ne 0 ]]; then
   echo "Pre-commit: fix the above issues before committing."
   exit 1
 fi
+
+# Chain to project-local hook if present
+local_hook="$(git rev-parse --git-dir)/hooks/pre-commit"
+if [[ -x "$local_hook" ]]; then
+  exec "$local_hook"
+fi

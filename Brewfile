@@ -5,6 +5,7 @@ tap "oven-sh/bun"
 
 brew "jq"         # JSON processing (used by bin/ scripts)
 brew "fzf"        # Fuzzy finder (project picker, plan/design viewers)
+brew "glow"       # Markdown renderer (cheat, view-plan, view-design, etc.)
 brew "starship"   # Shell prompt
 brew "gh"         # GitHub CLI
 brew "shellcheck"  # Shell script linter

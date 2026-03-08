@@ -19,37 +19,38 @@ The model isn't the bottleneck. The system around it is. The OpenAI team put it 
 
 > "Our most difficult challenges now center on designing environments, feedback loops, and control systems."
 
-Changing just the harness — not the model — improved coding performance by 5-14 percentage points across 15 different LLMs. The weakest models gained the most. Better structure means better output from any model.
-
-This workflow is the harness.
+This project is an example of building a harness system around Claude Code.
 
 ---
 
-## The Loop
+## Example Harness Loop
 
 ```
-/research → /plan → /design → /implement
-     ↑                              │
-     └──── re-enter on discovery ───┘
+             /research → /plan → /design → /implement
+                  ↑         ↑       ↑          │
+                  └─────────┴───────┴──────────┘
+
+        During any phase, context can be fed back to /research to refine plans and designs.
 ```
 
-Each step produces an artifact that the next step reads. No step touches code until `/implement`. Every artifact is saved to `.work/` in your project — add `.work/` to your `.gitignore`.
+Each step produces an artifact that the next step reads. No step touches code until `/implement`.
+These artifacts are stored to the current project's `.work/` directory.
 
 ### Running From Any Project
 
-The workflow is project-aware. `cd` into any project folder and run the skills — they read that project's `CLAUDE.md`, scan its directory structure, and save artifacts to `.work/` within it. For new projects, `/bootstrap` scaffolds the entire project from conventions, writes a `.work/bootstrap.md` context marker, and every subsequent skill reads that marker to skip redundant questions about your tech stack.
+The workflow is project-aware. `cd` into any project folder and run the skills — they read that project's `CLAUDE.md`, scan its directory structure, and save artifacts to `.work/` within it.
 
 ---
 
 ## Step 1 — Research
 
 ```
-/research auth
+/research "feature"
 ```
 
 Scans your convention docs and codebase for context relevant to a topic. Produces a structured artifact with three sections: **Applicable Conventions** (what rules exist), **Codebase Patterns** (what's already built), and **Gaps & Recommendations** (what's missing or inconsistent).
 
-Research is optional but valuable. It surfaces what you have before you plan what to build. The output feeds directly into `/plan`.
+Research is optional but valuable. It surfaces information to better direct the `/plan` stage.
 
 Run it again at any point — `/research` appends new findings without overwriting prior sections. Use `view-research` to browse saved research.
 
@@ -58,7 +59,7 @@ Run it again at any point — `/research` appends new findings without overwriti
 ## Step 2 — Plan
 
 ```
-/plan add recipe management
+/plan "feature"
 ```
 
 Claude asks clarifying questions (scope, constraints, entities), then produces a task list ordered by dependency. The plan is saved to `.work/plans/`.
@@ -148,7 +149,7 @@ This self-critique loop catches over-engineering, scope creep, and misalignment 
 
 Claude's output degrades as context fills up. The phased workflow helps — each skill starts with a focused read of specific artifacts rather than accumulating a session's worth of conversation.
 
-If you've corrected Claude more than twice on the same issue, the context is cluttered with failed approaches. Run `/clear` and start fresh with a more specific prompt. A clean session with a better prompt almost always outperforms a long correction chain.
+If you've corrected Claude multiple times on the same issue, the context can become cluttered with failed approaches. Run `/clear` and start fresh with a more specific prompt. A clean session with a better prompt almost always outperforms a long correction chain.
 
 ---
 
@@ -156,7 +157,7 @@ If you've corrected Claude more than twice on the same issue, the context is clu
 
 Convention docs are the knowledge base the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
 
-They live in `claude/skills/conventions/` and are discovered automatically via YAML frontmatter:
+They live in `claude/conventions/` and are discovered automatically via YAML frontmatter:
 
 ```yaml
 ---
@@ -164,10 +165,10 @@ keywords: [entity, model, JPA, persistence]
 ---
 # JPA Entity Conventions
 
-> How to structure JPA entities with Lombok...
+> How we structure JPA entities with Lombok...
 ```
 
-`/bootstrap` reads all conventions. `/implement` reads the ones that match the task. `/research` scans them for context. The resolution is layered — personal conventions can override team conventions can override org defaults — configured in `devenv.json` under `conventions.layers`.
+Skills call `/resolve-conventions` to discover and read conventions at runtime. `/bootstrap` resolves all of them. `/implement` resolves the ones that match the task. `/research` scans them for context. The resolution is layered — personal conventions can override team conventions can override org defaults — configured in `devenv.json` under `conventions.layers`.
 
 Edit conventions to evolve your patterns. The conventions are the harness.
 
@@ -197,10 +198,7 @@ Use `view-plan`, `view-design`, and `view-implement` between sessions. The artif
 `/implement` suggests a commit scoped to the task. Take it. Small, well-described commits make review and rollback easy.
 
 ### Use /research as a re-entry point
-Discovered something unexpected during implementation? Don't try to fix everything in the current task. Run `/research` to capture it, then `/plan refine` to adjust scope. The workflow is a loop, not a line.
-
-### Bootstrap new projects
-For new projects, `/bootstrap` scaffolds everything from conventions — build config, security, database, templates — in minutes. Every subsequent skill reads the bootstrap context and skips questions about your stack.
+Discovered something unexpected? Don't force it into the current step. Run `/research` to capture it, then `/plan refine` or `/design refine` to adjust. Re-entry works from any stage — plan, design, or implement. The workflow is a loop, not a line.
 
 ---
 
@@ -212,7 +210,6 @@ For new projects, `/bootstrap` scaffolds everything from conventions — build c
 | `/plan [description]` | Create or refine a task list |
 | `/design [slug]` | Generate architecture + task specs from a plan |
 | `/implement [slug [task-n]]` | Implement one task from a plan+design pair |
-| `/bootstrap <name>` | Scaffold a full project from conventions |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |
