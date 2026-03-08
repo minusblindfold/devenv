@@ -5,7 +5,8 @@
 
 My personal dev environment configuration. Managed with a hand-rolled install script using symlinks.
 
-→ **[Quick-start guide](docs/guide.md)** — terminal setup, cheatsheet, and a full `/plan → /design → /implement` walkthrough.
+→ **[Getting Started](docs/getting-started.md)** — terminal, tools, and configuration.
+→ **[Workflow Guide](docs/workflow-guide.md)** — the `/research → /plan → /design → /implement` loop and harness engineering rationale.
 
 ## Structure
 
