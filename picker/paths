@@ -1,0 +1,4 @@
+# Root directories for the project picker (ctrl+p)
+# One path per line — ~ is expanded at runtime
+~/Documents/dev
+~/Documents/personal

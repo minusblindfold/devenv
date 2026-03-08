@@ -23,7 +23,9 @@ Read `~/.claude/devenv.json`. Key: `work.dir` (default `.work`).
 
 ## Read conventions
 
-Read `conventions.layers` from `~/.claude/devenv.json`. Follow [convention-resolution.md](../convention-resolution.md) (mode: **all**) to resolve every available convention doc across layers. Read all resolved docs.
+Run `/resolve-conventions mode:all` to resolve every available convention doc across layers. Read all resolved docs.
+
+If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
 
 These define every pattern used below. Follow them exactly.
 

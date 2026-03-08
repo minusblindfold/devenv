@@ -2,6 +2,7 @@
 # claude-context — statusline for Claude Code
 # Reads Claude Code statusLine JSON from stdin
 # Dependencies: jq, git
+set -uo pipefail
 
 input=$(cat)
 
@@ -25,7 +26,7 @@ reset=$'\033[0m'
 # Agent name — env var is per-session; shared file is fallback for compatibility
 agent=""
 agent_dim=false
-if [[ -n "$CLAUDE_AGENT" ]]; then
+if [[ -n "${CLAUDE_AGENT:-}" ]]; then
   agent="$CLAUDE_AGENT"
 elif [[ -n "$transcript" ]]; then
   # Derive a short session ID from the transcript filename

@@ -18,12 +18,13 @@ Three pillars:
 
 ## What devenv provides
 
-A personal (and eventually team-shareable) harness built on Claude Code skills:
+A personal harness built on Claude Code skills:
 
 ```
-/research → /plan → /design → /implement
-     ↑                              │
-     └──── re-enter on discovery ───┘
+/bootstrap → /research → /plan → /design → /implement
+                  ↑         ↑       ↑          │
+                  └─────────┴───────┴──────────┘
+                      re-enter on discovery
 ```
 
 - **Convention docs** — markdown files with frontmatter describing coding patterns. Layerable: personal conventions override team conventions override org defaults. Drop files in to add constraints, remove them to relax.

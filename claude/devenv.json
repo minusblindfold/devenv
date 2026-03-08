@@ -5,12 +5,9 @@
   "work": {
     "dir": ".work"
   },
-  "rebase": {
-    "defaultBase": "origin/master"
-  },
   "conventions": {
     "layers": [
-      "~/.claude/skills/conventions"
+      "~/.claude/conventions"
     ]
   }
 }

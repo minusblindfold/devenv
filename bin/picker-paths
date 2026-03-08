@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Manage project picker paths in ~/.config/devenv/paths
+set -euo pipefail
+
+PATHS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/devenv/paths"
+
+usage() {
+  cat <<EOF
+Usage: picker-paths <command> [path]
+
+Commands:
+  list          Show configured paths
+  add <path>    Add a root directory
+  remove <path> Remove a root directory
+EOF
+  exit 1
+}
+
+ensure_file() {
+  mkdir -p "$(dirname "$PATHS_FILE")"
+  [[ -f "$PATHS_FILE" ]] || touch "$PATHS_FILE"
+}
+
+normalize() {
+  local p="$1"
+  # Collapse $HOME to ~
+  echo "${p/#$HOME/~}"
+}
+
+cmd_list() {
+  ensure_file
+  grep -v '^\s*#' "$PATHS_FILE" | grep -v '^\s*$' || echo "(no paths configured)"
+}
+
+cmd_add() {
+  local raw="$1"
+  local expanded="${raw/#\~/$HOME}"
+
+  if [[ ! -d "$expanded" ]]; then
+    echo "error: not a directory: $raw" >&2
+    exit 1
+  fi
+
+  local norm
+  norm=$(normalize "$expanded")
+  ensure_file
+
+  if grep -qFx "$norm" "$PATHS_FILE" 2>/dev/null; then
+    echo "already present: $norm"
+    return
+  fi
+
+  echo "$norm" >>"$PATHS_FILE"
+  echo "added: $norm"
+}
+
+cmd_remove() {
+  local raw="$1"
+  local expanded="${raw/#\~/$HOME}"
+  local norm
+  norm=$(normalize "$expanded")
+  ensure_file
+
+  if ! grep -qFx "$norm" "$PATHS_FILE" 2>/dev/null; then
+    echo "not found: $norm" >&2
+    exit 1
+  fi
+
+  local tmp
+  tmp=$(mktemp)
+  grep -vFx "$norm" "$PATHS_FILE" >"$tmp"
+  mv "$tmp" "$PATHS_FILE"
+  echo "removed: $norm"
+}
+
+[[ $# -ge 1 ]] || usage
+
+case "$1" in
+list) cmd_list ;;
+add)
+  [[ $# -ge 2 ]] || usage
+  cmd_add "$2"
+  ;;
+remove)
+  [[ $# -ge 2 ]] || usage
+  cmd_remove "$2"
+  ;;
+*) usage ;;
+esac

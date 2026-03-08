@@ -20,19 +20,20 @@ devenv/
 │   ├── view-implement      # Browse .work/implementations/ with fzf + glow
 │   ├── view-research       # Browse .work/research/ with fzf + glow
 │   ├── open-diagrams       # Open .mmd diagrams for a design in the browser
+│   └── picker-paths        # Manage project picker search paths
+├── picker/                 # Project picker config → symlinked to ~/.config/devenv/
+│   └── paths               # Root directories for ctrl+p / Cmd+P picker
 ├── claude/                 # Claude Code config → symlinked to ~/.claude/
 │   ├── skills/             # Skills → each subdir symlinked to ~/.claude/skills/<name>/
+│   │   ├── bootstrap/      # /bootstrap — scaffold a Spring Boot project from conventions
+│   │   ├── research/       # /research — scan conventions + codebase for context
 │   │   ├── plan/           # /plan — task planning
 │   │   ├── design/         # /design — HLD + specs from a plan
 │   │   ├── implement/      # /implement — drive task implementation from plan+design
-│   │   ├── bootstrap/      # /bootstrap — scaffold a Spring Boot project from conventions
-│   │   ├── research/       # /research — scan conventions + codebase for context
-│   │   ├── convention-resolution.md  # Shared algorithm for discovering conventions
-│   │   └── conventions/    # Shared reference docs read by skills at runtime
+│   │   └── resolve-conventions/  # Convention resolution (called by other skills, not user-invocable)
+│   ├── conventions/        # Convention reference docs → symlinked to ~/.claude/conventions/
 │   ├── commands/           # Commands (flat .md files)
 │   │   ├── document.md     # /document — sync docs after changes
-│   │   ├── rebase.md       # /rebase — rebase branch with auto-conflict resolution
-│   │   └── strip-fmt.md    # /strip-fmt — strip accidental formatting noise from diff
 │   ├── hooks/
 │   │   └── log-activity.sh
 │   ├── CLAUDE.md
@@ -82,7 +83,8 @@ The install script is **idempotent** — safe to run multiple times. It will:
 - Symlink all `.symlink` files into `$HOME`
 - Symlink `ghostty/config` into `~/.config/ghostty/`
 - Symlink `starship/starship.toml` into `~/.config/`
-- Symlink `claude/` config and hooks into `~/.claude/`; each `claude/skills/<name>/` directory into `~/.claude/skills/<name>/`
+- Symlink `claude/` config, hooks, and conventions into `~/.claude/`; each `claude/skills/<name>/` directory into `~/.claude/skills/<name>/`
+- Symlink `picker/paths` into `~/.config/devenv/paths` (skipped if user has customized paths)
 - Symlink `docs/` into `~/.local/share/cheat/`
 - Symlink all `bin/` scripts into `~/.local/bin/`
 - Symlink `git-hooks/` into `~/.git-hooks/` and set `core.hooksPath`
@@ -102,5 +104,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/skills/conventions/*.md`, `claude/skills/convention-resolution.md`, `claude/commands/{document,rebase,strip-fmt}.md`, `claude/devenv.json` (skill config) |
-| Git hooks | `git-hooks/post-commit` |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/conventions/*.md`, `claude/skills/resolve-conventions/SKILL.md`, `claude/commands/document.md`, `claude/devenv.json` (skill config) |
+| Git hooks | `git-hooks/pre-commit`, `git-hooks/post-commit` |

@@ -30,9 +30,9 @@ If $ARGUMENTS includes a task number, use it. Otherwise ask. Warn if dependencie
 
 ## Apply conventions
 
-Before implementing, read `conventions.layers` from `~/.claude/devenv.json`. Follow [convention-resolution.md](../convention-resolution.md) to resolve available conventions.
+If the design's task spec includes a `**Conventions:**` line, run `/resolve-conventions mode:explicit <titles>`. Otherwise, run `/resolve-conventions mode:keyword <task description terms>`.
 
-If the design's task spec includes a `**Conventions:**` line, use **explicit mode** — match listed titles against resolved convention titles. Otherwise, use **keyword mode** — match the task description against resolved frontmatter keywords.
+If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
 
 Follow the matched convention docs when creating or modifying files that fall under their scope.
 

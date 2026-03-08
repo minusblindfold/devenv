@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
+set -uo pipefail
 
 mkdir -p ~/.claude
 agent="${CLAUDE_AGENT:-}"
-[[ -z "$agent" && -f ~/.claude/agent ]] && agent=$(cat ~/.claude/agent)
 msg=$(git log -1 --pretty=%s)
 printf "[%s] %s | %s | %s\n" "$(date +%H:%M)" "${agent:-git}" "$(basename "$PWD")" "$msg" >>~/.claude/activity.log
+
+# Chain to project-local hook if present
+local_hook="$(git rev-parse --git-dir)/hooks/post-commit"
+if [[ -x "$local_hook" ]]; then
+  exec "$local_hook"
+fi

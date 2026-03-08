@@ -17,6 +17,7 @@
 |---|---|
 | `jq` | JSON processing (used by bin scripts and claude-context) |
 | `fzf` | Fuzzy finder (project picker, plan/design viewers) |
+| `glow` | Markdown renderer (cheat, viewer scripts) |
 | `starship` | Shell prompt |
 | `gh` | GitHub CLI |
 | `shellcheck` | Shell script linter (pre-commit hook) |
