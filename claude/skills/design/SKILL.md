@@ -78,6 +78,7 @@ _(include only the diagrams that apply)_
 **Interfaces:** Public APIs, function signatures, or data shapes involved.
 **Implementation notes:** Approach, constraints, anything non-obvious.
 **Acceptance criteria:** How to verify it's done.
+**Tests:** What to test — key scenarios, edge cases, and integration points. Name the test class or file where they belong.
 **Dependencies:** Other tasks or external systems this relies on.
 **Conventions:** Convention titles that apply (e.g., JPA Entity Conventions, Liquibase Migration Conventions). Omit if none apply.
 ```

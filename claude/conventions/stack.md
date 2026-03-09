@@ -60,7 +60,7 @@ Derive the artifact name from the project name: lowercase, hyphens removed for t
 ## Configuration
 
 - `application.properties` — app name, database connection (with `${ENV_VAR:default}` placeholders), JPA validate mode, Liquibase changelog path, Actuator endpoints. See the docker-db convention for database-specific config.
-- Test `application.properties` — disable Docker Compose, use H2 in-memory database (`jdbc:h2:mem:testdb`), `ddl-auto=create-drop`, disable Liquibase. Tests should pass without Docker or PostgreSQL.
+- Test `application-test.properties` — disable Docker Compose, use H2 in-memory database with PostgreSQL compatibility mode, `ddl-auto=none`, Liquibase **enabled** (validates migrations and provides seed data). See testing convention for full config. Tests should pass without Docker or PostgreSQL.
 
 ## Build Wrapper
 
