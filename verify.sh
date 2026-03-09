@@ -50,6 +50,12 @@ check_link "$HOME/.claude/skills/implement" "~/.claude/skills/implement"
 check_link "$HOME/.claude/skills/bootstrap" "~/.claude/skills/bootstrap"
 check_link "$HOME/.claude/skills/research" "~/.claude/skills/research"
 check_link "$HOME/.claude/conventions" "~/.claude/conventions"
+# Check for convention content (info only, not a failure)
+_conv_count=$(find "$HOME/.claude/conventions" -name "*.md" ! -name "conventions.md" 2>/dev/null | head -1)
+if [ -z "$_conv_count" ]; then
+  echo "  [info] No conventions configured — skills will work without convention guidance"
+  echo "         See ~/.claude/conventions/conventions.md to add your own"
+fi
 check_link "$HOME/.claude/skills/resolve-conventions" "~/.claude/skills/resolve-conventions"
 check_link "$HOME/.claude/commands/document.md" "~/.claude/commands/document.md"
 check_link "$HOME/.claude/hooks/log-activity.sh" "~/.claude/hooks/log-activity.sh"

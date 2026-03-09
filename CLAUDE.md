@@ -10,7 +10,7 @@ Two symlink patterns:
 
 Scripts in `bin/` use `#!/usr/bin/env bash` and are symlinked to `~/.local/bin/`.
 
-Claude skill config lives in `claude/devenv.json` (symlinked to `~/.claude/devenv.json`). Skills read this at runtime for settings like backup limits and work directory.
+Claude skill config lives in `claude/devenv.json` (symlinked to `~/.claude/devenv.json`). Skills read this at runtime for backup limits and work directory settings.
 
 ## Claude Skills
 
@@ -34,38 +34,25 @@ After bootstrap, `.work/bootstrap.md` in the project provides context to `/plan`
 
 ## Convention Docs
 
-Shared reference docs live in `claude/conventions/` (symlinked to `~/.claude/conventions/`). Each describes a pattern that skills read at runtime:
-- `stack.md` — project skeleton: language, framework, build system, infrastructure, startup commands
-- `entity.md` — JPA entity annotations, Lombok, equals/hashCode, fetch strategy, @ManyToOne/@OneToMany
-- `repository.md` — Spring Data JPA interfaces, derived query methods, return types
-- `service.md` — interface + impl, transactions, validation, exceptions
-- `controller.md` — role-based packages, auth guards, flash attributes, mutation safety
-- `migration.md` — Liquibase YAML format, naming, master changelog, seed data with documented passwords
-- `templates.md` — Thymeleaf fragments, directory layout, Bootstrap 5, single source of truth for navigation
-- `security.md` — Role enum, UserDetailsService, SecurityConfig, AuthController, auth flow
-- `docker-db.md` — Docker Compose, PostgreSQL, zero-friction dev startup via spring-boot-docker-compose
+Convention docs are markdown files that guide skills at runtime. They live in `claude/conventions/` (symlinked to `~/.claude/conventions/`). Drop `.md` files into this directory and skills discover them automatically via YAML frontmatter.
 
-These are not invocable skills — they're knowledge files. Convention discovery is handled by the `/resolve-conventions` skill (`user-invocable: false`) — called by other skills to resolve conventions across configurable layers (set in `devenv.json` under `conventions.layers`).
+The `conventions.md` file in that directory documents the format — frontmatter schema, available sections, and how to get started. It is not a convention itself.
+
+Convention discovery is handled by the `/resolve-conventions` skill (`user-invocable: false`) — called by other skills. It reads `~/.claude/conventions/` directly. When `~/.config/devenv/convention-layers` exists (created by the optional [devenv-conventions](https://github.com/minusblindfold/devenv-conventions) expansion), it switches to layered mode with multiple convention sources and precedence ordering.
 
 ### Convention Frontmatter Schema
-
-Each convention doc has YAML frontmatter between `---` delimiters:
 
 ```yaml
 ---
 keywords: [entity, model, JPA, persistence]   # Required. Terms for keyword-based discovery.
-scope: all                                      # Optional. When this convention applies:
-                                                #   bootstrap — only during project scaffolding
-                                                #   feature   — only during feature implementation
-                                                #   all       — both contexts (default if omitted)
-extends: false                                  # Optional. If true, appends to a higher-precedence
-                                                #   version instead of being overridden. Default: false.
+scope: all                                      # Optional: bootstrap | feature | all (default)
+extends: false                                  # Optional: append to higher-precedence version (default: false)
 ---
 ```
 
-Conventions with a `## Bootstrap` section describe what they contribute to a new project scaffold. `/bootstrap` reads these sections to generate files. Conventions without a `## Bootstrap` section are skipped during scaffolding but remain available for feature work.
+### Convention Packs
 
-`/bootstrap` reads all conventions to generate a project. `/implement` reads the relevant ones per task (matched by title or keywords). `/research` scans them to produce context for planning. Edit them to evolve your conventions.
+For organized, reusable convention sets with management tooling (enable/disable packs, layered resolution, multiple active packs), see [devenv-conventions](https://github.com/minusblindfold/devenv-conventions).
 
 ## Documentation
 

@@ -157,7 +157,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 Convention docs are the knowledge base the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
 
-They live in `claude/conventions/` and are discovered automatically via YAML frontmatter:
+They live in `~/.claude/conventions/` and are discovered automatically via YAML frontmatter:
 
 ```yaml
 ---
@@ -175,7 +175,13 @@ Create a Role enum and a User entity as the auth foundation...
 
 The `scope` field controls when a convention applies: `bootstrap` (scaffolding only), `feature` (feature implementation only), or `all` (both — the default). Conventions with a `## Bootstrap` section describe what they contribute to a new project scaffold.
 
-Skills call `/resolve-conventions` to discover and read conventions at runtime. `/bootstrap` resolves conventions scoped to bootstrapping and reads their `## Bootstrap` sections. `/implement` resolves the ones that match the task by keyword. `/research` scans them for context. The resolution is layered — personal conventions can override team conventions can override org defaults — configured in `devenv.json` under `conventions.layers`.
+### Progressive convention model
+
+Start simple — drop a few `.md` files into `~/.claude/conventions/`. Skills discover them automatically. No config needed.
+
+When you need more, install [devenv-conventions](https://github.com/minusblindfold/devenv-conventions) for organized packs with a CLI (`devenv-conventions enable/disable/list`). Packs add layered resolution — multiple convention sets active simultaneously with precedence ordering. Flat files in `~/.claude/conventions/` always serve as the lowest-precedence fallback.
+
+Skills call `/resolve-conventions` to discover conventions at runtime. `/bootstrap` resolves conventions scoped to bootstrapping. `/implement` matches by keyword. `/research` scans them for context. With no conventions configured, skills work from codebase context alone — conventions are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
 
 Edit conventions to evolve your patterns. The conventions are the harness.
 
