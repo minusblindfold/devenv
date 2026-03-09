@@ -9,7 +9,7 @@ Scan conventions and codebase to produce structured context for the plan/design/
 
 ## Config
 
-Read `~/.claude/devenv.json`. Keys: `work.dir` (default `.work`), `conventions.layers`.
+Read `~/.claude/devenv.json`. Keys: `work.dir` (default `.work`).
 
 ## Mode
 
@@ -51,9 +51,9 @@ Write to `<work.dir>/research/YYYY-MM-DD-<slug>-research.md` (or `health-check.m
 
 ### Applicable Conventions
 
-| Convention | Source Layer | Key Rules |
+| Convention | Source | Key Rules |
 |---|---|---|
-| Title from H1 | layer path | first 3-5 rules |
+| Title from H1 | file path | first 3-5 rules |
 
 ### Codebase Patterns
 
