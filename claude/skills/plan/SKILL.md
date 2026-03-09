@@ -45,10 +45,11 @@ If $ARGUMENTS is empty → list `<work.dir>/plans/`. None: ask what to plan. One
 ## Tasks
 
 - [ ] **Task title** — what it does; key constraints or dependencies if any.
+  - **Done when:** one-line acceptance criterion.
 - [ ] ...
 ```
 
-Tasks should be small and ordered by dependency. Each item needs enough detail for `/design` to write a full spec (goal, interfaces, acceptance criteria) without guessing.
+Tasks should be small and ordered by dependency. Each task includes a one-line "Done when" acceptance criterion so `/design` can expand it into a full spec without guessing intent.
 
 ## Rules
 
