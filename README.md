@@ -31,7 +31,8 @@ devenv/
 │   │   ├── design/         # /design — HLD + specs from a plan
 │   │   ├── implement/      # /implement — drive task implementation from plan+design
 │   │   └── resolve-conventions/  # Convention resolution (called by other skills, not user-invocable)
-│   ├── conventions/        # Convention reference docs → symlinked to ~/.claude/conventions/
+│   ├── conventions/        # Convention docs dir → symlinked to ~/.claude/conventions/
+│   │   └── conventions.md  # Starter doc explaining the convention format
 │   ├── commands/           # Commands (flat .md files)
 │   │   ├── document.md     # /document — sync docs after changes
 │   ├── hooks/
@@ -62,7 +63,9 @@ devenv/
 
 Work-specific config and secrets live in `~/.zshrc.local` (not tracked). `60-local.zsh` sources it automatically if present.
 
-Claude skill config (backup limits, work dir, convention layers) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, `research/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+Claude skill config (backup limits, work dir) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, `research/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+
+Conventions are flat markdown files in `~/.claude/conventions/`. Drop files in and skills pick them up. For organized convention packs with management tooling, see [devenv-conventions](https://github.com/minusblindfold/devenv-conventions).
 
 **Convention:** Any file ending in `.symlink` gets linked into `$HOME` with a dot prefix.
 
@@ -104,5 +107,5 @@ The install script is **idempotent** — safe to run multiple times. It will:
 | Ghostty | `ghostty/config` |
 | zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
 | Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/conventions/*.md`, `claude/skills/resolve-conventions/SKILL.md`, `claude/commands/document.md`, `claude/devenv.json` (skill config) |
+| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/conventions/conventions.md`, `claude/skills/resolve-conventions/SKILL.md`, `claude/commands/document.md`, `claude/devenv.json` (skill config) |
 | Git hooks | `git-hooks/pre-commit`, `git-hooks/post-commit` |

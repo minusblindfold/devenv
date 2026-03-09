@@ -4,10 +4,5 @@
   },
   "work": {
     "dir": ".work"
-  },
-  "conventions": {
-    "layers": [
-      "~/.claude/conventions"
-    ]
   }
 }

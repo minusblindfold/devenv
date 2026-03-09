@@ -17,7 +17,7 @@ Run `/resolve-conventions mode:all scope:bootstrap` to resolve every convention 
 
 If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then stop.
 
-If no conventions are resolved, stop: "No conventions found. Bootstrap needs convention docs to know what to generate. See the devenv workflow guide for setup."
+If no conventions are resolved, stop: "No conventions found. Add at least a `stack.md` to `~/.claude/conventions/`, or install a convention pack from [devenv-conventions](https://github.com/minusblindfold/devenv-conventions). See `~/.claude/conventions/conventions.md` for the format."
 
 Look for a **Stack** convention (matched by H1 title or `stack` keyword). If no stack convention is found, stop: "No stack convention found. Bootstrap needs a stack convention to know what kind of project to generate."
 

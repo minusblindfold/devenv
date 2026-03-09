@@ -5,7 +5,7 @@ user-invocable: false
 allowed-tools: Read, Glob, Grep
 ---
 
-Discover and read convention docs across configured layers.
+Discover and read convention docs from the base conventions directory and any configured layers.
 
 ## Input
 
@@ -20,16 +20,27 @@ If $ARGUMENTS is empty, default to `mode:all`.
 
 ## Resolution
 
-1. Read `conventions.layers` from `~/.claude/devenv.json`. If missing, default to `["~/.claude/conventions"]`.
-2. Walk layers in array order. First entry = highest precedence.
-3. In each layer directory, find all `.md` files. Read YAML frontmatter (between `---` delimiters) from each.
-4. Build a resolution map keyed by filename:
+### Determine mode
+
+Check if `~/.config/devenv/convention-layers` exists and is non-empty.
+
+- **If no** (flat mode): use a single source — `~/.claude/conventions/`.
+- **If yes** (layered mode): read the layers file line by line. Each line is an absolute path to a convention directory. These form the layer list in order (first line = highest precedence). Append `~/.claude/conventions/` as the lowest-precedence fallback layer.
+
+### Build the resolution map
+
+Walk layers in order (highest precedence first). In flat mode, there is only one layer.
+
+1. In each layer directory, find all `.md` files (excluding `conventions.md`, which is documentation, not a convention).
+2. Read YAML frontmatter (between `---` delimiters) from each file.
+3. Build a resolution map keyed by filename:
    - First occurrence of a filename → add it (path, keywords, title).
    - Subsequent occurrence → check the new doc's `extends` frontmatter:
      - `extends: true` → mark as extension. Read both: higher-precedence doc first, then this one appends.
      - `extends: false` or omitted → skip. Higher-precedence version already won.
-5. For docs without frontmatter, use the H1 title and blockquote description for matching. These docs are still resolved but can only be matched by title.
-6. Skip missing layer directories with a warning. Do not error.
+4. For docs without frontmatter, use the H1 title and blockquote description for matching. These docs are still resolved but can only be matched by title.
+5. Skip missing layer directories with a warning. Do not error.
+6. If no conventions are found across all layers, this is a valid state — proceed to output with no conventions.
 
 ## Matching
 
