@@ -8,7 +8,7 @@ cd ~/path/of/your/choice && ./install.sh
 ./verify.sh
 ```
 
-Dependencies are installed automatically via the Brewfile. See [SETUP.md](../SETUP.md) for details.
+Dependencies are installed automatically via the Brewfile.
 
 ## Terminal (Ghostty)
 

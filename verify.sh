@@ -102,7 +102,6 @@ check_cmd shfmt
 check_cmd bun
 check_cmd claude
 check_cmd glow
-check_cmd gradle
 
 # ── Smoke tests ───────────────────────────────────────────────────────────────
 echo ""
