@@ -81,7 +81,6 @@ The install script is idempotent — safe to run multiple times. It symlinks eve
 | `gh` | GitHub CLI |
 | `shellcheck` | Shell script linter (pre-commit hook) |
 | `shfmt` | Shell script formatter (pre-commit hook) |
-| `gradle` | Build tool (`/bootstrap` generates Gradle wrapper) |
 | `bun` | JS runtime (`bunx ccusage` for cost tracking) |
 | `font-jetbrains-mono-nerd-font` | Nerd font for terminal icons |
 
