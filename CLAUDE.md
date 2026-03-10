@@ -15,11 +15,11 @@ Claude skill config lives in `claude/devenv.json` (symlinked to `~/.claude/deven
 ## Claude Skills
 
 User-invocable skills live in `claude/skills/` (each symlinked to `~/.claude/skills/<name>/`):
-- `/bootstrap` — scaffold a project from conventions, writes `.work/bootstrap.md` context marker in the project
 - `/research` — scan conventions and codebase to produce structured context, saved to `.work/research/`
 - `/plan` — create or refine a task list, saved to `.work/plans/`
 - `/design` — create or refine a design doc from a plan, saved to `.work/designs/`; pass a free-form description to bootstrap a plan inline
 - `/implement` — implement a task from a plan+design pair, saves notes to `.work/implementations/`
+- `/bootstrap` — scaffold a project from conventions, writes `.work/bootstrap.md` context marker in the project
 
 One internal skill (`user-invocable: false`) is called by other skills:
 - `/resolve-conventions` — discover and read convention docs from configured layers

@@ -80,6 +80,12 @@ Scans your convention docs and codebase for context. Produces three sections: **
 
 Research is optional but useful before planning. Run it again at any point — it appends new findings without overwriting prior sections.
 
+![Research output](screen-caps/research-output.png)
+
+Use `view-research` to browse saved research across sessions.
+
+![view-research](screen-caps/view-research.png)
+
 ### /plan
 
 ```
@@ -131,10 +137,10 @@ Four viewer scripts browse work artifacts. All use fzf for selection and glow fo
 
 | Command | Reads from |
 |---------|-----------|
+| `view-research` | `.work/research/` |
 | `view-plan` | `.work/plans/` |
 | `view-design` | `.work/designs/` |
 | `view-implement` | `.work/implementations/` |
-| `view-research` | `.work/research/` |
 
 Pass a filename to view directly, or run with no args for the picker. `open-diagrams <design-file>` opens `.mmd` diagrams in the browser.
 

@@ -44,17 +44,17 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
+| `/research [slug\|topic]` | Scan conventions + codebase for context, save to `.work/research/` |
 | `/plan [description\|slug]` | Create or refine a plan |
 | `/design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
 | `/implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
-| `/research [slug\|topic]` | Scan conventions + codebase for context, save to `.work/research/` |
 | `/bootstrap <project-name>` | Scaffold a project from conventions |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills (`/plan`, `/design`, `/implement`, `/bootstrap`, `/research`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/conventions/`, discovered via the `/resolve-conventions` skill across configurable layers. The `/document` command lives in `claude/commands/`.
+Skills (`/research`, `/plan`, `/design`, `/implement`, `/bootstrap`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/conventions/`, discovered via the `/resolve-conventions` skill across configurable layers. The `/document` command lives in `claude/commands/`.
 
 Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`, `conventions.layers` (ordered paths for convention discovery).
 
@@ -68,6 +68,13 @@ Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.jso
 | `cheat help` | Same as above |
 | `cheat ls` | List tool cheatsheets |
 | `cheat <tool>` | View tool cheatsheet |
+
+### `view-research`
+
+| Command | Action |
+|---------|--------|
+| `view-research` | Browse research files (fzf + glow) |
+| `view-research <file>` | View a specific research file |
 
 ### `view-plan`
 
@@ -91,20 +98,13 @@ Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.jso
 | `view-implement` | Browse implementation notes (fzf + glow) |
 | `view-implement <file>` | View a specific implementation note |
 
-### `view-research`
-
-| Command | Action |
-|---------|--------|
-| `view-research` | Browse research files (fzf + glow) |
-| `view-research <file>` | View a specific research file |
-
 ### `open-diagrams`
 
 | Command | Action |
 |---------|--------|
 | `open-diagrams <design-file>` | Open `.mmd` diagrams referenced in a design doc in the browser |
 
-Reads from `.work/plans/`, `.work/designs/`, `.work/implementations/`, and `.work/research/` in the current project.
+Reads from `.work/research/`, `.work/plans/`, `.work/designs/`, and `.work/implementations/` in the current project.
 
 ### `picker-paths`
 

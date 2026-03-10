@@ -9,7 +9,7 @@ Personal skills are installed via the `devenv` repo and available in all project
 - `/plan` — create or refine a task list
 - `/design` — generate a design doc from a plan
 - `/implement` — implement a task from a plan+design pair
-- `/bootstrap` — scaffold a new Spring Boot project from conventions
+- `/bootstrap` — scaffold a new project from conventions
 - `/document` — sync documentation after changes
 
 The typical flow is: `/research` → `/plan` → `/design` → `/implement`. `/bootstrap` is for new projects only. `/research` can re-enter at any stage.

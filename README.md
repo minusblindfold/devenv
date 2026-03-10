@@ -41,10 +41,10 @@ Small scripts symlinked to `~/.local/bin/`:
 | Command | What it does |
 |---------|-------------|
 | `cheat` | Render markdown cheatsheets with glow |
+| `view-research` | Browse research artifacts |
 | `view-plan` | Browse saved plans with fzf + glow |
 | `view-design` | Browse saved designs (ctrl-d opens diagrams) |
 | `view-implement` | Browse implementation notes |
-| `view-research` | Browse research artifacts |
 | `open-diagrams` | Open .mmd architecture diagrams in the browser |
 | `picker-paths` | Manage project picker search directories |
 | `claude-context` | Statusline showing directory, git branch, context %, session cost |

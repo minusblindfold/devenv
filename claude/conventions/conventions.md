@@ -1,6 +1,6 @@
 # Convention Docs
 
-Conventions are markdown files that guide Claude Code skills (`/plan`, `/design`, `/implement`, `/bootstrap`, `/research`). Drop `.md` files into this directory and skills will discover them automatically.
+Conventions are markdown files that guide Claude Code skills (`/research`, `/plan`, `/design`, `/implement`, `/bootstrap`). Drop `.md` files into this directory and skills will discover them automatically.
 
 ## Format
 
