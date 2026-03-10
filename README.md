@@ -1,111 +1,118 @@
 # devenv
 
-> [!CAUTION]
-> This is highly opinionated and intentionally simple. It's meant as an introduction to a development environment integrated with Claude Code — not a one-size-fits-all setup. Adapt it to your own workflow.
+My personal dev environment for working with Claude Code on macOS. It sets up a terminal, shell, and prompt, and includes a set of Claude Code skills that structure how I plan, design, and build features. Everything is managed with symlinks — clone it, run the install script, and it wires itself into place.
 
-My personal dev environment configuration. Managed with a hand-rolled install script using symlinks.
+This is opinionated and intentionally simple. It's not a framework. It's an example of what works for me. Look through it, take what's useful, ignore the rest.
 
-→ **[Getting Started](docs/getting-started.md)** — terminal, tools, and configuration.
-→ **[Workflow Guide](docs/workflow-guide.md)** — the `/research → /plan → /design → /implement` loop and harness engineering rationale.
+![Terminal with Claude Code and split panes](docs/screen-caps/terminal-overview.png)
 
-## Structure
+## What's inside
 
-```
-devenv/
-├── bin/                    # Personal scripts → symlinked to ~/.local/bin/
-│   ├── cheat               # Markdown cheatsheet viewer
-│   ├── claude-context      # Claude Code statusline (directory, git branch, context %, session cost)
-│   ├── view-plan           # Browse .work/plans/ with fzf + glow
-│   ├── view-design         # Browse .work/designs/ with fzf + glow (ctrl-d opens diagrams)
-│   ├── view-implement      # Browse .work/implementations/ with fzf + glow
-│   ├── view-research       # Browse .work/research/ with fzf + glow
-│   ├── open-diagrams       # Open .mmd diagrams for a design in the browser
-│   └── picker-paths        # Manage project picker search paths
-├── picker/                 # Project picker config → symlinked to ~/.config/devenv/
-│   └── paths               # Root directories for ctrl+p / Cmd+P picker
-├── claude/                 # Claude Code config → symlinked to ~/.claude/
-│   ├── skills/             # Skills → each subdir symlinked to ~/.claude/skills/<name>/
-│   │   ├── bootstrap/      # /bootstrap — scaffold a project from conventions
-│   │   ├── research/       # /research — scan conventions + codebase for context
-│   │   ├── plan/           # /plan — task planning
-│   │   ├── design/         # /design — HLD + specs from a plan
-│   │   ├── implement/      # /implement — drive task implementation from plan+design
-│   │   └── resolve-conventions/  # Convention resolution (called by other skills, not user-invocable)
-│   ├── conventions/        # Convention docs dir → symlinked to ~/.claude/conventions/
-│   │   └── conventions.md  # Starter doc explaining the convention format
-│   ├── commands/           # Commands (flat .md files)
-│   │   ├── document.md     # /document — sync docs after changes
-│   ├── hooks/
-│   │   └── log-activity.sh
-│   ├── CLAUDE.md
-│   ├── devenv.json         # Skill config → symlinked to ~/.claude/devenv.json
-│   └── settings.json
-├── docs/                   # Cheatsheets → symlinked to ~/.local/share/cheat/
-├── ghostty/                # Ghostty terminal config → symlinked to ~/.config/ghostty/
-│   └── config
-├── git-hooks/              # Global git hooks → symlinked to ~/.git-hooks/ (shellcheck + shfmt pre-commit)
-├── home/                   # Dotfiles (*.symlink) → symlinked to ~/
-├── starship/               # Starship prompt config → symlinked to ~/.config/
-│   └── starship.toml
-├── zsh/
-│   ├── devenv.zsh          # Loader → symlinked to ~/.zsh/devenv.zsh
-│   └── conf.d/             # Modular zsh config (sourced in order by devenv.zsh)
-│       ├── 10-path.zsh
-│       ├── 20-prompt.zsh
-│       ├── 30-aliases.zsh
-│       ├── 40-widgets.zsh
-│       ├── 50-agents.zsh
-│       └── 60-local.zsh
-├── install.sh              # Sets up all symlinks
-├── verify.sh               # Post-install verification
-└── .gitignore
-```
+### Terminal
 
-Work-specific config and secrets live in `~/.zshrc.local` (not tracked). `60-local.zsh` sources it automatically if present.
+[Ghostty](https://ghostty.org/) config with split panes and a project picker. `Cmd+P` (Ghostty keybind) or `Ctrl+P` (zsh widget) opens a fuzzy finder to jump between project directories.
 
-Claude skill config (backup limits, work dir) lives in `claude/devenv.json`, symlinked to `~/.claude/devenv.json`. Work artifacts (`plans/`, `designs/`, `implementations/`, `research/`, and `.backup/` subdirs within each) are written to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+### Shell
 
-Conventions are flat markdown files in `~/.claude/conventions/`. Drop files in and skills pick them up. For organized convention packs with management tooling, see [devenv-conventions](https://github.com/minusblindfold/devenv-conventions).
+Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language versions, and status. Modular config in `zsh/conf.d/` — path, prompt, aliases, widgets, SSH agents, and a local override file (`~/.zshrc.local`) for machine-specific config that isn't tracked.
 
-**Convention:** Any file ending in `.symlink` gets linked into `$HOME` with a dot prefix.
+### Claude Code skills
 
-Scripts in `bin/` are symlinked to `~/.local/bin/` and made executable.
+A set of skills that break feature work into phases. Each phase produces an artifact the next one reads — no step touches code until `/implement`.
 
-## Install
+- `/research` — scan conventions and codebase for context relevant to a topic
+- `/plan` — ask clarifying questions, then produce an ordered task list
+- `/design` — generate architecture, diagrams, and a spec for each task
+- `/implement` — implement one task at a time against the spec
+- `/bootstrap` — scaffold a new project from convention docs
 
-Clone the repo anywhere you like, then run the install script:
+The full workflow is `/research` → `/plan` → `/design` → `/implement`, with `/research` as a re-entry point at any stage. See the [guide](docs/guide.md) for a walkthrough.
+
+### Convention docs
+
+Markdown files that guide Claude's output at runtime — coding patterns, project structure, naming rules. Drop `.md` files into `~/.claude/conventions/` and skills pick them up automatically via YAML frontmatter keywords.
+
+For organized packs with a management CLI, see [devenv-conventions](https://github.com/minusblindfold/devenv-conventions).
+
+### CLI tools
+
+Small scripts symlinked to `~/.local/bin/`:
+
+| Command | What it does |
+|---------|-------------|
+| `cheat` | Render markdown cheatsheets with glow |
+| `view-plan` | Browse saved plans with fzf + glow |
+| `view-design` | Browse saved designs (ctrl-d opens diagrams) |
+| `view-implement` | Browse implementation notes |
+| `view-research` | Browse research artifacts |
+| `open-diagrams` | Open .mmd architecture diagrams in the browser |
+| `picker-paths` | Manage project picker search directories |
+| `claude-context` | Statusline showing directory, git branch, context %, session cost |
+
+See the [cheatsheet](docs/cheatsheet.md) for the full reference.
+
+### Git hooks
+
+Global pre-commit hook runs `shellcheck` and `shfmt` on staged shell scripts. Skips zsh files.
+
+## Quickstart
+
+Requires macOS and [Homebrew](https://brew.sh/).
 
 ```bash
-git clone <repo-url> ~/path/of/your/choice
-cd ~/path/of/your/choice && ./install.sh
+git clone https://github.com/minusblindfold/devenv.git ~/path/of/your/choice
+cd ~/path/of/your/choice
+./install.sh
+./verify.sh
 ```
 
-The repo path doesn't matter — the install script detects its own location at runtime and builds all symlinks relative to it. Dependencies (see `Brewfile`) are installed automatically. You'll be prompted once for your email for telemetry attribution.
+Restart your terminal after install.
 
-The install script is **idempotent** — safe to run multiple times. It will:
-- Symlink all `.symlink` files into `$HOME`
-- Symlink `ghostty/config` into `~/.config/ghostty/`
-- Symlink `starship/starship.toml` into `~/.config/`
-- Symlink `claude/` config, hooks, and conventions into `~/.claude/`; each `claude/skills/<name>/` directory into `~/.claude/skills/<name>/`
-- Symlink `picker/paths` into `~/.config/devenv/paths` (skipped if user has customized paths)
-- Symlink `docs/` into `~/.local/share/cheat/`
-- Symlink all `bin/` scripts into `~/.local/bin/`
-- Symlink `git-hooks/` into `~/.git-hooks/` and set `core.hooksPath`
-- Symlink `zsh/devenv.zsh` into `~/.zsh/devenv.zsh` and inject a `source` line into `~/.zshrc` (never replaces it)
-- Back up any existing files to `~/.dotfiles_backup/<timestamp>/` before replacing them
+The install script is idempotent — safe to run multiple times. It symlinks everything into place and backs up any existing files to `~/.dotfiles_backup/<timestamp>/` before replacing them. Dependencies are installed automatically via the Brewfile:
 
-## Adding new config
+| Tool | Purpose |
+|------|---------|
+| `ghostty` | Terminal emulator |
+| `claude-code` | Claude Code CLI |
+| `fzf` | Fuzzy finder (project picker, viewers) |
+| `glow` | Markdown renderer (cheat, viewers) |
+| `starship` | Shell prompt |
+| `jq` | JSON processing (bin scripts) |
+| `gh` | GitHub CLI |
+| `shellcheck` | Shell script linter (pre-commit hook) |
+| `shfmt` | Shell script formatter (pre-commit hook) |
+| `gradle` | Build tool (`/bootstrap` generates Gradle wrapper) |
+| `bun` | JS runtime (`bunx ccusage` for cost tracking) |
+| `font-jetbrains-mono-nerd-font` | Nerd font for terminal icons |
 
-1. Create a topic folder (e.g. `git/`, `vim/`)
-2. Add your config file with a `.symlink` extension (e.g. `git/gitconfig.symlink`)
-3. Run `./install.sh` to apply
+<details>
+<summary>Troubleshooting</summary>
 
-## Tools
+**`font-jetbrains-mono-nerd-font` not found**
 
-| Tool | Config |
-|---|---|
-| Ghostty | `ghostty/config` |
-| zsh | `zsh/devenv.zsh` (loader), `zsh/conf.d/` (modules) |
-| Starship | `starship/starship.toml` |
-| Claude Code | `claude/settings.json`, `claude/hooks/log-activity.sh`, `claude/skills/{plan,design,implement,bootstrap,research}/SKILL.md`, `claude/conventions/conventions.md`, `claude/skills/resolve-conventions/SKILL.md`, `claude/commands/document.md`, `claude/devenv.json` (skill config) |
-| Git hooks | `git-hooks/pre-commit`, `git-hooks/post-commit` |
+On Homebrew older than 4.x, cask fonts live in a separate tap:
+
+```bash
+brew tap homebrew/cask-fonts
+brew install --cask font-jetbrains-mono-nerd-font
+```
+
+</details>
+
+## Adding your own config
+
+Files ending in `.symlink` are linked into `$HOME` with a dot prefix (e.g., `git/gitconfig.symlink` → `~/.gitconfig`). For tools with complex layouts, there's a dedicated `install_*()` function in `install.sh`. Run `./install.sh` after adding anything.
+
+## Updating
+
+Pull the repo and re-run `./install.sh`. Because everything is symlinked, conventions, skills, and tools update in place — the repo is the source of truth.
+
+## Links
+
+- [Guide](docs/guide.md) — terminal setup, the skill workflow, conventions, and tips
+- [Cheatsheet](docs/cheatsheet.md) — quick reference for all keybindings, commands, and CLI tools
+- [devenv-conventions](https://github.com/minusblindfold/devenv-conventions) — organized convention packs with a management CLI
+
+## License
+
+[MIT](LICENSE)
