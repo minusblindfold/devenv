@@ -1,6 +1,6 @@
 # devenv
 
-My personal dev environment for working with Claude Code on macOS. It sets up a terminal, shell, and prompt, and includes a set of Claude Code skills that structure how I plan, design, and build features. Everything is managed with symlinks — clone it, run the install script, and it wires itself into place.
+My personal dev environment for working with Claude Code on macOS. It sets up a terminal, shell, and prompt, and installs the [devloop](https://github.com/minusblindfold/devloop) plugin for structured feature work. Everything is managed with symlinks — clone it, run the install script, and it wires itself into place.
 
 This is opinionated and intentionally simple. It's not a framework. It's an example of what works for me. Look through it, take what's useful, ignore the rest.
 
@@ -16,23 +16,11 @@ This is opinionated and intentionally simple. It's not a framework. It's an exam
 
 Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language versions, and status. Modular config in `zsh/conf.d/` — path, prompt, aliases, widgets, SSH agents, and a local override file (`~/.zshrc.local`) for machine-specific config that isn't tracked.
 
-### Claude Code skills
+### Claude Code
 
-A set of skills that break feature work into phases. Each phase produces an artifact the next one reads — no step touches code until `/implement`.
+Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/devloop:research` → `/devloop:plan` → `/devloop:design` → `/devloop:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
 
-- `/research` — scan rules and codebase for context relevant to a topic
-- `/plan` — ask clarifying questions, then produce an ordered task list
-- `/design` — generate architecture, diagrams, and a spec for each task
-- `/implement` — implement one task at a time against the spec
-- `/bootstrap` — scaffold a new project from rule docs
-
-The full workflow is `/research` → `/plan` → `/design` → `/implement`, with `/research` as a re-entry point at any stage. See the [guide](docs/guide.md) for a walkthrough.
-
-### Rules
-
-Markdown files that guide Claude's output at runtime — coding patterns, project structure, naming conventions. Drop `.md` files into `~/.claude/rules/` and skills pick them up automatically via YAML frontmatter keywords. This extends Claude Code's native `.claude/rules/` with frontmatter-based discovery, scoping, and layered resolution.
-
-For organized packs with a management CLI, see [devenv-rules](https://github.com/minusblindfold/devenv-rules).
+Personal Claude config (hooks, statusline, global instructions) stays in this repo under `claude/`.
 
 ### CLI tools
 
@@ -104,12 +92,13 @@ Files ending in `.symlink` are linked into `$HOME` with a dot prefix (e.g., `git
 
 ## Updating
 
-Pull the repo and re-run `./install.sh`. Because everything is symlinked, rules, skills, and tools update in place — the repo is the source of truth.
+Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The devloop plugin updates separately via `claude plugin update devloop@devloop-marketplace`.
 
 ## Links
 
 - [Guide](docs/guide.md) — terminal setup, the skill workflow, rules, and tips
 - [Cheatsheet](docs/cheatsheet.md) — quick reference for all keybindings, commands, and CLI tools
+- [devloop](https://github.com/minusblindfold/devloop) — the Claude Code plugin powering the workflow skills
 - [devenv-rules](https://github.com/minusblindfold/devenv-rules) — organized rule packs with a management CLI
 
 ## License
