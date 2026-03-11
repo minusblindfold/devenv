@@ -60,5 +60,16 @@
     "command": "claude-context",
     "padding": 0
   },
-  "alwaysThinkingEnabled": true
+  "extraKnownMarketplaces": {
+    "devloop-marketplace": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/pacej/Documents/personal/devloop"
+      }
+    }
+  },
+  "alwaysThinkingEnabled": true,
+  "enabledPlugins": {
+    "devloop@devloop-marketplace": true
+  }
 }

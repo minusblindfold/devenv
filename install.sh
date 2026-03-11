@@ -82,28 +82,11 @@ install_ghostty() {
 # ── Install Claude Code config → ~/.claude/ ───────────────────────────────────
 install_claude() {
   info "Installing Claude Code config..."
-  mkdir -p "$HOME/.claude/commands"
   mkdir -p "$HOME/.claude/hooks"
-  mkdir -p "$HOME/.claude/skills"
 
-  for src in "$DOTFILES_DIR/claude/"*; do
-    [ -f "$src" ] || continue
-    dst="$HOME/.claude/$(basename "$src")"
-    link_file "$src" "$dst"
-  done
-
-  for src in "$DOTFILES_DIR/claude/commands/"*; do
-    [ -f "$src" ] || continue
-    dst="$HOME/.claude/commands/$(basename "$src")"
-    link_file "$src" "$dst"
-  done
-
-  for src in "$DOTFILES_DIR/claude/skills/"*/; do
-    [ -d "$src" ] || continue
-    name="$(basename "$src")"
-    dst="$HOME/.claude/skills/$name"
-    link_file "$src" "$dst"
-  done
+  # Personal preferences + hooks + settings (stays in devenv)
+  link_file "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  link_file "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 
   for src in "$DOTFILES_DIR/claude/hooks/"*; do
     [ -f "$src" ] || continue
@@ -111,9 +94,18 @@ install_claude() {
     link_file "$src" "$dst"
     chmod +x "$src"
   done
+}
 
-  # Rules dir
-  link_file "$DOTFILES_DIR/claude/rules" "$HOME/.claude/rules"
+# ── Install devloop plugin ───────────────────────────────────────────────────
+install_devloop() {
+  info "Installing devloop plugin..."
+  if command -v claude &>/dev/null; then
+    claude plugin marketplace add minusblindfold/devloop 2>/dev/null || true
+    claude plugin install devloop@devloop-marketplace 2>/dev/null || true
+    ok "devloop plugin installed"
+  else
+    warn "Claude Code not found — skipping devloop plugin install"
+  fi
 }
 
 # ── Install cheat docs → ~/.local/share/cheat/ ───────────────────────────────
@@ -216,6 +208,7 @@ main() {
   install_starship
   install_ghostty
   install_claude
+  install_devloop
   install_picker
   install_cheat
   install_bin

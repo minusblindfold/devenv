@@ -42,23 +42,14 @@ check_link "$HOME/.hushlogin" "~/.hushlogin"
 check_link "$HOME/.config/ghostty/config" "~/.config/ghostty/config"
 check_link "$HOME/.config/starship.toml" "~/.config/starship.toml"
 check_link "$HOME/.claude/settings.json" "~/.claude/settings.json"
-check_link "$HOME/.claude/devenv.json" "~/.claude/devenv.json"
 check_link "$HOME/.claude/CLAUDE.md" "~/.claude/CLAUDE.md"
-check_link "$HOME/.claude/skills/plan" "~/.claude/skills/plan"
-check_link "$HOME/.claude/skills/design" "~/.claude/skills/design"
-check_link "$HOME/.claude/skills/implement" "~/.claude/skills/implement"
-check_link "$HOME/.claude/skills/bootstrap" "~/.claude/skills/bootstrap"
-check_link "$HOME/.claude/skills/research" "~/.claude/skills/research"
-check_link "$HOME/.claude/rules" "~/.claude/rules"
-# Check for rule content (info only, not a failure)
-_rule_count=$(find "$HOME/.claude/rules" -name "*.md" ! -name "rules.md" 2>/dev/null | head -1)
-if [ -z "$_rule_count" ]; then
-  echo "  [info] No rules configured — skills will work without rule guidance"
-  echo "         See ~/.claude/rules/rules.md to add your own"
-fi
-check_link "$HOME/.claude/skills/resolve-rules" "~/.claude/skills/resolve-rules"
-check_link "$HOME/.claude/commands/document.md" "~/.claude/commands/document.md"
 check_link "$HOME/.claude/hooks/log-activity.sh" "~/.claude/hooks/log-activity.sh"
+# devloop plugin (installed via Claude Code plugin system)
+if [ -d "$HOME/.claude/plugins/cache" ] && find "$HOME/.claude/plugins/cache" -maxdepth 2 -name "plugin.json" -exec grep -ql '"devloop"' {} \; 2>/dev/null | head -1 | grep -q .; then
+  pass "devloop plugin installed"
+else
+  echo "  [info] devloop plugin not found — install with: claude plugin install devloop@devloop-marketplace"
+fi
 # Picker paths: symlink or user-customized real file are both valid
 if [ -L "$HOME/.config/devenv/paths" ] || [ -f "$HOME/.config/devenv/paths" ]; then
   pass "~/.config/devenv/paths"
