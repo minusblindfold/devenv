@@ -148,35 +148,32 @@ Pass a filename to view directly, or run with no args for the picker. `open-diag
 
 ## Rules
 
-Rule docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code. This extends Claude Code's native `.claude/rules/` with frontmatter-based discovery, scoping, and layered resolution.
+Rule docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
 
-They live in `~/.claude/rules/` and are discovered automatically via YAML frontmatter:
+Put `.md` files in `~/.claude/rules/` and they work everywhere — Claude Code reads them automatically, and skills use frontmatter keywords to find the right ones for each task:
 
 ```yaml
 ---
 keywords: [entity, model, JPA, persistence]
-scope: all          # bootstrap | feature | all
 ---
 # JPA Entity Rules
 
 > How we structure JPA entities with Lombok...
 
-## Rules
+## Patterns
 ...
 
 ## Bootstrap
 Create a Role enum and a User entity...
 ```
 
-The `scope` field controls when a rule applies: `bootstrap` (scaffolding only), `feature` (feature work only), or `all` (both — the default).
+`keywords` is the only required frontmatter. Skills match task descriptions against these terms. See `~/.claude/rules/rules.md` for the full format reference.
 
 ### Progressive model
 
-Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed.
+Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
 
-When you want more structure, install [devenv-rules](https://github.com/minusblindfold/devenv-rules) for organized packs with a CLI (`devenv-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
-
-With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
+When you want more structure, install [devenv-rules](https://github.com/minusblindfold/devenv-rules) for organized packs with a CLI (`devenv-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering via `~/.config/devenv/rule-layers`. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
 
 ---
 

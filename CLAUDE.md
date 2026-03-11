@@ -34,25 +34,25 @@ After bootstrap, `.work/bootstrap.md` in the project provides context to `/plan`
 
 ## Rules
 
-Rules are markdown files that guide skills at runtime. They live in `claude/rules/` (symlinked to `~/.claude/rules/`). Drop `.md` files into this directory and skills discover them automatically via YAML frontmatter. This extends Claude Code's native `.claude/rules/` with frontmatter-based discovery.
+Rules are markdown files that guide skills at runtime. They live in `claude/rules/` (symlinked to `~/.claude/rules/`). Drop `.md` files here and they work everywhere — Claude Code reads them automatically, and skills use frontmatter keywords to find the right ones for each task.
 
-The `rules.md` file in that directory documents the format — frontmatter schema, available sections, and how to get started. It is not a rule itself.
+The `rules.md` file in that directory documents the format and how to get started. It is not a rule itself.
 
-Rule discovery is handled by the `/resolve-rules` skill (`user-invocable: false`) — called by other skills. It reads `~/.claude/rules/` directly. When `~/.config/devenv/rule-layers` exists (created by the optional [devenv-rules](https://github.com/minusblindfold/devenv-rules) expansion), it switches to layered mode with multiple rule sources and precedence ordering.
+### Rule Frontmatter
 
-### Rule Frontmatter Schema
+Only `keywords` is required for project-level rules:
 
 ```yaml
 ---
-keywords: [entity, model, JPA, persistence]   # Required. Terms for keyword-based discovery.
-scope: all                                      # Optional: bootstrap | feature | all (default)
-extends: false                                  # Optional: append to higher-precedence version (default: false)
+keywords: [entity, model, JPA, persistence]
 ---
 ```
 
-### Rule Packs
+`scope` and `extends` are additional fields used by rule packs for layered resolution. See `rules.md` for the full schema.
 
-For organized, reusable rule sets with management tooling (enable/disable packs, layered resolution, multiple active packs), see [devenv-rules](https://github.com/minusblindfold/devenv-rules).
+### Rule Discovery
+
+Handled by the `/resolve-rules` skill (`user-invocable: false`) — called by other skills. It reads `~/.claude/rules/` directly. When `~/.config/devenv/rule-layers` exists (created by the optional [devenv-rules](https://github.com/minusblindfold/devenv-rules) expansion), it switches to layered mode with multiple rule sources and precedence ordering.
 
 ## Documentation
 

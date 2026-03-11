@@ -56,7 +56,7 @@ Work artifacts (plans, designs, implementations, backups) are saved to `.work/` 
 
 Skills (`/research`, `/plan`, `/design`, `/implement`, `/bootstrap`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Rule docs live in `claude/rules/`, discovered via the `/resolve-rules` skill across configurable layers. The `/document` command lives in `claude/commands/`.
 
-Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`.
+Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`. Layer config (optional): `~/.config/devenv/rule-layers`.
 
 ## CLI
 

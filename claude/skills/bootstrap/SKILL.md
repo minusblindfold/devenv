@@ -44,7 +44,7 @@ Read the stack rule fully. Generate the project skeleton it describes: build fil
 Work through each remaining resolved rule that has a `## Bootstrap` section. Process them in natural dependency order: infrastructure → data layer → security → business logic → UI.
 
 For each rule:
-1. Read the full rule doc (rules, examples, and bootstrap section).
+1. Read the full rule doc (patterns, examples, and bootstrap section).
 2. Generate the files its bootstrap section describes, following the rule's patterns and examples exactly.
 3. If a rule references another rule's output (e.g., templates reference security roles), ensure the dependency was generated first.
 
