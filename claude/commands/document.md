@@ -25,9 +25,9 @@ Review the changes made in this session and update all documentation to match.
 
 These docs describe the same system from different angles and must stay consistent:
 - `README.md` — what's inside, quickstart, install description
-- `CLAUDE.md` — project-level instructions for Claude (skills, conventions, doc structure)
-- `claude/CLAUDE.md` — personal/global Claude instructions (skill list, convention paths)
-- `docs/guide.md` — terminal, picker, shell, skill workflow loop, conventions, tips
+- `CLAUDE.md` — project-level instructions for Claude (skills, rules, doc structure)
+- `claude/CLAUDE.md` — personal/global Claude instructions (skill list, rule paths)
+- `docs/guide.md` — terminal, picker, shell, skill workflow loop, rules, tips
 - `docs/cheatsheet.md` — quick-reference for all keybindings, commands, and CLI tools
 
 ## Dependency sync
@@ -45,7 +45,7 @@ These files must stay in sync when dependencies change:
 - New Claude skill → add to Claude table in `docs/cheatsheet.md` and `README.md` skills section
 - New Claude command → add to Claude table in `docs/cheatsheet.md`
 - New dependency → add to all three dependency sources above
-- New config change that affects the guide → update `docs/guide.md` (terminal, shell, skill loop, conventions sections)
+- New config change that affects the guide → update `docs/guide.md` (terminal, shell, skill loop, rules sections)
 
 ## Final check
 
