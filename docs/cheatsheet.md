@@ -44,19 +44,19 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
-| `/research [slug\|topic]` | Scan conventions + codebase for context, save to `.work/research/` |
+| `/research [slug\|topic]` | Scan rules + codebase for context, save to `.work/research/` |
 | `/plan [description\|slug]` | Create or refine a plan |
 | `/design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
 | `/implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
-| `/bootstrap <project-name>` | Scaffold a project from conventions |
+| `/bootstrap <project-name>` | Scaffold a project from rules |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills (`/research`, `/plan`, `/design`, `/implement`, `/bootstrap`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Convention reference docs live in `claude/conventions/`, discovered via the `/resolve-conventions` skill across configurable layers. The `/document` command lives in `claude/commands/`.
+Skills (`/research`, `/plan`, `/design`, `/implement`, `/bootstrap`) live in `claude/skills/`, symlinked to `~/.claude/skills/`. Rule docs live in `claude/rules/`, discovered via the `/resolve-rules` skill across configurable layers. The `/document` command lives in `claude/commands/`.
 
-Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`, `conventions.layers` (ordered paths for convention discovery).
+Skill config lives in `~/.claude/devenv.json` (symlinked from `claude/devenv.json` in this repo). Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`.
 
 ## CLI
 

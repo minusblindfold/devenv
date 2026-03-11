@@ -76,7 +76,7 @@ Each step produces an artifact that the next step reads. No step touches code un
 /research "topic"
 ```
 
-Scans your convention docs and codebase for context. Produces three sections: **Applicable Conventions** (what rules exist), **Codebase Patterns** (what's already built), and **Gaps & Recommendations** (what's missing or inconsistent).
+Scans your rule docs and codebase for context. Produces three sections: **Applicable Rules** (what rules exist), **Codebase Patterns** (what's already built), and **Gaps & Recommendations** (what's missing or inconsistent).
 
 Research is optional but useful before planning. Run it again at any point — it appends new findings without overwriting prior sections.
 
@@ -111,7 +111,7 @@ Push back. Reorder tasks, split or merge them, add constraints. Claude won't tou
 /design
 ```
 
-Claude reads the plan, explores the codebase, and produces a high-level design: architecture decisions, Mermaid diagrams (saved as `.mmd` files), and a detailed spec for each task — goal, interfaces, implementation notes, acceptance criteria, and which convention docs apply.
+Claude reads the plan, explores the codebase, and produces a high-level design: architecture decisions, Mermaid diagrams (saved as `.mmd` files), and a detailed spec for each task — goal, interfaces, implementation notes, acceptance criteria, and which rule docs apply.
 
 ![Design output](screen-caps/design-output.png)
 
@@ -125,7 +125,7 @@ For simple features where no plan exists, `/design <description>` bootstraps a m
 /implement
 ```
 
-Claude loads the plan and design, displays the task list with completion status, and implements one task at a time. It reads relevant files first, checks which conventions apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
+Claude loads the plan and design, displays the task list with completion status, and implements one task at a time. It reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
 
 ![Implement flow](screen-caps/implement-flow.png)
 
@@ -146,18 +146,18 @@ Pass a filename to view directly, or run with no args for the picker. `open-diag
 
 ---
 
-## Conventions
+## Rules
 
-Convention docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
+Rule docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code. This extends Claude Code's native `.claude/rules/` with frontmatter-based discovery, scoping, and layered resolution.
 
-They live in `~/.claude/conventions/` and are discovered automatically via YAML frontmatter:
+They live in `~/.claude/rules/` and are discovered automatically via YAML frontmatter:
 
 ```yaml
 ---
 keywords: [entity, model, JPA, persistence]
 scope: all          # bootstrap | feature | all
 ---
-# JPA Entity Conventions
+# JPA Entity Rules
 
 > How we structure JPA entities with Lombok...
 
@@ -168,15 +168,15 @@ scope: all          # bootstrap | feature | all
 Create a Role enum and a User entity...
 ```
 
-The `scope` field controls when a convention applies: `bootstrap` (scaffolding only), `feature` (feature work only), or `all` (both — the default).
+The `scope` field controls when a rule applies: `bootstrap` (scaffolding only), `feature` (feature work only), or `all` (both — the default).
 
 ### Progressive model
 
-Start simple — drop a few `.md` files into `~/.claude/conventions/`. Skills discover them automatically. No config needed.
+Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed.
 
-When you want more structure, install [devenv-conventions](https://github.com/minusblindfold/devenv-conventions) for organized packs with a CLI (`devenv-conventions enable/disable/list`). Packs add layered resolution — multiple convention sets active simultaneously with precedence ordering. Flat files in `~/.claude/conventions/` always serve as the lowest-precedence fallback.
+When you want more structure, install [devenv-rules](https://github.com/minusblindfold/devenv-rules) for organized packs with a CLI (`devenv-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
 
-With no conventions configured, skills still work — they operate from codebase context alone. Conventions are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
+With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
 
 ---
 
@@ -188,7 +188,7 @@ If `/implement` produces something that doesn't match your expectations, don't j
 
 - **Design gap?** Run `/design refine` to tighten the spec before continuing.
 - **Plan gap?** Run `/plan refine` to add a missing task or adjust scope.
-- **Convention gap?** Update the convention doc so every future task gets it right.
+- **Rule gap?** Update the rule doc so every future task gets it right.
 - **New discovery?** Run `/research` to capture it — the findings inform the next plan.
 
 ### Context hygiene
@@ -208,7 +208,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Updating
 
-Pull the devenv repo and re-run `./install.sh`. Because everything is symlinked, conventions, skills, and tools update in place. The same applies to convention packs if you're using devenv-conventions — `devenv-conventions update` pulls the latest for all cloned repos.
+Pull the devenv repo and re-run `./install.sh`. Because everything is symlinked, rules, skills, and tools update in place. The same applies to rule packs if you're using devenv-rules — `devenv-rules update` pulls the latest for all cloned repos.
 
 ---
 
@@ -216,11 +216,11 @@ Pull the devenv repo and re-run `./install.sh`. Because everything is symlinked,
 
 | Command | What it does |
 |---------|-------------|
-| `/research [topic]` | Scan conventions + codebase for context |
+| `/research [topic]` | Scan rules + codebase for context |
 | `/plan [description]` | Create or refine a task list |
 | `/design [slug]` | Generate architecture + task specs from a plan |
 | `/implement [slug [task-n]]` | Implement one task from a plan+design pair |
-| `/bootstrap <project-name>` | Scaffold a new project from conventions |
+| `/bootstrap <project-name>` | Scaffold a new project from rules |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |
