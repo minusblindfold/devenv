@@ -1,34 +1,34 @@
 ---
 name: bootstrap
-description: Scaffold a project from conventions. Use when the user wants to start a new project.
+description: Scaffold a project from rules. Use when the user wants to start a new project.
 argument-hint: "<project-name> [description]"
 allowed-tools: Read Write Bash
 ---
 
-Scaffold a new project driven entirely by resolved convention docs.
+Scaffold a new project driven entirely by resolved rule docs.
 
 ## Config
 
 Read `~/.claude/devenv.json`. Key: `work.dir` (default `.work`).
 
-## Resolve conventions
+## Resolve rules
 
-Run `/resolve-conventions mode:all scope:bootstrap` to resolve every convention that applies at bootstrap time. Read all resolved docs.
+Run `/resolve-rules mode:all scope:bootstrap` to resolve every rule that applies at bootstrap time. Read all resolved docs.
 
-If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then stop.
+If `/resolve-rules` is unavailable, warn the user: "Rule resolution skill not found — rules will not be applied. Run install.sh from your devenv repo to fix this." Then stop.
 
-If no conventions are resolved, stop: "No conventions found. Add at least a `stack.md` to `~/.claude/conventions/`, or install a convention pack from [devenv-conventions](https://github.com/minusblindfold/devenv-conventions). See `~/.claude/conventions/conventions.md` for the format."
+If no rules are resolved, stop: "No rules found. Add at least a `stack.md` to `~/.claude/rules/`, or install a rule pack from [devenv-rules](https://github.com/minusblindfold/devenv-rules). See `~/.claude/rules/rules.md` for the format."
 
-Look for a **Stack** convention (matched by H1 title or `stack` keyword). If no stack convention is found, stop: "No stack convention found. Bootstrap needs a stack convention to know what kind of project to generate."
+Look for a **Stack** rule (matched by H1 title or `stack` keyword). If no stack rule is found, stop: "No stack rule found. Bootstrap needs a stack rule to know what kind of project to generate."
 
 ## Gather inputs
 
 1. Parse `$ARGUMENTS` for the project name (first word) and optional description (rest). If no project name, ask.
-2. From the stack convention, identify the technology stack and present a summary to the user.
-3. Ask for any missing inputs. Wait for answers before generating. Only ask what the resolved conventions make relevant:
+2. From the stack rule, identify the technology stack and present a summary to the user.
+3. Ask for any missing inputs. Wait for answers before generating. Only ask what the resolved rules make relevant:
    - **Description**: one sentence — what the app does and why. (Skip if provided in arguments.)
-   - If security conventions are present and define a role model, ask for **domain role name(s)**.
-   - If the stack convention uses packages or modules, ask for the **root namespace/group**.
+   - If security rules are present and define a role model, ask for **domain role name(s)**.
+   - If the stack rule uses packages or modules, ask for the **root namespace/group**.
 4. Confirm inputs with the user before generating.
 
 ## Generate project
@@ -37,25 +37,25 @@ Create all files in the **current working directory**. The directory should be e
 
 ### Skeleton
 
-Read the stack convention fully. Generate the project skeleton it describes: build file, settings, config files, main entry point, wrapper, gitignore, and test config. Derive names (database name, package name, artifact name) from the project name.
+Read the stack rule fully. Generate the project skeleton it describes: build file, settings, config files, main entry point, wrapper, gitignore, and test config. Derive names (database name, package name, artifact name) from the project name.
 
-### Convention contributions
+### Rule contributions
 
-Work through each remaining resolved convention that has a `## Bootstrap` section. Process them in natural dependency order: infrastructure → data layer → security → business logic → UI.
+Work through each remaining resolved rule that has a `## Bootstrap` section. Process them in natural dependency order: infrastructure → data layer → security → business logic → UI.
 
-For each convention:
-1. Read the full convention doc (rules, examples, and bootstrap section).
-2. Generate the files its bootstrap section describes, following the convention's rules and examples exactly.
-3. If a convention references another convention's output (e.g., templates reference security roles), ensure the dependency was generated first.
+For each rule:
+1. Read the full rule doc (patterns, examples, and bootstrap section).
+2. Generate the files its bootstrap section describes, following the rule's patterns and examples exactly.
+3. If a rule references another rule's output (e.g., templates reference security roles), ensure the dependency was generated first.
 
-Skip conventions that have no `## Bootstrap` section — they apply during feature work, not scaffolding.
+Skip rules that have no `## Bootstrap` section — they apply during feature work, not scaffolding.
 
 ### Project documentation
 
 Generate a `CLAUDE.md` tailored to the project. Derive everything from what was actually generated:
-- Project overview (name, description, tech stack from stack convention).
-- Common commands (build, run, test — from stack convention's startup section).
-- Architecture overview (layers, security config, database, frontend — from the conventions that were applied).
+- Project overview (name, description, tech stack from stack rule).
+- Common commands (build, run, test — from stack rule's startup section).
+- Architecture overview (layers, security config, database, frontend — from the rules that were applied).
 
 ## Write bootstrap context marker
 
@@ -65,7 +65,7 @@ Create `<work.dir>/bootstrap.md` in the project directory. Assemble it dynamical
 # Bootstrap Context
 
 ## Tech Stack
-- <derived from stack convention>
+- <derived from stack rule>
 
 ## Roles
 - <from user input, if applicable>
@@ -76,8 +76,8 @@ Create `<work.dir>/bootstrap.md` in the project directory. Assemble it dynamical
 ## What's Ready
 - <list capabilities the scaffold provides>
 
-## Conventions Applied
-- <list each convention title and its source layer>
+## Rules Applied
+- <list each rule title and its source layer>
 ```
 
 This marker is read by `/plan` and `/design` to skip redundant questions about established architecture.
@@ -85,7 +85,7 @@ This marker is read by `/plan` and `/design` to skip redundant questions about e
 ## Wrap up
 
 1. Print a summary of what was generated (file count by category).
-2. Suggest next steps derived from the stack convention's startup section:
+2. Suggest next steps derived from the stack rule's startup section:
    - How to start the app.
    - Default credentials if seed users were generated.
    - Commit the initial scaffold.
@@ -94,8 +94,8 @@ This marker is read by `/plan` and `/design` to skip redundant questions about e
 ## Rules
 
 - Never generate features beyond the minimal scaffold — that's what `/plan` → `/design` → `/implement` is for.
-- Follow convention docs exactly. If a pattern isn't covered by a convention doc, keep it simple and consistent with the conventions that do exist.
+- Follow rule docs exactly. If a pattern isn't covered by a rule doc, keep it simple and consistent with the rules that do exist.
 - No hardcoded version numbers in generated code. Use latest stable versions at generation time.
 - The bootstrap context marker goes in the project's `<work.dir>/`, not in devenv.
-- Never hardcode technology choices in this skill. Every file generated must trace back to a resolved convention.
-- If no conventions are resolved, do not guess a stack. Stop and tell the user.
+- Never hardcode technology choices in this skill. Every file generated must trace back to a resolved rule.
+- If no rules are resolved, do not guess a stack. Stop and tell the user.

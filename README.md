@@ -20,19 +20,19 @@ Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language 
 
 A set of skills that break feature work into phases. Each phase produces an artifact the next one reads — no step touches code until `/implement`.
 
-- `/research` — scan conventions and codebase for context relevant to a topic
+- `/research` — scan rules and codebase for context relevant to a topic
 - `/plan` — ask clarifying questions, then produce an ordered task list
 - `/design` — generate architecture, diagrams, and a spec for each task
 - `/implement` — implement one task at a time against the spec
-- `/bootstrap` — scaffold a new project from convention docs
+- `/bootstrap` — scaffold a new project from rule docs
 
 The full workflow is `/research` → `/plan` → `/design` → `/implement`, with `/research` as a re-entry point at any stage. See the [guide](docs/guide.md) for a walkthrough.
 
-### Convention docs
+### Rules
 
-Markdown files that guide Claude's output at runtime — coding patterns, project structure, naming rules. Drop `.md` files into `~/.claude/conventions/` and skills pick them up automatically via YAML frontmatter keywords.
+Markdown files that guide Claude's output at runtime — coding patterns, project structure, naming conventions. Drop `.md` files into `~/.claude/rules/` and skills pick them up automatically via YAML frontmatter keywords. This extends Claude Code's native `.claude/rules/` with frontmatter-based discovery, scoping, and layered resolution.
 
-For organized packs with a management CLI, see [devenv-conventions](https://github.com/minusblindfold/devenv-conventions).
+For organized packs with a management CLI, see [devenv-rules](https://github.com/minusblindfold/devenv-rules).
 
 ### CLI tools
 
@@ -104,13 +104,13 @@ Files ending in `.symlink` are linked into `$HOME` with a dot prefix (e.g., `git
 
 ## Updating
 
-Pull the repo and re-run `./install.sh`. Because everything is symlinked, conventions, skills, and tools update in place — the repo is the source of truth.
+Pull the repo and re-run `./install.sh`. Because everything is symlinked, rules, skills, and tools update in place — the repo is the source of truth.
 
 ## Links
 
-- [Guide](docs/guide.md) — terminal setup, the skill workflow, conventions, and tips
+- [Guide](docs/guide.md) — terminal setup, the skill workflow, rules, and tips
 - [Cheatsheet](docs/cheatsheet.md) — quick reference for all keybindings, commands, and CLI tools
-- [devenv-conventions](https://github.com/minusblindfold/devenv-conventions) — organized convention packs with a management CLI
+- [devenv-rules](https://github.com/minusblindfold/devenv-rules) — organized rule packs with a management CLI
 
 ## License
 

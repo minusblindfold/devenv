@@ -49,14 +49,14 @@ check_link "$HOME/.claude/skills/design" "~/.claude/skills/design"
 check_link "$HOME/.claude/skills/implement" "~/.claude/skills/implement"
 check_link "$HOME/.claude/skills/bootstrap" "~/.claude/skills/bootstrap"
 check_link "$HOME/.claude/skills/research" "~/.claude/skills/research"
-check_link "$HOME/.claude/conventions" "~/.claude/conventions"
-# Check for convention content (info only, not a failure)
-_conv_count=$(find "$HOME/.claude/conventions" -name "*.md" ! -name "conventions.md" 2>/dev/null | head -1)
-if [ -z "$_conv_count" ]; then
-  echo "  [info] No conventions configured — skills will work without convention guidance"
-  echo "         See ~/.claude/conventions/conventions.md to add your own"
+check_link "$HOME/.claude/rules" "~/.claude/rules"
+# Check for rule content (info only, not a failure)
+_rule_count=$(find "$HOME/.claude/rules" -name "*.md" ! -name "rules.md" 2>/dev/null | head -1)
+if [ -z "$_rule_count" ]; then
+  echo "  [info] No rules configured — skills will work without rule guidance"
+  echo "         See ~/.claude/rules/rules.md to add your own"
 fi
-check_link "$HOME/.claude/skills/resolve-conventions" "~/.claude/skills/resolve-conventions"
+check_link "$HOME/.claude/skills/resolve-rules" "~/.claude/skills/resolve-rules"
 check_link "$HOME/.claude/commands/document.md" "~/.claude/commands/document.md"
 check_link "$HOME/.claude/hooks/log-activity.sh" "~/.claude/hooks/log-activity.sh"
 # Picker paths: symlink or user-customized real file are both valid

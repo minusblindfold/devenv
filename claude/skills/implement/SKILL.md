@@ -28,13 +28,13 @@ If no argument: list plans and designs, match by slug. No pairs → "Run /plan t
 
 If $ARGUMENTS includes a task number, use it. Otherwise ask. Warn if dependencies are incomplete. Mark `in_progress` with `TaskUpdate`.
 
-## Apply conventions
+## Apply rules
 
-If the design's task spec includes a `**Conventions:**` line, run `/resolve-conventions mode:explicit <titles>`. Otherwise, run `/resolve-conventions mode:keyword <task description terms>`.
+If the design's task spec includes a `**Rules:**` line, run `/resolve-rules mode:explicit <titles>`. Otherwise, run `/resolve-rules mode:keyword <task description terms>`.
 
-If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
+If `/resolve-rules` is unavailable, warn the user: "Rule resolution skill not found — rules will not be applied. Run install.sh from your devenv repo to fix this." Then continue without rules.
 
-Follow the matched convention docs when creating or modifying files that fall under their scope.
+Follow the matched rule docs when creating or modifying files that fall under their scope.
 
 ## Implement
 

@@ -112,8 +112,8 @@ install_claude() {
     chmod +x "$src"
   done
 
-  # Conventions dir
-  link_file "$DOTFILES_DIR/claude/conventions" "$HOME/.claude/conventions"
+  # Rules dir
+  link_file "$DOTFILES_DIR/claude/rules" "$HOME/.claude/rules"
 }
 
 # ── Install cheat docs → ~/.local/share/cheat/ ───────────────────────────────

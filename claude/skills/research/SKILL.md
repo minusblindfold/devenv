@@ -1,11 +1,11 @@
 ---
 name: research
-description: Scan conventions and codebase to inform planning and design. Use when starting a new feature or when discoveries surface during implementation.
+description: Scan rules and codebase to inform planning and design. Use when starting a new feature or when discoveries surface during implementation.
 argument-hint: "[feature-slug or topic]"
 allowed-tools: Read Bash Glob Grep
 ---
 
-Scan conventions and codebase to produce structured context for the plan/design/implement cycle.
+Scan rules and codebase to produce structured context for the plan/design/implement cycle.
 
 ## Config
 
@@ -17,20 +17,20 @@ Parse `$ARGUMENTS`:
 
 - Matches an existing file in `<work.dir>/research/` by slug → **re-entry** (append dated section).
 - Set but no match → **create** new research file.
-- Empty → **health-check** mode. Before starting, confirm with the user: "This will run a full project health check (all conventions + full codebase scan). This can take a while. Continue, or would you like to research a specific topic instead?" If they provide a topic, switch to create mode. If they confirm, proceed — writes to `<work.dir>/research/health-check.md`.
+- Empty → **health-check** mode. Before starting, confirm with the user: "This will run a full project health check (all rules + full codebase scan). This can take a while. Continue, or would you like to research a specific topic instead?" If they provide a topic, switch to create mode. If they confirm, proceed — writes to `<work.dir>/research/health-check.md`.
 
-## Convention scan
+## Rule scan
 
-Run `/resolve-conventions` to discover conventions:
+Run `/resolve-rules` to discover rules:
 - If topic provided → `mode:keyword <topic>` (match topic against frontmatter keywords).
-- If health-check → `mode:all` (return every resolved convention).
+- If health-check → `mode:all` (return every resolved rule).
 
-If `/resolve-conventions` is unavailable, warn the user: "Convention resolution skill not found — conventions will not be applied. Run install.sh from your devenv repo to fix this." Then continue without conventions.
+If `/resolve-rules` is unavailable, warn the user: "Rule resolution skill not found — rules will not be applied. Run install.sh from your devenv repo to fix this." Then continue without rules.
 
-For each matched convention, extract:
+For each matched rule, extract:
 - Title (H1 heading)
 - Source layer path
-- First 3–5 rules or key patterns
+- First 3–5 key patterns
 
 ## Codebase scan
 
@@ -49,11 +49,11 @@ Write to `<work.dir>/research/YYYY-MM-DD-<slug>-research.md` (or `health-check.m
 
 ## YYYY-MM-DD — <description>
 
-### Applicable Conventions
+### Applicable Rules
 
-| Convention | Source | Key Rules |
+| Rule | Source | Key Patterns |
 |---|---|---|
-| Title from H1 | file path | first 3-5 rules |
+| Title from H1 | file path | first 3-5 patterns |
 
 ### Codebase Patterns
 
@@ -75,7 +75,7 @@ If appending to an existing file:
 
 ## Wrap up
 
-- Summarise what was found: conventions matched, patterns observed, recommendations count.
+- Summarise what was found: rules matched, patterns observed, recommendations count.
 - Suggest next steps:
   - `/plan` or `/plan <slug>` to start planning from findings.
   - `/plan refine` if recommendations affect an existing plan.
@@ -85,6 +85,6 @@ If appending to an existing file:
 
 - Never implement. This skill produces context, not code.
 - Never overwrite prior research sections on re-entry.
-- Convention discovery must use the resolution algorithm — never hardcode paths.
+- Rule discovery must use the resolution algorithm — never hardcode paths.
 - Keep recommendations actionable and scoped — avoid vague suggestions.
-- If no conventions match and no relevant codebase patterns are found, say so clearly rather than padding the output.
+- If no rules match and no relevant codebase patterns are found, say so clearly rather than padding the output.
