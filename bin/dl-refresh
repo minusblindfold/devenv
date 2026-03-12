@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PLUGIN="dl@devloop-marketplace"
+CACHE_DIR="$HOME/.claude/plugins/cache/devloop-marketplace/dl"
+
+echo "Refreshing dl plugin..."
+
+# Clear cache
+if [ -d "$CACHE_DIR" ]; then
+  rm -rf "$CACHE_DIR"
+  echo "  Cleared cache: $CACHE_DIR"
+else
+  echo "  No cache to clear"
+fi
+
+# Reinstall
+if command -v claude &>/dev/null; then
+  if claude plugin install "$PLUGIN" 2>&1; then
+    echo "  Plugin reinstalled"
+  else
+    echo "  Plugin install failed" >&2
+    exit 1
+  fi
+else
+  echo "  Claude Code not found" >&2
+  exit 1
+fi
+
+echo ""
+echo "Restart Claude Code to pick up changes."
