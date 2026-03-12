@@ -45,10 +45,10 @@ check_link "$HOME/.claude/settings.json" "~/.claude/settings.json"
 check_link "$HOME/.claude/CLAUDE.md" "~/.claude/CLAUDE.md"
 check_link "$HOME/.claude/hooks/log-activity.sh" "~/.claude/hooks/log-activity.sh"
 # devloop plugin (installed via Claude Code plugin system)
-if [ -d "$HOME/.claude/plugins/cache" ] && find "$HOME/.claude/plugins/cache" -maxdepth 2 -name "plugin.json" -exec grep -ql '"devloop"' {} \; 2>/dev/null | head -1 | grep -q .; then
+if [ -d "$HOME/.claude/plugins/cache" ] && find "$HOME/.claude/plugins/cache" -maxdepth 2 -name "plugin.json" -exec grep -ql '"dl"' {} \; 2>/dev/null | head -1 | grep -q .; then
   pass "devloop plugin installed"
 else
-  echo "  [info] devloop plugin not found — install with: claude plugin install devloop@devloop-marketplace"
+  echo "  [info] devloop plugin not found — install with: claude plugin install dl@devloop-marketplace"
 fi
 # Picker paths: symlink or user-customized real file are both valid
 if [ -L "$HOME/.config/devenv/paths" ] || [ -f "$HOME/.config/devenv/paths" ]; then

@@ -18,7 +18,7 @@ Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language 
 
 ### Claude Code
 
-Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/devloop:research` → `/devloop:plan` → `/devloop:design` → `/devloop:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
+Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/dl:research` → `/dl:plan` → `/dl:design` → `/dl:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
 
 Personal Claude config (hooks, statusline, global instructions) stays in this repo under `claude/`.
 
@@ -92,7 +92,7 @@ Files ending in `.symlink` are linked into `$HOME` with a dot prefix (e.g., `git
 
 ## Updating
 
-Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The devloop plugin updates separately via `claude plugin update devloop@devloop-marketplace`.
+Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`.
 
 ## Links
 

@@ -60,16 +60,17 @@
     "command": "claude-context",
     "padding": 0
   },
+  "enabledPlugins": {
+    "dl@devloop-marketplace": true
+  },
   "extraKnownMarketplaces": {
     "devloop-marketplace": {
       "source": {
-        "source": "directory",
+        "source": "github",
+        "repo": "minusblindfold/devloop",
         "path": "/Users/pacej/Documents/personal/devloop"
       }
     }
   },
-  "alwaysThinkingEnabled": true,
-  "enabledPlugins": {
-    "devloop@devloop-marketplace": true
-  }
+  "alwaysThinkingEnabled": true
 }

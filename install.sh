@@ -100,9 +100,14 @@ install_claude() {
 install_devloop() {
   info "Installing devloop plugin..."
   if command -v claude &>/dev/null; then
-    claude plugin marketplace add minusblindfold/devloop 2>/dev/null || true
-    claude plugin install devloop@devloop-marketplace 2>/dev/null || true
-    ok "devloop plugin installed"
+    local output
+    output=$(claude plugin marketplace add minusblindfold/devloop 2>&1) || true
+    if output=$(claude plugin install dl@devloop-marketplace 2>&1); then
+      ok "devloop plugin installed"
+    else
+      warn "devloop plugin install failed"
+      echo "$output" | sed 's/^/         /'
+    fi
   else
     warn "Claude Code not found — skipping devloop plugin install"
   fi

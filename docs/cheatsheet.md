@@ -44,17 +44,17 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
-| `/devloop:research [slug\|topic]` | Scan rules + codebase for context, save to `.work/research/` |
-| `/devloop:plan [description\|slug]` | Create or refine a plan |
-| `/devloop:design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
-| `/devloop:implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
-| `/devloop:bootstrap <project-name>` | Scaffold a project from rules |
+| `/dl:research [slug\|topic]` | Scan rules + codebase for context, save to `.work/research/` |
+| `/dl:plan [description\|slug]` | Create or refine a plan |
+| `/dl:design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
+| `/dl:implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
+| `/dl:bootstrap <project-name>` | Scaffold a project from rules |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install devloop@devloop-marketplace`. Rule docs live in `~/.claude/rules/`, discovered via `/devloop:resolve-rules` across configurable layers.
+Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs live in `~/.claude/rules/`, discovered via `/dl:resolve-rules` across configurable layers.
 
 Skill config lives in the plugin's `devenv.json`. Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`. Layer config (optional): `~/.config/devenv/rule-layers`.
 
