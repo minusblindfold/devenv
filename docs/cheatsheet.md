@@ -10,6 +10,12 @@ cd ~/path/of/your/choice && ./install.sh
 
 Dependencies are installed automatically via the Brewfile.
 
+## Uninstall
+
+```bash
+./uninstall.sh
+```
+
 ## Terminal (Ghostty)
 
 | Key | Action |

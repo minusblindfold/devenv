@@ -90,6 +90,14 @@ brew install --cask font-jetbrains-mono-nerd-font
 
 Files ending in `.symlink` are linked into `$HOME` with a dot prefix (e.g., `git/gitconfig.symlink` → `~/.gitconfig`). For tools with complex layouts, there's a dedicated `install_*()` function in `install.sh`. Run `./install.sh` after adding anything.
 
+## Uninstalling
+
+```bash
+./uninstall.sh
+```
+
+Removes all symlinks and config that `install.sh` created. Only removes symlinks that point back to this repo — real files and user customizations are left untouched. Homebrew packages are left in place (uninstall manually if needed). Safe to run multiple times.
+
 ## Updating
 
 Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`.
