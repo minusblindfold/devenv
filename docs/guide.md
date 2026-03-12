@@ -173,7 +173,7 @@ Create a Role enum and a User entity...
 
 Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
 
-When you want more structure, install [devenv-rules](https://github.com/minusblindfold/devenv-rules) for organized packs with a CLI (`devenv-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering via `~/.config/devenv/rule-layers`. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
+When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering via `~/.config/devenv/rule-layers`. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
 
 ---
 
@@ -205,7 +205,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Updating
 
-Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs (if using devenv-rules) update via `devenv-rules update`.
+Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs (if using devloop-rules) update via `devloop-rules update`.
 
 ---
 

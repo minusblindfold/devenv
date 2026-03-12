@@ -107,7 +107,7 @@ Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The 
 - [Guide](docs/guide.md) — terminal setup, the skill workflow, rules, and tips
 - [Cheatsheet](docs/cheatsheet.md) — quick reference for all keybindings, commands, and CLI tools
 - [devloop](https://github.com/minusblindfold/devloop) — the Claude Code plugin powering the workflow skills
-- [devenv-rules](https://github.com/minusblindfold/devenv-rules) — organized rule packs with a management CLI
+- [devloop-rules](https://github.com/minusblindfold/devloop-rules) — organized rule packs with a management CLI
 
 ## License
 
