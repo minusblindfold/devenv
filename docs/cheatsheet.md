@@ -112,6 +112,14 @@ Skill config lives in the plugin's `devenv.json`. Key settings: `work.dir` (defa
 
 Reads from `.work/research/`, `.work/plans/`, `.work/designs/`, and `.work/implementations/` in the current project.
 
+### `dl-refresh`
+
+| Command | Action |
+|---------|--------|
+| `dl-refresh` | Clear plugin cache and reinstall the devloop plugin |
+
+Restart Claude Code after running to pick up changes.
+
 ### `picker-paths`
 
 | Command | Action |
