@@ -70,7 +70,7 @@ AI coding agents can generate anything, which is the problem. Without structure 
     During any phase, run /dl:research to feed discoveries back into plans and designs.
 ```
 
-Each step produces an artifact that the next step reads. No step touches code until `/implement`. Artifacts are saved to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+Each step produces an artifact that the next step reads. No step touches code until `/dl:implement`. Artifacts are saved to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
 
 ### /dl:research
 
@@ -173,7 +173,7 @@ Create a Role enum and a User entity...
 
 ### Progressive model
 
-Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/bootstrap`, which needs at least a `stack.md`).
+Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/dl:bootstrap`, which needs at least a `stack.md`).
 
 When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering via `~/.config/devenv/rule-layers`. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
 
@@ -183,7 +183,7 @@ When you want more structure, install [devloop-rules](https://github.com/minusbl
 
 ### Mid-loop corrections
 
-If `/implement` produces something that doesn't match your expectations, don't just fix the code. Ask what was missing:
+If `/dl:implement` produces something that doesn't match your expectations, don't just fix the code. Ask what was missing:
 
 - **Design gap?** Run `/dl:design refine` to tighten the spec before continuing.
 - **Plan gap?** Run `/dl:plan refine` to add a missing task or adjust scope.
