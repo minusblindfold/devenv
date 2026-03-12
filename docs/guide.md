@@ -175,7 +175,14 @@ Create a Role enum and a User entity...
 
 Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/dl:bootstrap`, which needs at least a `stack.md`).
 
-When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop-rules enable/disable/list`). Packs add layered resolution — multiple rule sets active simultaneously with precedence ordering via `~/.config/devenv/rule-layers`. Flat files in `~/.claude/rules/` always serve as the lowest-precedence fallback.
+When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop rules enable/disable/list`). Packs are symlinked into `~/devloop/rules/` and discovered automatically. Resolution follows a four-tier precedence:
+
+| Precedence | Layer | Path |
+|---|---|---|
+| 1 (highest) | User | `~/.claude/rules/` |
+| 2 | Project | `{cwd}/devloop/rules/` |
+| 3 | Shared/org | `~/devloop/rules/` |
+| 4 (lowest) | Plugin-bundled | `${CLAUDE_PLUGIN_ROOT}/rules/` |
 
 ---
 
