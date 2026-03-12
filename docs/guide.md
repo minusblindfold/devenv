@@ -58,6 +58,8 @@ cheat ghostty   # ghostty keybindings
 
 ## The skill loop
 
+> **Standalone plugin?** If you're using [devloop](https://github.com/minusblindfold/devloop) without devenv, see the plugin's [workflow docs](https://github.com/minusblindfold/devloop/blob/main/docs/workflow.md) instead. This section covers the same workflow with devenv-specific terminal integration.
+
 AI coding agents can generate anything, which is the problem. Without structure you get inconsistent patterns and one-shot attempts that miss edge cases. This setup structures work into phases — sometimes called [harness engineering](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html) — so the agent's output stays consistent and reviewable.
 
 ```
