@@ -62,8 +62,6 @@ Work artifacts (plans, designs, implementations, backups) are saved to `.work/` 
 
 Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs are discovered via `/dl:resolve-rules` across four layers: `~/.claude/rules/` (user) → `{cwd}/devloop/rules/` (project) → `~/devloop/rules/` (shared/org packs) → plugin-bundled.
 
-Skill config lives in the plugin's `devenv.json`. Key settings: `work.dir` (default `.work`), `backups.maxPerArtifact`.
-
 ## CLI
 
 ### `cheat`
