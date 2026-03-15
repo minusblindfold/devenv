@@ -32,4 +32,4 @@ Terminal companion tools for browsing devloop artifacts:
 
 ## Documentation
 
-After any config, tool, or script change, run `/dl:document` to sync devloop docs, then update devenv docs manually.
+After any config, tool, or script change, update relevant docs (README, inline comments) to match.
