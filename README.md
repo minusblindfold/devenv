@@ -29,6 +29,7 @@ Small scripts symlinked to `~/.local/bin/`:
 | Command | What it does |
 |---------|-------------|
 | `cheat` | Render markdown cheatsheets with glow |
+| `view-brainstorm` | Browse brainstorm decision logs |
 | `view-research` | Browse research artifacts |
 | `view-plan` | Browse saved plans with fzf + glow |
 | `view-design` | Browse saved designs (ctrl-d opens diagrams) |

@@ -21,12 +21,12 @@ Scripts in `bin/` use `#!/usr/bin/env bash` and are symlinked to `~/.local/bin/`
 
 ### Devloop plugin
 
-Workflow skills (`/dl:research`, `/dl:plan`, `/dl:design`, `/dl:implement`, `/dl:bootstrap`) are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin, installed via `install_devloop()` in `install.sh`. The plugin is distributed as a Claude Code marketplace plugin.
+Workflow skills (`/dl:brainstorm`, `/dl:research`, `/dl:plan`, `/dl:design`, `/dl:implement`, `/dl:bootstrap`) are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin, installed via `install_devloop()` in `install.sh`. The plugin is distributed as a Claude Code marketplace plugin.
 
 ### Bin scripts
 
 Terminal companion tools for browsing devloop artifacts:
-- `view-plan`, `view-design`, `view-implement`, `view-research` — browse `.work/` artifacts with fzf + glow
+- `view-brainstorm`, `view-plan`, `view-design`, `view-implement`, `view-research` — browse `.work/` artifacts with fzf + glow
 - `open-diagrams` — open `.mmd` diagrams in browser
 - `claude-context` — statusline showing directory, git branch, context %, session cost
 
