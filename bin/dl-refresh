@@ -14,17 +14,10 @@ else
   echo "  No cache to clear"
 fi
 
-# Pull latest marketplace repo
-MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/devloop-marketplace"
-if [ -d "$MARKETPLACE_DIR" ]; then
-  echo "  Pulling latest marketplace..."
-  git -C "$MARKETPLACE_DIR" pull
-else
-  echo "  Marketplace repo not found: $MARKETPLACE_DIR" >&2
-fi
-
-# Reinstall
+# Fetch latest marketplace manifest + reinstall
 if command -v claude &>/dev/null; then
+  echo "  Updating marketplace manifest..."
+  claude plugin marketplace update devloop-marketplace 2>&1 || true
   if claude plugin install "$PLUGIN" 2>&1; then
     echo "  Plugin reinstalled"
   else
