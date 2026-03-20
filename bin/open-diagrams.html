@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{DIAGRAM_NAME}}</title>
+<style>
+  body {
+    background: #fff;
+    color: #1a1a1a;
+    padding: 2rem;
+    font-family: sans-serif;
+  }
+  .error {
+    background: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    color: #c53030;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: monospace;
+    font-size: 0.9rem;
+  }
+  .raw-source {
+    background: #f7f7f7;
+    border: 1px solid #e2e2e2;
+    color: #333;
+    padding: 1rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e0e0e0; }
+    .error { background: #2a1a1a; border-color: #cc4444; color: #ff6666; }
+    .raw-source { background: #1e1e2e; border-color: #333; color: #c0c0c0; }
+  }
+</style>
+</head>
+<body>
+<h2>{{DIAGRAM_NAME}}</h2>
+<pre class="mermaid">
+{{DIAGRAM_CONTENT}}
+</pre>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+(async function() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' });
+
+  const el = document.querySelector('.mermaid');
+  const source = el.textContent;
+  try {
+    await mermaid.parse(source);
+    await mermaid.run({ querySelector: '.mermaid' });
+  } catch (err) {
+    el.style.display = 'none';
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.textContent = 'Diagram failed to render: ' + err.message;
+    const rawPre = document.createElement('pre');
+    rawPre.className = 'raw-source';
+    rawPre.textContent = source;
+    el.parentNode.insertBefore(errorDiv, el);
+    el.parentNode.insertBefore(rawPre, el);
+  }
+})();
+</script>
+</body>
+</html>

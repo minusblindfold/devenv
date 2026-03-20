@@ -39,22 +39,27 @@ if [[ ${#diagrams[@]} -eq 0 ]]; then
   exit 1
 fi
 
+template_dir="$(dirname "$(realpath "$0")")"
+template="$template_dir/open-diagrams.html"
+
+if [[ ! -f "$template" ]]; then
+  echo "Template not found: $template" >&2
+  exit 1
+fi
+
 for mmd in "${diagrams[@]}"; do
   name=$(basename "$mmd" .mmd)
+  escaped_content=$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' "$mmd")
   tmpfile="$(mktemp).html"
-  cat >"$tmpfile" <<EOF
-<!DOCTYPE html>
-<html>
-<head><title>$name</title></head>
-<body style="background:#fff;padding:2rem;font-family:sans-serif">
-<h2>$name</h2>
-<pre class="mermaid">
-$(cat "$mmd")
-</pre>
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({startOnLoad:true,theme:'default'})</script>
-</body>
-</html>
-EOF
+
+  # Split template at {{DIAGRAM_CONTENT}} and inject escaped content between halves
+  head_part=$(sed -n '1,/{{DIAGRAM_CONTENT}}/{ /{{DIAGRAM_CONTENT}}/d; p }' "$template")
+  tail_part=$(sed -n '/{{DIAGRAM_CONTENT}}/,${  /{{DIAGRAM_CONTENT}}/d; p }' "$template")
+  {
+    echo "$head_part" | sed "s|{{DIAGRAM_NAME}}|$name|g"
+    echo "$escaped_content"
+    echo "$tail_part" | sed "s|{{DIAGRAM_NAME}}|$name|g"
+  } >"$tmpfile"
+
   open "$tmpfile"
 done
