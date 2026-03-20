@@ -102,6 +102,7 @@ install_devloop() {
   if command -v claude &>/dev/null; then
     local output
     output=$(claude plugin marketplace add minusblindfold/devloop 2>&1) || true
+    output=$(claude plugin marketplace update devloop-marketplace 2>&1) || true
     if output=$(claude plugin install dl@devloop-marketplace 2>&1); then
       ok "devloop plugin installed"
     else
@@ -110,6 +111,22 @@ install_devloop() {
     fi
   else
     warn "Claude Code not found — skipping devloop plugin install"
+  fi
+}
+
+refresh_devloop() {
+  info "Refreshing devloop plugin..."
+  if ! command -v claude &>/dev/null; then
+    warn "Claude Code not found — skipping devloop refresh"
+    return
+  fi
+  local output
+  output=$(claude plugin marketplace update devloop-marketplace 2>&1) || true
+  if output=$(claude plugin update dl 2>&1); then
+    ok "devloop plugin updated"
+  else
+    warn "devloop plugin update failed"
+    echo "$output" | sed 's/^/         /'
   fi
 }
 
