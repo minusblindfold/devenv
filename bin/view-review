@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR=".work/reviews"
+
+show() {
+  if command -v glow &>/dev/null; then
+    glow "$1"
+  else
+    cat "$1"
+  fi
+}
+
+pick() {
+  local chosen
+  chosen=$(ls -1 "$DIR"/*.md | fzf \
+    --prompt="Review: " \
+    --header="Select a review to view" \
+    --preview='glow --width $FZF_PREVIEW_COLUMNS {} 2>/dev/null || cat {}' \
+    --preview-window='right:60%:wrap') || true
+  [[ -n "$chosen" ]] && show "$chosen"
+}
+
+if [[ "${1:-}" == "help" || "${1:-}" == "-h" ]]; then
+  echo "Usage: view-review [file]"
+  exit 0
+fi
+
+if [[ ! -d "$DIR" ]]; then
+  echo "No .work/reviews/ directory. Run /review to create one."
+  exit 1
+fi
+
+# Direct file argument
+if [[ -n "${1:-}" ]]; then
+  file="$DIR/$1"
+  [[ "$1" != *.md ]] && file="$DIR/$1.md"
+  resolved=$(realpath "$file" 2>/dev/null) || resolved=""
+  basedir=$(realpath "$DIR")
+  if [[ -z "$resolved" || "$resolved" != "$basedir"/* ]]; then
+    echo "Invalid path: $1"
+    exit 1
+  fi
+  if [[ ! -f "$resolved" ]]; then
+    echo "Review not found: $1"
+    exit 1
+  fi
+  show "$resolved"
+  exit 0
+fi
+
+# Count markdown files
+files=("$DIR"/*.md)
+if [[ ! -f "${files[0]}" ]]; then
+  echo "No reviews found in .work/reviews/."
+  exit 1
+fi
+
+pick
