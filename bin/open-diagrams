@@ -39,8 +39,8 @@ if [[ ${#diagrams[@]} -eq 0 ]]; then
   exit 1
 fi
 
-template_dir="$(dirname "$(realpath "$0")")"
-template="$template_dir/open-diagrams.html"
+script_dir="$(dirname "$(realpath "$0")")"
+template="$script_dir/../templates/open-diagrams.html"
 
 if [[ ! -f "$template" ]]; then
   echo "Template not found: $template" >&2
@@ -53,8 +53,9 @@ for mmd in "${diagrams[@]}"; do
   tmpfile="$(mktemp).html"
 
   # Split template at {{DIAGRAM_CONTENT}} and inject escaped content between halves
-  head_part=$(sed -n '1,/{{DIAGRAM_CONTENT}}/{ /{{DIAGRAM_CONTENT}}/d; p }' "$template")
-  tail_part=$(sed -n '/{{DIAGRAM_CONTENT}}/,${  /{{DIAGRAM_CONTENT}}/d; p }' "$template")
+  split_line=$(grep -n '{{DIAGRAM_CONTENT}}' "$template" | head -1 | cut -d: -f1)
+  head_part=$(sed -n "1,$((split_line - 1))p" "$template")
+  tail_part=$(sed -n "$((split_line + 1)),\$p" "$template")
   {
     echo "$head_part" | sed "s|{{DIAGRAM_NAME}}|$name|g"
     echo "$escaped_content"
