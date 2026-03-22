@@ -53,8 +53,9 @@ for mmd in "${diagrams[@]}"; do
   tmpfile="$(mktemp).html"
 
   # Split template at {{DIAGRAM_CONTENT}} and inject escaped content between halves
-  head_part=$(sed -n '1,/{{DIAGRAM_CONTENT}}/{ /{{DIAGRAM_CONTENT}}/d; p }' "$template")
-  tail_part=$(sed -n '/{{DIAGRAM_CONTENT}}/,${  /{{DIAGRAM_CONTENT}}/d; p }' "$template")
+  split_line=$(grep -n '{{DIAGRAM_CONTENT}}' "$template" | head -1 | cut -d: -f1)
+  head_part=$(sed -n "1,$((split_line - 1))p" "$template")
+  tail_part=$(sed -n "$((split_line + 1)),\$p" "$template")
   {
     echo "$head_part" | sed "s|{{DIAGRAM_NAME}}|$name|g"
     echo "$escaped_content"
