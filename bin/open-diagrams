@@ -39,8 +39,8 @@ if [[ ${#diagrams[@]} -eq 0 ]]; then
   exit 1
 fi
 
-template_dir="$(dirname "$(realpath "$0")")"
-template="$template_dir/open-diagrams.html"
+script_dir="$(dirname "$(realpath "$0")")"
+template="$script_dir/../templates/open-diagrams.html"
 
 if [[ ! -f "$template" ]]; then
   echo "Template not found: $template" >&2
