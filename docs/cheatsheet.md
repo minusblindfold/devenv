@@ -118,6 +118,12 @@ Reads from `.work/research/`, `.work/plans/`, `.work/designs/`, and `.work/imple
 
 Restart Claude Code after running to pick up changes.
 
+### `caps`
+
+| Command | Action |
+|---------|--------|
+| `caps` | Move screenshots from Desktop into `~/Desktop/caps/` |
+
 ### `picker-paths`
 
 | Command | Action |
