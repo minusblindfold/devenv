@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DESKTOP="$HOME/Desktop"
+CAPS_DIR="$DESKTOP/caps"
+
+mkdir -p "$CAPS_DIR"
+
+count=0
+for f in "$DESKTOP"/Screenshot*.png "$DESKTOP"/Screenshot*.jpg "$DESKTOP"/Screenshot*.jpeg; do
+  [ -f "$f" ] || continue
+  mv "$f" "$CAPS_DIR/"
+  count=$((count + 1))
+done
+
+if [ "$count" -eq 0 ]; then
+  echo "No screenshots to move."
+else
+  echo "Moved $count screenshot(s) to $CAPS_DIR"
+fi
