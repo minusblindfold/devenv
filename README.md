@@ -18,7 +18,7 @@ Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language 
 
 ### Claude Code
 
-Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/dl:research` → `/dl:plan` → `/dl:design` → `/dl:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
+Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/dl:brainstorm` → `/dl:research` → `/dl:plan` → `/dl:design` → `/dl:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
 
 Personal Claude config (hooks, statusline, global instructions) stays in this repo under `claude/`.
 

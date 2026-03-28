@@ -50,11 +50,11 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
-| `/dl:research [slug\|topic]` | Scan rules + codebase for context, save to `.work/research/` |
-| `/dl:plan [description\|slug]` | Create or refine a plan |
-| `/dl:design [slug]` | Generate HLD + specs from a plan, or refine an existing design |
-| `/dl:implement [slug [task-n]]` | Implement a task from a plan+design pair, save note to `.work/implementations/` |
-| `/dl:bootstrap <project-name>` | Scaffold a project from rules |
+| `/dl:brainstorm [topic]` | Required entry point — refine idea, produce research queries |
+| `/dl:research [slug\|topic]` | Execute brainstorm queries as targeted codebase searches |
+| `/dl:plan [description\|slug]` | Create or refine a vertically-sliced task list |
+| `/dl:design [slug]` | Primary review checkpoint — HLD + specs from a plan |
+| `/dl:implement [slug [task-n]]` | Implement a task from a plan+design pair |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 

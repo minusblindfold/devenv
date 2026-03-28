@@ -63,14 +63,29 @@ cheat ghostty   # ghostty keybindings
 AI coding agents can generate anything, which is the problem. Without structure you get inconsistent patterns and one-shot attempts that miss edge cases. This setup structures work into phases — sometimes called [harness engineering](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html) — so the agent's output stays consistent and reviewable.
 
 ```
-         /dl:research → /dl:plan → /dl:design → /dl:implement
-              ↑                  ↑                ↑                    │
-              └──────────────────┴────────────────┴────────────────────┘
+  /dl:brainstorm → /dl:research → /dl:plan → /dl:design → /dl:implement
+                        ↑              ↑            ↑             │
+                        └──────────────┴────────────┴─────────────┘
 
-    During any phase, run /dl:research to feed discoveries back into plans and designs.
+    Start with /dl:brainstorm. Re-enter /dl:research when discoveries surface.
 ```
 
 Each step produces an artifact that the next step reads. No step touches code until `/dl:implement`. Artifacts are saved to `.work/` in whatever project you're working in — add `.work/` to that project's `.gitignore`.
+
+### /dl:brainstorm
+
+```
+/dl:brainstorm "topic"
+```
+
+Required entry point. Iterative questioning session that probes a feature idea. Claude resolves rules, scans the codebase, and asks rounds of questions — each with a recommended answer you can accept, reject, or refine. The conversation continues until you signal you're done or the decision space converges.
+
+The output is a decision log with research queries saved to `.work/brainstorms/`. The Research Queries section drives what `/dl:research` investigates next.
+
+```
+/dl:brainstorm                  # ask what to brainstorm
+/dl:brainstorm <slug>           # reopen an existing brainstorm
+```
 
 ### /dl:research
 
@@ -78,9 +93,9 @@ Each step produces an artifact that the next step reads. No step touches code un
 /dl:research "topic"
 ```
 
-Scans your rule docs and codebase for context. Produces three sections: **Applicable Rules** (what rules exist), **Codebase Patterns** (what's already built), and **Gaps & Recommendations** (what's missing or inconsistent).
+Executes the Research Queries from your brainstorm artifact as targeted codebase searches. Requires a brainstorm artifact. Produces per-query findings and a **Gaps & Recommendations** section.
 
-Research is optional but useful before planning. Run it again at any point — it appends new findings without overwriting prior sections.
+Run it again at any point — it appends new findings without overwriting prior sections.
 
 ![Research output](screen-caps/research-output.png)
 
@@ -117,9 +132,7 @@ Claude reads the plan, explores the codebase, and produces a high-level design: 
 
 ![Design output](screen-caps/design-output.png)
 
-The design is the contract for implementation. Use `view-design` to read it and press `ctrl-d` to open architecture diagrams in the browser.
-
-For simple features where no plan exists, `/dl:design <description>` bootstraps a minimal plan inline and proceeds to design.
+The design is the primary review checkpoint — review it thoroughly before implementation. Use `view-design` to read it and press `ctrl-d` to open architecture diagrams in the browser.
 
 ### /dl:implement
 
@@ -173,7 +186,7 @@ Create a Role enum and a User entity...
 
 ### Progressive model
 
-Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required (except for `/dl:bootstrap`, which needs at least a `stack.md`).
+Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required.
 
 When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop rules enable/disable/list`). Packs are symlinked into `~/devloop/rules/` and discovered automatically. Resolution follows a four-tier precedence:
 
@@ -222,11 +235,11 @@ Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal
 
 | Command | What it does |
 |---------|-------------|
-| `/dl:research [topic]` | Scan rules + codebase for context |
-| `/dl:plan [description]` | Create or refine a task list |
-| `/dl:design [slug]` | Generate architecture + task specs from a plan |
+| `/dl:brainstorm [topic]` | Required entry point — refine a feature idea, produce research queries |
+| `/dl:research [topic]` | Execute research queries from brainstorm as targeted searches |
+| `/dl:plan [description]` | Create or refine a vertically-sliced task list |
+| `/dl:design [slug]` | Primary review checkpoint — architecture + task specs from a plan |
 | `/dl:implement [slug [task-n]]` | Implement one task from a plan+design pair |
-| `/dl:bootstrap <project-name>` | Scaffold a new project from rules |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |
