@@ -188,6 +188,23 @@ Pass a filename to view directly, or run with no args for the picker. `open-diag
 
 ---
 
+## Multi-agent workflows
+
+Run more than one Claude Code session at once — one per feature, each in its own Ghostty pane — and the shared activity log (written by `claude/hooks/log-activity.sh`) mixes every session's tool calls and commits together with no indication of which session did what. `work-as` and `watch-agents` fix that by tagging each session with a name and letting you colorize the merged log by that name.
+
+```bash
+work-as alpha    # launch Claude Code, tagging this session "alpha"
+work-as beta     # in another pane, tag that session "beta"
+```
+
+`work-as <name> [args]` sets `CLAUDE_AGENT=<name>` in the shell and writes `<name>` to `~/.claude/agent` before launching `claude` (any extra args are passed through), then cleans up both when the session exits. Every activity-log line `log-activity.sh` writes during that session — tool calls, commits — carries `<name>`, so lines from concurrent sessions stay attributable even though they land in the same shared file.
+
+`watch-agents` tails `~/.claude/activity.log` and pipes it through a small colorizer that assigns each distinct agent name a color the first time it appears, cycling through up to 12 ANSI colors, so `alpha`'s lines and `beta`'s lines are visually distinct at a glance without grepping or filtering.
+
+This is most useful when you're juggling several features at once: run `work-as <feature-name>` for each concurrent session, then keep a `watch-agents` pane open as a shared, color-coded view of what every agent is doing in real time.
+
+---
+
 ## Rules
 
 Rules are markdown files in `devloop/rules/` at your project root. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance devloop skills apply while generating code. Skills discover the directory automatically; commit it to version control like any other project file.
