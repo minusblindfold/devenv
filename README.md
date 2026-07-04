@@ -41,9 +41,17 @@ Small scripts symlinked to `~/.local/bin/`:
 
 See the [cheatsheet](docs/cheatsheet.md) for the full reference.
 
-### Git hooks
+### Hooks
 
-Global pre-commit hook runs `shellcheck` and `shfmt` on staged shell scripts. Skips zsh files.
+Two distinct hook layers, wired differently.
+
+**Git hooks** (`git-hooks/`, wired via a global `core.hooksPath`):
+- `pre-commit` — runs `shellcheck` and `shfmt` on staged shell scripts (skips zsh files).
+- `post-commit` — appends the commit message to `~/.claude/activity.log`.
+
+**Claude Code hooks** (`claude/hooks/`, wired via `settings.json`):
+- `check-branch.sh` — a `PreToolUse` hook matching Bash `git commit` calls. Blocks the commit if the current branch is `main`/`master`, requiring a `feature/<slug>` branch first. Resolves the actual target repo from a leading `cd <dir> &&` or `git -C <dir>` in the command, so multi-repo commands (e.g. `cd ../other-repo && git commit ...`) get checked against that repo's branch, not just the hook's own invocation cwd.
+- `log-activity.sh` — fires on `SessionStart`, `PostToolUse`, `SubagentStart`, and `SubagentStop`, appending structured activity lines to the same `~/.claude/activity.log`.
 
 ## Quickstart
 
