@@ -55,7 +55,7 @@ Two distinct hook layers, wired differently.
 
 ## Quickstart
 
-Requires macOS and [Homebrew](https://brew.sh/).
+Requires macOS and [Homebrew](https://brew.sh/), and Claude Code ≥ 2.1.181 (≥ 2.1.198 for `/dl:implement all`) — devloop's floor, needed for nested subagent depth and custom agent support; the higher bar for `all` mode reflects subagents defaulting to background from that version, which `/dl:implement all` needs to run in the foreground to keep each task's verify-and-commit step atomic.
 
 ```bash
 git clone https://github.com/minusblindfold/devenv.git ~/path/of/your/choice
