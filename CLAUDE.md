@@ -21,7 +21,7 @@ Scripts in `bin/` use `#!/usr/bin/env bash` and are symlinked to `~/.local/bin/`
 
 ### Devloop plugin
 
-Workflow skills (`/dl:brainstorm`, `/dl:research`, `/dl:plan`, `/dl:design`, `/dl:implement`) are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin, installed via `install_devloop()` in `install.sh`. The plugin is distributed as a Claude Code marketplace plugin.
+Workflow skills (`/dl:brainstorm`, `/dl:research`, `/dl:plan`, `/dl:design`, `/dl:implement`, `/dl:review`) are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin, installed via `install_devloop()` in `install.sh`. The plugin is distributed as a Claude Code marketplace plugin.
 
 ### Bin scripts
 

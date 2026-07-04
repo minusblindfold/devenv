@@ -63,7 +63,7 @@ cheat ghostty   # ghostty keybindings
 AI coding agents can generate anything, which is the problem. Without structure you get inconsistent patterns and one-shot attempts that miss edge cases. This setup structures work into phases — sometimes called [harness engineering](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html) — so the agent's output stays consistent and reviewable.
 
 ```
-  /dl:brainstorm → /dl:research → /dl:plan → /dl:design → /dl:implement
+  /dl:brainstorm → /dl:research → /dl:plan → /dl:design → /dl:implement → /dl:review
                         ↑              ↑            ↑             │
                         └──────────────┴────────────┴─────────────┘
 
@@ -137,14 +137,39 @@ The design is the primary review checkpoint — review it thoroughly before impl
 ### /dl:implement
 
 ```
-/dl:implement
+/dl:implement                   # pick a task
+/dl:implement <slug> <N>        # implement task N
+/dl:implement <slug> all        # run every unchecked task in order
 ```
 
-Claude loads the plan and design, displays the task list with completion status, and implements one task at a time. It reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
+Claude acts as a foreman: it loads the plan and design, displays the task list with completion status, and delegates the selected task to a fresh-context worker. The worker reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
 
 ![Implement flow](screen-caps/implement-flow.png)
 
-Completed tasks are tracked — pick up exactly where you left off across sessions.
+**Single-task mode** implements one task per invocation and suggests a commit at the end.
+
+**All mode** (`all`) requires a clean working tree, then loops over every unchecked task in plan order, committing each one separately as it completes. It halts — leaving the task box unchecked — if a task fails, targets a separate repo, or declares an interface-changing deviation; re-run `/dl:implement <slug> all` to resume from the first unchecked task. When the last task lands, it automatically runs `/dl:review` in a forked subagent.
+
+Completed tasks are checked off in the plan file itself — pick up exactly where you left off across sessions.
+
+### /dl:review
+
+```
+/dl:review [feature-slug]
+```
+
+Reviews the current diff for rule violations and quality issues. Works standalone or as the automatic final step of `/dl:implement <slug> all`.
+
+**Mode detection:** If a plan and design exist for the slug, review runs in **workflow mode** — it pulls rule titles straight from the task specs and treats deviations noted as intentional in implementation notes as acknowledged, not violations. Without a plan or design, it runs in **standalone mode** — deriving keywords from the slug (or the current branch name, if no slug is given) to match against `devloop/rules/`. Pointing it at an existing review file triggers **re-entry** — findings are appended as a dated section rather than replacing the prior review.
+
+**Diff scope:** On a feature branch, it reviews `git diff main...HEAD` plus any uncommitted changes. On `main`, it reviews uncommitted changes only, and stops if there are none.
+
+Review runs in a forked subagent — the scanning happens in a fresh context and only findings return to your session. On completion, it archives the feature's active marker; the workflow is considered done.
+
+```
+/dl:review                  # detect branch or active marker, review what's there
+/dl:review <slug>           # review a specific feature by slug
+```
 
 ### Viewing artifacts
 
@@ -243,7 +268,8 @@ Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal
 | `/dl:research [topic]` | Execute research queries from brainstorm as targeted searches |
 | `/dl:plan [description]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — architecture + task specs from a plan |
-| `/dl:implement [slug [task-n]]` | Implement one task from a plan+design pair |
+| `/dl:implement [slug [task-n\|all]]` | Implement one task (or all unchecked tasks) from a plan+design pair |
+| `/dl:review [feature-slug]` | Review the diff for rule violations and quality issues |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |

@@ -54,7 +54,8 @@ Prompt: **Starship** — git status, languages, icons.
 | `/dl:research [slug\|topic]` | Execute brainstorm queries as targeted codebase searches |
 | `/dl:plan [description\|slug]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — HLD + specs from a plan |
-| `/dl:implement [slug [task-n]]` | Implement a task from a plan+design pair |
+| `/dl:implement [slug [task-n\|all]]` | Implement a task (or all unchecked tasks) from a plan+design pair |
+| `/dl:review [slug]` | Review the diff for rule violations and quality issues |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
