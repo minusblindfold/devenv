@@ -50,7 +50,7 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
-| `/dl:brainstorm [topic]` | Required entry point — refine idea, produce research queries |
+| `/dl:brainstorm [topic]` | Recommended entry point — refine idea, produce research queries |
 | `/dl:research [slug\|topic]` | Execute brainstorm queries as targeted codebase searches |
 | `/dl:plan [description\|slug]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — HLD + specs from a plan |

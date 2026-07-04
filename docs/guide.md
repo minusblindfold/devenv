@@ -78,7 +78,7 @@ Each step produces an artifact that the next step reads. No step touches code un
 /dl:brainstorm "topic"
 ```
 
-Required entry point. Iterative questioning session that probes a feature idea. Claude resolves rules, scans the codebase, and asks rounds of questions — each with a recommended answer you can accept, reject, or refine. The conversation continues until you signal you're done or the decision space converges.
+Recommended entry point. Iterative questioning session that probes a feature idea. Claude resolves rules, scans the codebase, and asks rounds of questions — each with a recommended answer you can accept, reject, or refine. The conversation continues until you signal you're done or the decision space converges.
 
 The output is a decision log with research queries saved to `.work/brainstorms/`. The Research Queries section drives what `/dl:research` investigates next.
 
@@ -253,8 +253,8 @@ Rule packs are ready-made rule sets, copy-paste only — there's no CLI and noth
 
 If `/dl:implement` produces something that doesn't match your expectations, don't just fix the code. Ask what was missing:
 
-- **Design gap?** Run `/dl:design refine` to tighten the spec before continuing.
-- **Plan gap?** Run `/dl:plan refine` to add a missing task or adjust scope.
+- **Design gap?** Run `/dl:design` again with the same slug to tighten the spec before continuing.
+- **Plan gap?** Run `/dl:plan` again with the same slug to add a missing task or adjust scope.
 - **Rule gap?** Update the rule doc so every future task gets it right.
 - **New discovery?** Run `/dl:research` to capture it — the findings inform the next plan.
 
@@ -266,7 +266,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Tips
 
-- **Start small.** Don't plan 15 tasks. Start with 3-5. You can always `/dl:plan refine` to add more.
+- **Start small.** Don't plan 15 tasks. Start with 3-5. You can always run `/dl:plan` again to add more.
 - **Let Claude interview you.** Give a short description and let Claude ask the clarifying questions. They often surface constraints you hadn't considered.
 - **Review artifacts, not just code.** Use `view-plan`, `view-design`, and `view-implement` between sessions. The artifacts capture decisions and rationale that git commits don't.
 - **One task at a time.** `/dl:implement` works on a single task per invocation. This keeps context focused and changes reviewable.
@@ -283,7 +283,7 @@ Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal
 
 | Command | What it does |
 |---------|-------------|
-| `/dl:brainstorm [topic]` | Required entry point — refine a feature idea, produce research queries |
+| `/dl:brainstorm [topic]` | Recommended entry point — refine a feature idea, produce research queries |
 | `/dl:research [topic]` | Execute research queries from brainstorm as targeted searches |
 | `/dl:plan [description]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — architecture + task specs from a plan |
