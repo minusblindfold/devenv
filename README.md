@@ -63,7 +63,7 @@ The install script is idempotent — safe to run multiple times. It symlinks eve
 | Tool | Purpose |
 |------|---------|
 | `ghostty` | Terminal emulator |
-| `claude-code` | Claude Code CLI |
+| `claude-code@latest` | Claude Code CLI |
 | `fzf` | Fuzzy finder (project picker, viewers) |
 | `glow` | Markdown renderer (cheat, viewers) |
 | `starship` | Shell prompt |
