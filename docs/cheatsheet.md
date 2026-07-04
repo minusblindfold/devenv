@@ -74,6 +74,13 @@ Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) 
 | `cheat ls` | List tool cheatsheets |
 | `cheat <tool>` | View tool cheatsheet |
 
+### `view-brainstorm`
+
+| Command | Action |
+|---------|--------|
+| `view-brainstorm` | Browse brainstorm decision logs (fzf + glow) |
+| `view-brainstorm <file>` | View a specific brainstorm |
+
 ### `view-research`
 
 | Command | Action |
@@ -103,13 +110,20 @@ Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) 
 | `view-implement` | Browse implementation notes (fzf + glow) |
 | `view-implement <file>` | View a specific implementation note |
 
+### `view-review`
+
+| Command | Action |
+|---------|--------|
+| `view-review` | Browse code review findings (fzf + glow) |
+| `view-review <file>` | View a specific review |
+
 ### `open-diagrams`
 
 | Command | Action |
 |---------|--------|
 | `open-diagrams <design-file>` | Open `.mmd` diagrams referenced in a design doc in the browser |
 
-Reads from `.work/research/`, `.work/plans/`, `.work/designs/`, and `.work/implementations/` in the current project.
+Reads from `.work/brainstorms/`, `.work/research/`, `.work/plans/`, `.work/designs/`, `.work/implementations/`, and `.work/reviews/` in the current project.
 
 ### `dl-refresh`
 

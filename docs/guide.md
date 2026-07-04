@@ -173,14 +173,16 @@ Review runs in a forked subagent — the scanning happens in a fresh context and
 
 ### Viewing artifacts
 
-Four viewer scripts browse work artifacts. All use fzf for selection and glow for rendering.
+Six viewer scripts browse work artifacts. All use fzf for selection and glow for rendering.
 
 | Command | Reads from |
 |---------|-----------|
+| `view-brainstorm` | `.work/brainstorms/` |
 | `view-research` | `.work/research/` |
 | `view-plan` | `.work/plans/` |
 | `view-design` | `.work/designs/` |
 | `view-implement` | `.work/implementations/` |
+| `view-review` | `.work/reviews/` |
 
 Pass a filename to view directly, or run with no args for the picker. `open-diagrams <design-file>` opens `.mmd` diagrams in the browser.
 
@@ -270,10 +272,12 @@ Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal
 | `/dl:design [slug]` | Primary review checkpoint — architecture + task specs from a plan |
 | `/dl:implement [slug [task-n\|all]]` | Implement one task (or all unchecked tasks) from a plan+design pair |
 | `/dl:review [feature-slug]` | Review the diff for rule violations and quality issues |
+| `view-brainstorm` | Browse brainstorm decision logs |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |
 | `view-implement` | Browse implementation notes |
+| `view-review` | Browse code review findings |
 
 ---
 

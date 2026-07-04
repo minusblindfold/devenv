@@ -26,7 +26,7 @@ Workflow skills (`/dl:brainstorm`, `/dl:research`, `/dl:plan`, `/dl:design`, `/d
 ### Bin scripts
 
 Terminal companion tools for browsing devloop artifacts:
-- `view-brainstorm`, `view-plan`, `view-design`, `view-implement`, `view-research` — browse `.work/` artifacts with fzf + glow
+- `view-brainstorm`, `view-research`, `view-plan`, `view-design`, `view-implement`, `view-review` — browse `.work/` artifacts with fzf + glow
 - `open-diagrams` — open `.mmd` diagrams in browser
 - `claude-context` — statusline showing directory, git branch, context %, session cost
 
