@@ -163,9 +163,9 @@ Pass a filename to view directly, or run with no args for the picker. `open-diag
 
 ## Rules
 
-Rule docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
+Rules are markdown files in `devloop/rules/` at your project root. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance devloop skills apply while generating code. Skills discover the directory automatically; commit it to version control like any other project file.
 
-Put `.md` files in `~/.claude/rules/` and they work everywhere — Claude Code reads them automatically, and skills use frontmatter keywords to find the right ones for each task:
+Create `devloop/rules/` and drop in a `.md` file:
 
 ```yaml
 ---
@@ -182,20 +182,24 @@ keywords: [entity, model, JPA, persistence]
 Create a Role enum and a User entity...
 ```
 
-`keywords` is the only required frontmatter. Skills match task descriptions against these terms. See `~/.claude/rules/rules.md` for the full format reference.
+Add one rule per concern (`service.md`, `controller.md`, `testing.md`).
 
-### Progressive model
+### Frontmatter
 
-Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required.
-
-When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop rules enable/disable/list`). Packs are symlinked into `~/devloop/rules/` and discovered automatically. Resolution follows a four-tier precedence:
-
-| Precedence | Layer | Path |
+| Field | Required | Description |
 |---|---|---|
-| 1 (highest) | User | `~/.claude/rules/` |
-| 2 | Project | `{cwd}/devloop/rules/` |
-| 3 | Shared/org | `~/devloop/rules/` |
-| 4 (lowest) | Plugin-bundled | `${CLAUDE_PLUGIN_ROOT}/rules/` |
+| `keywords` | No | Terms matched against the task or topic. A rule without `keywords` applies to every task — use for cross-cutting conventions. |
+| `repos` | No | Home-relative paths (`~/...`) to related local repos. `/dl:brainstorm` and `/dl:research` scan them for cross-repo context (integration points, API contracts, shared types). Missing repos are skipped. |
+
+Most skills match your task description against `keywords` and pull in what's relevant — a task about services loads `service.md`, not `testing.md`. No `devloop/rules/` directory? Skills work from codebase context alone; rules are additive, not required.
+
+### Why not `.claude/rules/`?
+
+Claude Code natively loads every file in `.claude/rules/` into every session (optionally scoped by `paths:` globs). That's fine for a handful of always-on rules, but it defeats keyword scoping — a large rule set crowds the context window with guidance irrelevant to the task at hand. `devloop/rules/` loads only what matches instead. The two are complementary, not competing: use `.claude/rules/` for things every session needs, `devloop/rules/` for pattern guidance skills pull in on demand.
+
+### Rule packs
+
+Rule packs are ready-made rule sets, copy-paste only — there's no CLI and nothing gets symlinked. Copy a pack from devloop's [`examples/rule-packs/`](https://github.com/minusblindfold/devloop/tree/main/examples/rule-packs) into your project's `devloop/rules/` and edit the copies freely; they're yours from that point on. Full format spec: [`docs/rules.md`](https://github.com/minusblindfold/devloop/blob/main/docs/rules.md).
 
 ---
 
@@ -227,7 +231,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Updating
 
-Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs (if using devloop-rules) update via `devloop-rules update`.
+Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs copied from `examples/rule-packs/` are yours to maintain — re-copy or diff against the source manually if devloop publishes updates.
 
 ---
 

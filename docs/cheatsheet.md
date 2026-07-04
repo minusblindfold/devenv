@@ -60,7 +60,7 @@ Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. 
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs are discovered via `/dl:resolve-rules` across four layers: `~/.claude/rules/` (user) → `{cwd}/devloop/rules/` (project) → `~/devloop/rules/` (shared/org packs) → plugin-bundled.
+Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs are `.md` files in `devloop/rules/` at the project root, discovered automatically and matched by `keywords` frontmatter — see the [Rules section](guide.md#rules) of the guide for detail.
 
 ## CLI
 
