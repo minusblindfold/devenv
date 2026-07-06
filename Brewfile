@@ -13,5 +13,5 @@ brew "shfmt"       # Shell script formatter
 brew "oven-sh/bun/bun"  # JS runtime — used for: bunx ccusage@latest (Claude Code cost tracking)
 
 cask "ghostty"                    # Terminal emulator
-cask "claude-code"                # Claude Code CLI
+cask "claude-code@latest"         # Claude Code CLI
 cask "font-jetbrains-mono-nerd-font"  # Nerd font (icons in terminal)

@@ -50,17 +50,18 @@ Prompt: **Starship** — git status, languages, icons.
 |---------|--------|
 | `work-as <name> [args]` | Launch as named agent |
 | `watch-agents` | Tail log, color by agent |
-| `/dl:brainstorm [topic]` | Required entry point — refine idea, produce research queries |
+| `/dl:brainstorm [topic]` | Recommended entry point — refine idea, produce research queries |
 | `/dl:research [slug\|topic]` | Execute brainstorm queries as targeted codebase searches |
 | `/dl:plan [description\|slug]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — HLD + specs from a plan |
-| `/dl:implement [slug [task-n]]` | Implement a task from a plan+design pair |
+| `/dl:implement [slug [task-n\|all]]` | Implement a task (or all unchecked tasks) from a plan+design pair |
+| `/dl:review [slug]` | Review the diff for rule violations and quality issues |
 
 Git commits and tool activity are logged to `~/.claude/activity.log` via hooks. Activity logging only runs during `work-as` sessions.
 
 Work artifacts (plans, designs, implementations, backups) are saved to `.work/` — add `.work/` to each project's `.gitignore`.
 
-Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs are discovered via `/dl:resolve-rules` across four layers: `~/.claude/rules/` (user) → `{cwd}/devloop/rules/` (project) → `~/devloop/rules/` (shared/org packs) → plugin-bundled.
+Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin. Install via `claude plugin marketplace add minusblindfold/devloop && claude plugin install dl@devloop-marketplace`. Rule docs are `.md` files in `devloop/rules/` at the project root, discovered automatically and matched by `keywords` frontmatter — see the [Rules section](guide.md#rules) of the guide for detail.
 
 ## CLI
 
@@ -72,6 +73,13 @@ Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) 
 | `cheat help` | Same as above |
 | `cheat ls` | List tool cheatsheets |
 | `cheat <tool>` | View tool cheatsheet |
+
+### `view-brainstorm`
+
+| Command | Action |
+|---------|--------|
+| `view-brainstorm` | Browse brainstorm decision logs (fzf + glow) |
+| `view-brainstorm <file>` | View a specific brainstorm |
 
 ### `view-research`
 
@@ -102,13 +110,20 @@ Skills are provided by the [devloop](https://github.com/minusblindfold/devloop) 
 | `view-implement` | Browse implementation notes (fzf + glow) |
 | `view-implement <file>` | View a specific implementation note |
 
+### `view-review`
+
+| Command | Action |
+|---------|--------|
+| `view-review` | Browse code review findings (fzf + glow) |
+| `view-review <file>` | View a specific review |
+
 ### `open-diagrams`
 
 | Command | Action |
 |---------|--------|
 | `open-diagrams <design-file>` | Open `.mmd` diagrams referenced in a design doc in the browser |
 
-Reads from `.work/research/`, `.work/plans/`, `.work/designs/`, and `.work/implementations/` in the current project.
+Reads from `.work/brainstorms/`, `.work/research/`, `.work/plans/`, `.work/designs/`, `.work/implementations/`, and `.work/reviews/` in the current project.
 
 ### `dl-refresh`
 

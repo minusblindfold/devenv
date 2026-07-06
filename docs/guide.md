@@ -63,7 +63,7 @@ cheat ghostty   # ghostty keybindings
 AI coding agents can generate anything, which is the problem. Without structure you get inconsistent patterns and one-shot attempts that miss edge cases. This setup structures work into phases — sometimes called [harness engineering](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html) — so the agent's output stays consistent and reviewable.
 
 ```
-  /dl:brainstorm → /dl:research → /dl:plan → /dl:design → /dl:implement
+  /dl:brainstorm → /dl:research → /dl:plan → /dl:design → /dl:implement → /dl:review
                         ↑              ↑            ↑             │
                         └──────────────┴────────────┴─────────────┘
 
@@ -78,7 +78,7 @@ Each step produces an artifact that the next step reads. No step touches code un
 /dl:brainstorm "topic"
 ```
 
-Required entry point. Iterative questioning session that probes a feature idea. Claude resolves rules, scans the codebase, and asks rounds of questions — each with a recommended answer you can accept, reject, or refine. The conversation continues until you signal you're done or the decision space converges.
+Recommended entry point. Iterative questioning session that probes a feature idea. Claude resolves rules, scans the codebase, and asks rounds of questions — each with a recommended answer you can accept, reject, or refine. The conversation continues until you signal you're done or the decision space converges.
 
 The output is a decision log with research queries saved to `.work/brainstorms/`. The Research Queries section drives what `/dl:research` investigates next.
 
@@ -137,35 +137,79 @@ The design is the primary review checkpoint — review it thoroughly before impl
 ### /dl:implement
 
 ```
-/dl:implement
+/dl:implement                   # pick a task
+/dl:implement <slug> <N>        # implement task N
+/dl:implement <slug> all        # run every unchecked task in order
 ```
 
-Claude loads the plan and design, displays the task list with completion status, and implements one task at a time. It reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
+Claude acts as a foreman: it loads the plan and design, displays the task list with completion status, and delegates the selected task to a fresh-context worker. The worker reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
 
 ![Implement flow](screen-caps/implement-flow.png)
 
-Completed tasks are tracked — pick up exactly where you left off across sessions.
+**Single-task mode** implements one task per invocation and suggests a commit at the end.
+
+**All mode** (`all`) first self-heals `.gitignore` to cover `.work/` if it doesn't already (committing that bootstrap fix alone), then requires a clean working tree, then loops over every unchecked task in plan order, committing each one separately as it completes. It halts — leaving the task box unchecked — if a task fails, targets a separate repo, or declares an interface-changing deviation; re-run `/dl:implement <slug> all` to resume from the first unchecked task. When the last task lands, it automatically runs `/dl:review` in a forked subagent.
+
+Completed tasks are checked off in the plan file itself — pick up exactly where you left off across sessions.
+
+### /dl:review
+
+```
+/dl:review [feature-slug]
+```
+
+Reviews the current diff for rule violations and quality issues. Works standalone or as the automatic final step of `/dl:implement <slug> all`.
+
+**Mode detection:** If a plan and design exist for the slug, review runs in **workflow mode** — it pulls rule titles straight from the task specs and treats deviations noted as intentional in implementation notes as acknowledged, not violations. Without a plan or design, it runs in **standalone mode** — deriving keywords from the slug (or the current branch name, if no slug is given) to match against `devloop/rules/`. Pointing it at an existing review file triggers **re-entry** — findings are appended as a dated section rather than replacing the prior review.
+
+**Diff scope:** On a feature branch, it reviews `git diff main...HEAD` plus any uncommitted changes. On `main`, it reviews uncommitted changes only, and stops if there are none.
+
+Review runs in a forked subagent — the scanning happens in a fresh context and only findings return to your session. On completion, it archives the feature's active marker; the workflow is considered done — since everything is captured in commits and `.work/` artifacts, it's a good point to `/compact` or start a fresh session before the next feature.
+
+```
+/dl:review                  # detect branch or active marker, review what's there
+/dl:review <slug>           # review a specific feature by slug
+```
 
 ### Viewing artifacts
 
-Four viewer scripts browse work artifacts. All use fzf for selection and glow for rendering.
+Six viewer scripts browse work artifacts. All use fzf for selection and glow for rendering.
 
 | Command | Reads from |
 |---------|-----------|
+| `view-brainstorm` | `.work/brainstorms/` |
 | `view-research` | `.work/research/` |
 | `view-plan` | `.work/plans/` |
 | `view-design` | `.work/designs/` |
 | `view-implement` | `.work/implementations/` |
+| `view-review` | `.work/reviews/` |
 
 Pass a filename to view directly, or run with no args for the picker. `open-diagrams <design-file>` opens `.mmd` diagrams in the browser.
 
 ---
 
+## Multi-agent workflows
+
+Run more than one Claude Code session at once — one per feature, each in its own Ghostty pane — and the shared activity log (written by `claude/hooks/log-activity.sh`) mixes every session's tool calls and commits together with no indication of which session did what. `work-as` and `watch-agents` fix that by tagging each session with a name and letting you colorize the merged log by that name.
+
+```bash
+work-as alpha    # launch Claude Code, tagging this session "alpha"
+work-as beta     # in another pane, tag that session "beta"
+```
+
+`work-as <name> [args]` sets `CLAUDE_AGENT=<name>` in the shell and writes `<name>` to `~/.claude/agent` before launching `claude` (any extra args are passed through), then cleans up both when the session exits. Every activity-log line `log-activity.sh` writes during that session — tool calls, commits — carries `<name>`, so lines from concurrent sessions stay attributable even though they land in the same shared file.
+
+`watch-agents` tails `~/.claude/activity.log` and pipes it through a small colorizer that assigns each distinct agent name a color the first time it appears, cycling through up to 12 ANSI colors, so `alpha`'s lines and `beta`'s lines are visually distinct at a glance without grepping or filtering.
+
+This is most useful when you're juggling several features at once: run `work-as <feature-name>` for each concurrent session, then keep a `watch-agents` pane open as a shared, color-coded view of what every agent is doing in real time.
+
+---
+
 ## Rules
 
-Rule docs are markdown files that the agent reads at runtime. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance the agent follows while generating code.
+Rules are markdown files in `devloop/rules/` at your project root. They describe patterns — how entities should look, how services are structured, how security works. This isn't documentation for humans. It's guidance devloop skills apply while generating code. Skills discover the directory automatically; commit it to version control like any other project file.
 
-Put `.md` files in `~/.claude/rules/` and they work everywhere — Claude Code reads them automatically, and skills use frontmatter keywords to find the right ones for each task:
+Create `devloop/rules/` and drop in a `.md` file:
 
 ```yaml
 ---
@@ -182,20 +226,24 @@ keywords: [entity, model, JPA, persistence]
 Create a Role enum and a User entity...
 ```
 
-`keywords` is the only required frontmatter. Skills match task descriptions against these terms. See `~/.claude/rules/rules.md` for the full format reference.
+Add one rule per concern (`service.md`, `controller.md`, `testing.md`).
 
-### Progressive model
+### Frontmatter
 
-Start simple — drop a few `.md` files into `~/.claude/rules/`. Skills discover them automatically. No config needed. With no rules configured, skills still work — they operate from codebase context alone. Rules are additive, not required.
-
-When you want more structure, install [devloop-rules](https://github.com/minusblindfold/devloop-rules) for organized packs with a CLI (`devloop rules enable/disable/list`). Packs are symlinked into `~/devloop/rules/` and discovered automatically. Resolution follows a four-tier precedence:
-
-| Precedence | Layer | Path |
+| Field | Required | Description |
 |---|---|---|
-| 1 (highest) | User | `~/.claude/rules/` |
-| 2 | Project | `{cwd}/devloop/rules/` |
-| 3 | Shared/org | `~/devloop/rules/` |
-| 4 (lowest) | Plugin-bundled | `${CLAUDE_PLUGIN_ROOT}/rules/` |
+| `keywords` | No | Terms matched against the task or topic. A rule without `keywords` applies to every task — use for cross-cutting conventions. |
+| `repos` | No | Home-relative paths (`~/...`) to related local repos. `/dl:brainstorm` and `/dl:research` scan them for cross-repo context (integration points, API contracts, shared types). Missing repos are skipped. |
+
+Most skills match your task description against `keywords` and pull in what's relevant — a task about services loads `service.md`, not `testing.md`. No `devloop/rules/` directory? Skills work from codebase context alone; rules are additive, not required.
+
+### Why not `.claude/rules/`?
+
+Claude Code natively loads every file in `.claude/rules/` into every session (optionally scoped by `paths:` globs). That's fine for a handful of always-on rules, but it defeats keyword scoping — a large rule set crowds the context window with guidance irrelevant to the task at hand. `devloop/rules/` loads only what matches instead. The two are complementary, not competing: use `.claude/rules/` for things every session needs, `devloop/rules/` for pattern guidance skills pull in on demand.
+
+### Rule packs
+
+Rule packs are ready-made rule sets, copy-paste only — there's no CLI and nothing gets symlinked. Copy a pack from devloop's [`examples/rule-packs/`](https://github.com/minusblindfold/devloop/tree/main/examples/rule-packs) into your project's `devloop/rules/` and edit the copies freely; they're yours from that point on. Full format spec: [`docs/rules.md`](https://github.com/minusblindfold/devloop/blob/main/docs/rules.md).
 
 ---
 
@@ -205,8 +253,8 @@ When you want more structure, install [devloop-rules](https://github.com/minusbl
 
 If `/dl:implement` produces something that doesn't match your expectations, don't just fix the code. Ask what was missing:
 
-- **Design gap?** Run `/dl:design refine` to tighten the spec before continuing.
-- **Plan gap?** Run `/dl:plan refine` to add a missing task or adjust scope.
+- **Design gap?** Run `/dl:design` again with the same slug to tighten the spec before continuing.
+- **Plan gap?** Run `/dl:plan` again with the same slug to add a missing task or adjust scope.
 - **Rule gap?** Update the rule doc so every future task gets it right.
 - **New discovery?** Run `/dl:research` to capture it — the findings inform the next plan.
 
@@ -218,7 +266,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Tips
 
-- **Start small.** Don't plan 15 tasks. Start with 3-5. You can always `/dl:plan refine` to add more.
+- **Start small.** Don't plan 15 tasks. Start with 3-5. You can always run `/dl:plan` again to add more.
 - **Let Claude interview you.** Give a short description and let Claude ask the clarifying questions. They often surface constraints you hadn't considered.
 - **Review artifacts, not just code.** Use `view-plan`, `view-design`, and `view-implement` between sessions. The artifacts capture decisions and rationale that git commits don't.
 - **One task at a time.** `/dl:implement` works on a single task per invocation. This keeps context focused and changes reviewable.
@@ -227,7 +275,7 @@ If you've corrected Claude multiple times on the same issue, the context can bec
 
 ### Updating
 
-Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs (if using devloop-rules) update via `devloop-rules update`.
+Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal config updates. The devloop plugin updates separately via `claude plugin update dl@devloop-marketplace`. Rule packs copied from `examples/rule-packs/` are yours to maintain — re-copy or diff against the source manually if devloop publishes updates.
 
 ---
 
@@ -235,15 +283,18 @@ Pull the devenv repo and re-run `./install.sh` for terminal, shell, and personal
 
 | Command | What it does |
 |---------|-------------|
-| `/dl:brainstorm [topic]` | Required entry point — refine a feature idea, produce research queries |
+| `/dl:brainstorm [topic]` | Recommended entry point — refine a feature idea, produce research queries |
 | `/dl:research [topic]` | Execute research queries from brainstorm as targeted searches |
 | `/dl:plan [description]` | Create or refine a vertically-sliced task list |
 | `/dl:design [slug]` | Primary review checkpoint — architecture + task specs from a plan |
-| `/dl:implement [slug [task-n]]` | Implement one task from a plan+design pair |
+| `/dl:implement [slug [task-n\|all]]` | Implement one task (or all unchecked tasks) from a plan+design pair |
+| `/dl:review [feature-slug]` | Review the diff for rule violations and quality issues |
+| `view-brainstorm` | Browse brainstorm decision logs |
 | `view-research` | Browse saved research |
 | `view-plan` | Browse saved plans |
 | `view-design` | Browse saved designs (`ctrl-d` for diagrams) |
 | `view-implement` | Browse implementation notes |
+| `view-review` | Browse code review findings |
 
 ---
 

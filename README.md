@@ -18,9 +18,9 @@ Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language 
 
 ### Claude Code
 
-Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/dl:brainstorm` → `/dl:research` → `/dl:plan` → `/dl:design` → `/dl:implement`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
+Workflow skills are provided by the [devloop](https://github.com/minusblindfold/devloop) plugin (`/dl:brainstorm` → `/dl:research` → `/dl:plan` → `/dl:design` → `/dl:implement` → `/dl:review`). The install script registers the devloop marketplace and installs the plugin automatically. See the [guide](docs/guide.md) for a walkthrough.
 
-Personal Claude config (hooks, statusline, global instructions) stays in this repo under `claude/`.
+Personal Claude config (hooks, statusline, global instructions) stays in this repo under `claude/`. Its `settings.json` also enables two plugins: `dl@devloop-marketplace` (the workflow skills above) and `swift-lsp@claude-plugins-official` (Swift language server).
 
 ### CLI tools
 
@@ -41,13 +41,21 @@ Small scripts symlinked to `~/.local/bin/`:
 
 See the [cheatsheet](docs/cheatsheet.md) for the full reference.
 
-### Git hooks
+### Hooks
 
-Global pre-commit hook runs `shellcheck` and `shfmt` on staged shell scripts. Skips zsh files.
+Two distinct hook layers, wired differently.
+
+**Git hooks** (`git-hooks/`, wired via a global `core.hooksPath`):
+- `pre-commit` — runs `shellcheck` and `shfmt` on staged shell scripts (skips zsh files).
+- `post-commit` — appends the commit message to `~/.claude/activity.log`.
+
+**Claude Code hooks** (`claude/hooks/`, wired via `settings.json`):
+- `check-branch.sh` — a `PreToolUse` hook matching Bash `git commit` calls. Blocks the commit if the current branch is `main`/`master`, requiring a `feature/<slug>` branch first. Resolves the actual target repo from a leading `cd <dir> &&` or `git -C <dir>` in the command, so multi-repo commands (e.g. `cd ../other-repo && git commit ...`) get checked against that repo's branch, not just the hook's own invocation cwd.
+- `log-activity.sh` — fires on `SessionStart`, `PostToolUse`, `SubagentStart`, and `SubagentStop`, appending structured activity lines to the same `~/.claude/activity.log`.
 
 ## Quickstart
 
-Requires macOS and [Homebrew](https://brew.sh/).
+Requires macOS and [Homebrew](https://brew.sh/), and Claude Code ≥ 2.1.181 (≥ 2.1.198 for `/dl:implement all`) — devloop's floor, needed for nested subagent depth and custom agent support; the higher bar for `all` mode reflects subagents defaulting to background from that version, which `/dl:implement all` needs to run in the foreground to keep each task's verify-and-commit step atomic.
 
 ```bash
 git clone https://github.com/minusblindfold/devenv.git ~/path/of/your/choice
@@ -63,7 +71,7 @@ The install script is idempotent — safe to run multiple times. It symlinks eve
 | Tool | Purpose |
 |------|---------|
 | `ghostty` | Terminal emulator |
-| `claude-code` | Claude Code CLI |
+| `claude-code@latest` | Claude Code CLI |
 | `fzf` | Fuzzy finder (project picker, viewers) |
 | `glow` | Markdown renderer (cheat, viewers) |
 | `starship` | Shell prompt |
@@ -109,7 +117,8 @@ Pull the repo and re-run `./install.sh`. Symlinked config updates in place. The 
 - [Guide](docs/guide.md) — terminal setup, the skill workflow, rules, and tips
 - [Cheatsheet](docs/cheatsheet.md) — quick reference for all keybindings, commands, and CLI tools
 - [devloop](https://github.com/minusblindfold/devloop) — the Claude Code plugin powering the workflow skills
-- [devloop-rules](https://github.com/minusblindfold/devloop-rules) — organized rule packs with a management CLI
+  - [`examples/rule-packs/`](https://github.com/minusblindfold/devloop/tree/main/examples/rule-packs) — copy-paste starter rule packs
+  - [`docs/rules.md`](https://github.com/minusblindfold/devloop/blob/main/docs/rules.md) — rule file format spec
 
 ## License
 

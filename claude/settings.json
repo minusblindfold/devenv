@@ -5,6 +5,7 @@
       "Bash"
     ]
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -72,7 +73,8 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "dl@devloop-marketplace": true
+    "dl@devloop-marketplace": true,
+    "swift-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "devloop-marketplace": {
@@ -82,5 +84,8 @@
       }
     }
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "theme": "dark"
 }
