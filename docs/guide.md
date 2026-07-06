@@ -99,13 +99,9 @@ Run it again at any point — it appends new findings without overwriting prior 
 
 ![Research output](screen-caps/research-output.png)
 
-*(Screenshot predates devloop 3.2.0 — may not reflect current output; recapture pending.)*
-
 Use `view-research` to browse saved research across sessions.
 
 ![view-research](screen-caps/view-research.png)
-
-*(Screenshot predates devloop 3.2.0 — may not reflect current output; recapture pending.)*
 
 ### /dl:plan
 
@@ -116,8 +112,6 @@ Use `view-research` to browse saved research across sessions.
 Claude asks clarifying questions (scope, constraints, entities), then produces a task list ordered by dependency. The plan is saved to `.work/plans/`.
 
 ![Plan output](screen-caps/plan-output.png)
-
-*(Screenshot predates devloop 3.2.0 — may not reflect current output; recapture pending.)*
 
 If research artifacts exist for the feature, `/dl:plan` reads them automatically — the gaps and recommendations inform the questions and tasks.
 
@@ -138,8 +132,6 @@ Claude reads the plan, explores the codebase, and produces a high-level design: 
 
 ![Design output](screen-caps/design-output.png)
 
-*(Screenshot predates devloop 3.2.0 — may not reflect current output; recapture pending.)*
-
 The design is the primary review checkpoint — review it thoroughly before implementation. Use `view-design` to read it and press `ctrl-d` to open architecture diagrams in the browser.
 
 ### /dl:implement
@@ -153,8 +145,6 @@ The design is the primary review checkpoint — review it thoroughly before impl
 Claude acts as a foreman: it loads the plan and design, displays the task list with completion status, and delegates the selected task to a fresh-context worker. The worker reads relevant files first, checks which rules apply, runs existing tests to establish a baseline, implements against the spec, and re-runs tests. An implementation note is saved to `.work/implementations/`.
 
 ![Implement flow](screen-caps/implement-flow.png)
-
-*(Screenshot predates devloop 3.2.0 — may not reflect current output; recapture pending.)*
 
 **Single-task mode** implements one task per invocation and suggests a commit at the end.
 
