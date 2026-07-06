@@ -158,7 +158,7 @@ Claude acts as a foreman: it loads the plan and design, displays the task list w
 
 **Single-task mode** implements one task per invocation and suggests a commit at the end.
 
-**All mode** (`all`) requires a clean working tree, then loops over every unchecked task in plan order, committing each one separately as it completes. It halts — leaving the task box unchecked — if a task fails, targets a separate repo, or declares an interface-changing deviation; re-run `/dl:implement <slug> all` to resume from the first unchecked task. When the last task lands, it automatically runs `/dl:review` in a forked subagent.
+**All mode** (`all`) first self-heals `.gitignore` to cover `.work/` if it doesn't already (committing that bootstrap fix alone), then requires a clean working tree, then loops over every unchecked task in plan order, committing each one separately as it completes. It halts — leaving the task box unchecked — if a task fails, targets a separate repo, or declares an interface-changing deviation; re-run `/dl:implement <slug> all` to resume from the first unchecked task. When the last task lands, it automatically runs `/dl:review` in a forked subagent.
 
 Completed tasks are checked off in the plan file itself — pick up exactly where you left off across sessions.
 
@@ -174,7 +174,7 @@ Reviews the current diff for rule violations and quality issues. Works standalon
 
 **Diff scope:** On a feature branch, it reviews `git diff main...HEAD` plus any uncommitted changes. On `main`, it reviews uncommitted changes only, and stops if there are none.
 
-Review runs in a forked subagent — the scanning happens in a fresh context and only findings return to your session. On completion, it archives the feature's active marker; the workflow is considered done.
+Review runs in a forked subagent — the scanning happens in a fresh context and only findings return to your session. On completion, it archives the feature's active marker; the workflow is considered done — since everything is captured in commits and `.work/` artifacts, it's a good point to `/compact` or start a fresh session before the next feature.
 
 ```
 /dl:review                  # detect branch or active marker, review what's there
