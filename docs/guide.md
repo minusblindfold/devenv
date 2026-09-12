@@ -18,6 +18,19 @@ Everything runs in **Ghostty** — a fast, GPU-accelerated terminal with native 
 
 A typical layout: Claude on the left, a shell on the right for running commands or watching output.
 
+### Persistent agent sessions (herdr)
+
+[herdr](https://herdr.dev) is a tmux-style multiplexer purpose-built for coding agents. It runs inside Ghostty (or any terminal) rather than replacing it, and keeps Claude Code sessions alive independently of the pane or window they were started in — closing Ghostty, or the machine sleeping, doesn't kill them.
+
+```bash
+herdr                                        # launch/attach the persistent session
+herdr workspace create --cwd ~/path/to/repo --label repo-name
+```
+
+Inside herdr, `Ctrl+B` is the prefix key: `c` for a new pane, `%`/`"` to split, `q` to detach (agents keep running). Run `herdr` again later, from the same machine or over SSH, to reattach exactly where you left off. herdr tracks each pane's agent as working/blocked/idle, which helps when running several repos in parallel.
+
+The first time Claude Code runs inside a herdr pane, herdr installs its own integration hook (`~/.claude/hooks/herdr-agent-state.sh`) and a matching `SessionStart` entry in `claude/settings.json` — that's expected, managed by herdr itself, and safe to leave alone.
+
 ### Project picker
 
 Press `Cmd+P` (Ghostty keybind) or `Ctrl+P` (zsh widget) to fuzzy-find and jump to a project directory. Both read from `~/.config/devenv/paths`.

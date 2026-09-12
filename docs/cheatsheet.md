@@ -27,6 +27,17 @@ Dependencies are installed automatically via the Brewfile.
 
 Dark Pastel, JetBrainsMono Nerd Font 14pt, bell disabled.
 
+## Agent sessions (herdr)
+
+| Key/Command | Action |
+|-----|--------|
+| `herdr` | Launch or reattach the persistent session |
+| `herdr workspace create --cwd <path> --label <name>` | New workspace for a repo |
+| `Ctrl+B c` | New pane |
+| `Ctrl+B %` / `Ctrl+B "` | Split vertically / horizontally |
+| `Ctrl+B q` | Detach (agents keep running) |
+| `herdr machine add <ssh-target>` | Bring a remote machine's sessions into this client |
+
 ## Shell (Zsh)
 
 | Command | Action |
