@@ -12,6 +12,8 @@ This is opinionated and intentionally simple. It's not a framework. It's an exam
 
 [Ghostty](https://ghostty.org/) config with split panes and a project picker. `Cmd+P` (Ghostty keybind) or `Ctrl+P` (zsh widget) opens a fuzzy finder to jump between project directories.
 
+Long-running Claude Code sessions are managed with [herdr](https://herdr.dev), a tmux-style multiplexer for coding agents — sessions survive closing Ghostty or the machine sleeping, and can be reattached later or over SSH. See the [guide](docs/guide.md#persistent-agent-sessions-herdr) for setup.
+
 ### Shell
 
 Zsh with a [Starship](https://starship.rs/) prompt showing git branch, language versions, and status. Modular config in `zsh/conf.d/` — path, prompt, aliases, widgets, SSH agents, and a local override file (`~/.zshrc.local`) for machine-specific config that isn't tracked.
@@ -80,6 +82,7 @@ The install script is idempotent — safe to run multiple times. It symlinks eve
 | `shellcheck` | Shell script linter (pre-commit hook) |
 | `shfmt` | Shell script formatter (pre-commit hook) |
 | `bun` | JS runtime (`bunx ccusage` for cost tracking) |
+| `herdr` | Persistent, resumable Claude Code sessions |
 | `font-jetbrains-mono-nerd-font` | Nerd font for terminal icons |
 
 <details>

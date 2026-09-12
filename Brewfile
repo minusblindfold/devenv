@@ -11,6 +11,7 @@ brew "gh"         # GitHub CLI
 brew "shellcheck"  # Shell script linter
 brew "shfmt"       # Shell script formatter
 brew "oven-sh/bun/bun"  # JS runtime — used for: bunx ccusage@latest (Claude Code cost tracking)
+brew "herdr"      # Persistent agent session multiplexer (survives closing Ghostty/sleep)
 
 cask "ghostty"                    # Terminal emulator
 cask "claude-code@latest"         # Claude Code CLI
